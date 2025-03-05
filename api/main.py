@@ -57,3 +57,21 @@ async def create_warehouse(warehouse: WarehouseBase, db: db_dependency):
     db.commit()
     db.refresh(new_warehouse)
     return new_warehouse
+
+@app.get('/warehouses/', response_model=list[WarehouseModel])
+async def get_warehouses(db: db_dependency):
+    warehouses = db.query(models.Warehouse).all()
+    return warehouses
+
+@app.post('/items/', response_model=ItemModel)
+async def create_item(item: ItemBase, db: db_dependency):
+    new_item = models.Item(**item.model_dump())
+    db.add(new_item)
+    db.commit()
+    db.refresh(new_item)
+    return new_item
+
+@app.get('/items/', response_model=list[ItemModel])
+async def get_items(db: db_dependency):
+    items = db.query(models.Item).all()
+    return items

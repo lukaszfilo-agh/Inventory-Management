@@ -63,6 +63,18 @@ async def get_warehouses(db: db_dependency):
     warehouses = db.query(models.Warehouse).all()
     return warehouses
 
+@app.delete("/warehouses/{warehouse_id}")
+def delete_warehouse(warehouse_id: int, db: Session = Depends(get_db)):
+    warehouse = db.query(models.Warehouse).filter(models.Warehouse.id == warehouse_id).one_or_none()
+    
+    if not warehouse:
+        raise HTTPException(status_code=404, detail=f"Warehouse with ID {warehouse_id} does not exist.")
+    
+    db.delete(warehouse)
+    db.commit()
+    
+    return {"message": f"Warehouse with ID {warehouse_id} has been deleted successfully."}
+
 @app.post('/items/', response_model=ItemModel)
 async def create_item(item: ItemBase, db: db_dependency):
     warehouse = db.query(models.Warehouse).filter(models.Warehouse.id == item.warehouse_id).one_or_none()

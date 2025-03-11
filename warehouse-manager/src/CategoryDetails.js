@@ -74,12 +74,19 @@ const CategoryDetails = () => {
                     </button>
                 </div>
             )}
-            <h2 className="mt-5">Items</h2>
-            <ul>
-                {items.map((item) => (
-                    <li key={item.id}>{item.name}</li>
-                ))}
-            </ul>
+            <h3 className="mt-4">Items in Category</h3>
+            {items.length > 0 ? (
+                <ul className="list-group mt-3">
+                    {items.map((item) => (
+                        <li key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
+                        {item.name}
+                        <span className="badge bg-secondary">{item.quantity}</span>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No items in this category.</p>
+            )}
         </div>
     );
 };

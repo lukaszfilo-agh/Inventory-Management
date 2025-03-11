@@ -71,7 +71,6 @@ const WarehouseDetails = () => {
         <div>
           <h2>{warehouse.name}</h2>
           <button className="btn btn-warning" onClick={() => setIsEditing(true)}>Edit</button>
-          <button className="btn btn-secondary ms-2" onClick={() => navigate("/")}>Back</button>
         </div>
       )}
 
@@ -88,6 +87,7 @@ const WarehouseDetails = () => {
       ) : (
         <p>No items in this warehouse.</p>
       )}
+      <button className="btn btn-secondary mt-3" onClick={() => navigate(-1)}>🔙 Back</button>
     </div>
   );
 };

@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  fastapi-backend:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    container_name: inventory-manager-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api:/app
+      - ./api/db:/app/db
+    networks:
+      - inventory-manager-network
+    environment:
+      - FRONTEND_URL=http://localhost:3000
+
+  react-frontend:
+    build:
+      context: ./warehouse-manager
+      dockerfile: Dockerfile.dev
+      args:
+        - REACT_APP_API_URL=http://localhost:8000
+    container_name: inventory-manager-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./warehouse-manager:/app
+      - /app/node_modules  # Prevents overwriting node_modules
+    networks:
+      - inventory-manager-network
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000  # Define environment variables directly
+
+networks:
+  inventory-manager-network:
+    driver: bridge

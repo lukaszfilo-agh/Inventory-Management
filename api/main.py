@@ -5,11 +5,14 @@ from pydantic import BaseModel
 from database import SessionLocal, engine
 import models
 from fastapi.middleware.cors import CORSMiddleware
+import os
+
+frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000"
+    frontend_url
 ]
 
 app.add_middleware(

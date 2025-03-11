@@ -1,26 +1,31 @@
-version: '3.7'
+version: '3.8'
 
 services:
   backend:
     build:
-      context: .
-      dockerfile: api/Dockerfile
+      context: ./api
+    container_name: inventory-manager-backend
     ports:
       - "8000:8000"
-    networks:
-      - app-network
     volumes:
-      - ./api:/app  # For hot reloading if in development
-  
+      - ./api:/app
+      - ./api/db:/app/db
+    networks:
+      - inventory-manager-network
+    environment:
+      - FRONTEND_URL=http://localhost:3000
+
   frontend:
     build:
-      context: .
-      dockerfile: warehouse-manager/Dockerfile
+      context: ./warehouse-manager
+    container_name: inventory-manager-frontend
     ports:
       - "3000:3000"
     networks:
-      - app-network
+      - inventory-manager-network
+    environment:
+      - REACT_APP_FRONTEND_URL=http://localhost:8000  # Define environment variables directly
 
 networks:
-  app-network:
+  inventory-manager-network:
     driver: bridge

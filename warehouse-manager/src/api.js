@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+// Use API URL instead of frontend URL
+const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8000";
+
 const api = axios.create({
-  baseURL: 'http://localhost:8000',
+  baseURL: apiUrl, // Set API base URL
 });
 
 // Request interceptor to log outgoing requests

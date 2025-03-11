@@ -8,18 +8,20 @@ import Warehouses from "./Warehouses";
 import AddWarehouse from "./AddWarehouse";
 import AddCategory from "./AddCategory";
 import WarehouseDetails from "./WarehouseDetails";
+import Categories from "./Categories";
 
 const App = () => {
   return (
     <Router>
       <Navbar />
       <Routes>
-        <Route path="/" element={<ItemList />} />
+        <Route path="/items" element={<ItemList />} />
         <Route path="/item/:id" element={<ItemDetails />} />
-        <Route path="/add" element={<AddItem />} />
+        <Route path="/items/add" element={<AddItem />} />
         <Route path="/warehouses" element={<Warehouses />} />
-        <Route path="/add-warehouse" element={<AddWarehouse />} />
-        <Route path="/add-category" element={<AddCategory />} />
+        <Route path="/warehouses/add" element={<AddWarehouse />} />
+        <Route path="/categories" element={<Categories />} />
+        <Route path="/categories/add" element={<AddCategory />} />
         <Route path="/warehouse/:id" element={<WarehouseDetails />} />
       </Routes>
     </Router>

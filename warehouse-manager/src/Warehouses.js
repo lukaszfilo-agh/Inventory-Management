@@ -24,7 +24,7 @@ const Warehouses = () => {
       <h1 className="text-center mb-4">Warehouses</h1>
       <button 
         className="btn btn-success mb-3" 
-        onClick={() => navigate("/add-warehouse")}
+        onClick={() => navigate("/warehouses/add")}
       >
         Add Warehouse
       </button>

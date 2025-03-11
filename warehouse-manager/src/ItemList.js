@@ -37,6 +37,12 @@ const ItemList = () => {
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Item List</h1>
+      <button 
+        className="btn btn-success mb-3" 
+        onClick={() => navigate("/items/add")}
+      >
+        Add Item
+      </button>
       <table className="table table-striped table-bordered">
         <thead className="table-dark">
           <tr>

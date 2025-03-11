@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "./api";
 
-const ItemList = () => {
+const Items = () => {
   const [items, setItems] = useState([]);
   const [warehouses, setWarehouses] = useState({});
   const navigate = useNavigate();
@@ -69,4 +69,4 @@ const ItemList = () => {
   );
 };
 
-export default ItemList;
+export default Items;

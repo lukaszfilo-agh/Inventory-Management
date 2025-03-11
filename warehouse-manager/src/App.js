@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./Navbar";
-import ItemList from "./ItemList";
+import Items from "./Items";
 import ItemDetails from "./ItemDetails";
 import AddItem from "./AddItem";
 import Warehouses from "./Warehouses";
@@ -15,7 +15,7 @@ const App = () => {
     <Router>
       <Navbar />
       <Routes>
-        <Route path="/items" element={<ItemList />} />
+        <Route path="/items" element={<Items />} />
         <Route path="/item/:id" element={<ItemDetails />} />
         <Route path="/items/add" element={<AddItem />} />
         <Route path="/warehouses" element={<Warehouses />} />

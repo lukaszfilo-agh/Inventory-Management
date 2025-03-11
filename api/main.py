@@ -7,7 +7,7 @@ import models
 from fastapi.middleware.cors import CORSMiddleware
 import os
 
-frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000")
+frontend_url = os.getenv("FRONTEND_URL")
 
 app = FastAPI()
 

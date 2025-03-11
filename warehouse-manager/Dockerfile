@@ -1,5 +1,5 @@
 # Use the official Node.js image as a parent image
-FROM node:16
+FROM node:19
 
 # Set the working directory in the container
 WORKDIR /app
@@ -13,14 +13,18 @@ RUN npm install
 # Copy the rest of the application code into the container
 COPY . .
 
-# Build the React app
-RUN npm run build
+# Pass environment variables at build time
+ARG REACT_APP_API_URL
+ENV REACT_APP_API_URL=${REACT_APP_API_URL}
 
-# Serve the React app using a simple HTTP server
+# Inject environment variable into build process
+RUN REACT_APP_API_URL=${REACT_APP_API_URL} npm run build
+
+# Install serve for serving the build
 RUN npm install -g serve
 
-# Expose port 5000 for the React app
+# Expose port 3000
 EXPOSE 3000
 
-# Command to run the app
+# Serve the React app
 CMD ["serve", "-s", "build", "-l", "3000"]

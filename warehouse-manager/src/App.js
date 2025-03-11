@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Homepage from "./Homepage";
 import Navbar from "./Navbar";
 import Items from "./Items";
 import ItemDetails from "./ItemDetails";
@@ -16,6 +17,7 @@ const App = () => {
     <Router>
       <Navbar />
       <Routes>
+        <Route path="/" element={<Homepage />} />
         <Route path="/items" element={<Items />} />
         <Route path="/item/:id" element={<ItemDetails />} />
         <Route path="/items/add" element={<AddItem />} />

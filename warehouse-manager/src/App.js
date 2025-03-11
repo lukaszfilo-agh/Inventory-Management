@@ -9,6 +9,7 @@ import AddWarehouse from "./AddWarehouse";
 import AddCategory from "./AddCategory";
 import WarehouseDetails from "./WarehouseDetails";
 import Categories from "./Categories";
+import CategoryDetails from "./CategoryDetails";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
         <Route path="/warehouses" element={<Warehouses />} />
         <Route path="/warehouses/add" element={<AddWarehouse />} />
         <Route path="/categories" element={<Categories />} />
+        <Route path="/categories/:id" element={<CategoryDetails />} />
         <Route path="/categories/add" element={<AddCategory />} />
         <Route path="/warehouse/:id" element={<WarehouseDetails />} />
       </Routes>

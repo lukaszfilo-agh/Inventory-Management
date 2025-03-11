@@ -156,6 +156,31 @@ async def get_category(category_id: int, db: db_dependency):
     
     return category
 
+@app.patch('/categories/{category_id}', response_model=CategoryModel)
+async def update_category(category_id: int, category: CategoryBase, db: db_dependency):
+    category_to_update = db.query(models.Category).filter(models.Category.id == category_id).one_or_none()
+
+    if not category_to_update:
+        raise HTTPException(status_code=404, detail=f"Category with ID {category_id} does not exist.")
+    
+    category_data = category.model_dump(exclude_unset=True)
+    for key, value in category_data.items():
+        setattr(category_to_update, key, value)
+
+    db.commit()
+    db.refresh(category_to_update)
+    return category_to_update
+
+@app.get('/categories/{category_id}/items', response_model=List[ItemModel])
+async def get_category_items(category_id: int, db: db_dependency):
+    category = db.query(models.Category).filter(models.Category.id == category_id).one_or_none()
+
+    if not category:
+        raise HTTPException(status_code=404, detail=f"Category with ID {category_id} does not exist.")
+    
+    items = db.query(models.Item).filter(models.Item.category_id == category_id).all()
+    return items
+
 @app.post('/items/', response_model=ItemModel)
 async def create_item(item: ItemBase, db: db_dependency):
     warehouse = db.query(models.Warehouse).filter(models.Warehouse.id == item.warehouse_id).one_or_none()

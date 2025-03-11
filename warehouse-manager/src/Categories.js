@@ -30,8 +30,17 @@ const Categories = () => {
       </button>
       <div className="list-group">
         {categories.map((category) => (
-          <div key={category.id} className="list-group-item">
-            {category.name}
+          <div key={category.id} className="list-group-item d-flex justify-content-between align-items-center">
+            <span>{category.name}</span>
+            <div>
+              <button
+                className="btn btn-info btn-sm me-2"
+                onClick={() => navigate(`/categories/${category.id}`)}
+              >
+                View Details
+              </button>
+              <span className="badge bg-primary rounded-pill">{category.id}</span>
+            </div>
           </div>
         ))}
       </div>

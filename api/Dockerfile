@@ -5,13 +5,13 @@ FROM python:3.12.9-slim
 WORKDIR /app
 
 # Copy the requirements.txt file into the container at /app
-COPY requirements.txt .
+COPY api/requirements.txt .
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the FastAPI app code into the container
-COPY . .
+COPY api/ .
 
 # Expose port 8000 for the FastAPI app
 EXPOSE 8000

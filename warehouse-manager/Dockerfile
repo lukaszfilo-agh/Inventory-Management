@@ -5,13 +5,13 @@ FROM node:16
 WORKDIR /app
 
 # Copy the package.json and package-lock.json to install dependencies
-COPY package*.json ./
+COPY warehouse-manager/package*.json ./
 
 # Install the React dependencies
 RUN npm install
 
 # Copy the React app into the container
-COPY . .
+COPY warehouse-manager/ .
 
 # Build the React app for production
 RUN npm run build

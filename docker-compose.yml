@@ -3,17 +3,19 @@ version: '3.7'
 services:
   backend:
     build:
-      context: ./backend
+      context: .
+      dockerfile: api/Dockerfile
     ports:
       - "8000:8000"
     networks:
       - app-network
     volumes:
-      - ./backend:/app  # For hot reloading if in development
+      - ./api:/app  # For hot reloading if in development
   
   frontend:
     build:
-      context: ./frontend
+      context: .
+      dockerfile: warehouse-manager/Dockerfile
     ports:
       - "3000:3000"
     networks:

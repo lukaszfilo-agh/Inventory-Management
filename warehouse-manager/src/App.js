@@ -5,6 +5,7 @@ import ItemList from "./ItemList";
 import ItemDetails from "./ItemDetails";
 import AddItem from "./AddItem";
 import Warehouses from "./Warehouses";
+import AddWarehouse from "./AddWarehouse";
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/item/:id" element={<ItemDetails />} />
         <Route path="/add" element={<AddItem />} />
         <Route path="/warehouses" element={<Warehouses />} />
+        <Route path="/add-warehouse" element={<AddWarehouse />} />
       </Routes>
     </Router>
   );

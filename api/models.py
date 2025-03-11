@@ -17,3 +17,10 @@ class Item(Base):
     date_added = Column(String)
     price = Column(Float)
     warehouse_id = Column(Integer, ForeignKey('warehouses.id'))
+    category_id = Column(Integer, ForeignKey('categories.id'))
+
+class Category(Base):
+    __tablename__ = 'categories'
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)

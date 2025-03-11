@@ -20,7 +20,10 @@ const Navbar = () => (
             <Link className="nav-link" to="/warehouses">Warehouses</Link>
           </li>
           <li className="nav-item">
-            <Link className="nav-link" to="/add-warehouse">Add Warehouse</Link> {/* Added link */}
+            <Link className="nav-link" to="/add-warehouse">Add Warehouse</Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/add-category">Add Category</Link>
           </li>
         </ul>
       </div>

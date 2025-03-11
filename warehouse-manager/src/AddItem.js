@@ -23,6 +23,7 @@ const AddItem = () => {
         date_added: "",
         price: 0,
         warehouse_id: 0,
+        category_id: 0
       });
       setErrorMessage("");
     } catch (error) {
@@ -37,6 +38,10 @@ const AddItem = () => {
 
   const handleWarehouseSelect = (warehouseId) => {
     setNewItem((prevItem) => ({ ...prevItem, warehouse_id: warehouseId }));
+  };
+
+  const handleCategorySelect = (categoryId) => {
+    setNewItem((prevItem) => ({...prevItem, category_id: categoryId}));
   };
 
   return (
@@ -65,6 +70,10 @@ const AddItem = () => {
               <div className="mb-3">
                 <label htmlFor="warehouse" className="form-label">Warehouse</label>
                 <WarehouseDropdown onSelect={handleWarehouseSelect} selectedWarehouse={newItem.warehouse_id} />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="category" className="form-label">Category</label>
+                <CategoryDropdown onSelect={handleCategorySelect} selectedCategory={newItem.category_id} />
               </div>
               <button type="button" className="btn btn-primary w-100" onClick={handleAddItem}>Add Item</button>
             </div>
@@ -97,6 +106,30 @@ const WarehouseDropdown = ({ onSelect, selectedWarehouse }) => {
       <option value="">Select a warehouse</option>
       {warehouses.map((warehouse) => (
         <option key={warehouse.id} value={warehouse.id}>{warehouse.name}</option>
+      ))}
+    </select>
+  );
+};
+
+const CategoryDropdown = ({ onSelect, selectedCategory }) => {
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await api.get("/categories/");
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  return (
+    <select className="form-select" value={selectedCategory} onChange={(e) => onSelect(Number(e.target.value))}>
+      <option value="">Select a category</option>
+      {categories.map((category) => (
+        <option key={category.id} value={category.id}>{category.name}</option>
       ))}
     </select>
   );

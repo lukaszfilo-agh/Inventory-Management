@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  backend:
+  fastapi-backend:
     build:
       context: ./api
     container_name: inventory-manager-backend
@@ -15,7 +15,7 @@ services:
     environment:
       - FRONTEND_URL=http://localhost:3000
 
-  frontend:
+  react-frontend:
     build:
       context: ./warehouse-manager
       args:

@@ -38,8 +38,18 @@ class ItemBase(BaseModel):
     date_added: str
     price: float
     warehouse_id: int
+    category_id: int
 
 class ItemModel(ItemBase):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+class CategoryBase(BaseModel):
+    name: str
+
+class CategoryModel(CategoryBase):
     id: int
 
     class Config:
@@ -55,6 +65,10 @@ def get_db():
 db_dependency = Annotated[Session, Depends(get_db)]
 
 models.Base.metadata.create_all(bind=engine)
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok", "message": "API is running"}
 
 @app.post('/warehouses/', response_model=WarehouseModel)
 async def create_warehouse(warehouse: WarehouseBase, db: db_dependency):
@@ -78,24 +92,70 @@ async def get_warehouse(warehouse_id: int, db: db_dependency):
     
     return warehouse
 
+@app.patch('/warehouses/{warehouse_id}', response_model=WarehouseModel)
+async def update_warehouse(warehouse_id: int, warehouse: WarehouseBase, db: db_dependency):
+    warehouse_to_update = db.query(models.Warehouse).filter(models.Warehouse.id == warehouse_id).one_or_none()
+
+    if not warehouse_to_update:
+        raise HTTPException(status_code=404, detail=f"Warehouse with ID {warehouse_id} does not exist.")
+    
+    warehouse_data = warehouse.model_dump(exclude_unset=True)
+    for key, value in warehouse_data.items():
+        setattr(warehouse_to_update, key, value)
+
+    db.commit()
+    db.refresh(warehouse_to_update)
+    return warehouse_to_update
+
 @app.delete("/warehouses/{warehouse_id}")
 def delete_warehouse(warehouse_id: int, db: Session = Depends(get_db)):
     warehouse = db.query(models.Warehouse).filter(models.Warehouse.id == warehouse_id).one_or_none()
     
     if not warehouse:
         raise HTTPException(status_code=404, detail=f"Warehouse with ID {warehouse_id} does not exist.")
+
+    # Check if warehouse is empty
+    inventory_count = db.query(models.Item).filter(models.Item.warehouse_id == warehouse_id).count()
+    if inventory_count > 0:
+        raise HTTPException(status_code=400, detail=f"Warehouse with ID {warehouse_id} is not empty and cannot be deleted.")
     
     db.delete(warehouse)
     db.commit()
     
     return {"message": f"Warehouse with ID {warehouse_id} has been deleted successfully."}
 
+@app.post('/categories/', response_model=CategoryModel)
+async def create_category(category: CategoryBase, db: db_dependency):
+    new_category = models.Category(**category.model_dump())
+    db.add(new_category)
+    db.commit()
+    db.refresh(new_category)
+    return new_category
+
+@app.get('/categories/', response_model=List[CategoryModel])
+async def get_categories(db: db_dependency):
+    categories = db.query(models.Category).all()
+    return categories
+
+@app.get('/categories/{category_id}', response_model=CategoryModel)
+async def get_category(category_id: int, db: db_dependency):
+    category = db.query(models.Category).filter(models.Category.id == category_id).one_or_none()
+
+    if not category:
+        raise HTTPException(status_code=404, detail=f"Category with ID {category_id} does not exist.")
+    
+    return category
+
 @app.post('/items/', response_model=ItemModel)
 async def create_item(item: ItemBase, db: db_dependency):
     warehouse = db.query(models.Warehouse).filter(models.Warehouse.id == item.warehouse_id).one_or_none()
+    category = db.query(models.Category).filter(models.Category.id == item.category_id).one_or_none()
     
     if not warehouse:
         raise HTTPException(status_code=404, detail=f"Warehouse with ID {item.warehouse_id} does not exist.")
+    
+    if not category:
+        raise HTTPException(status_code=404, detail=f"Category with ID {item.category_id} does not exist.")
     
     new_item = models.Item(**item.model_dump())
     db.add(new_item)

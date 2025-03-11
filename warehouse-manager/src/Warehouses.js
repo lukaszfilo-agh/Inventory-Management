@@ -22,6 +22,12 @@ const Warehouses = () => {
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Warehouses</h1>
+      <button 
+        className="btn btn-success mb-3" 
+        onClick={() => navigate("/add-warehouse")}
+      >
+        Add Warehouse
+      </button>
       <div className="list-group">
         {warehouses.map((warehouse) => (
           <div key={warehouse.id} className="list-group-item d-flex justify-content-between align-items-center">

@@ -6,6 +6,7 @@ const WarehouseDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [warehouse, setWarehouse] = useState({ name: "" });
+  const [items, setItems] = useState([]); // Store warehouse items
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
@@ -18,7 +19,17 @@ const WarehouseDetails = () => {
       }
     };
 
+    const fetchItems = async () => {
+      try {
+        const response = await api.get(`/warehouses/${id}/items/`); // Adjust API endpoint as needed
+        setItems(response.data);
+      } catch (error) {
+        console.error("Error fetching warehouse items:", error);
+      }
+    };
+
     fetchWarehouse();
+    fetchItems();
   }, [id]);
 
   const handleChange = (e) => {
@@ -62,6 +73,20 @@ const WarehouseDetails = () => {
           <button className="btn btn-warning" onClick={() => setIsEditing(true)}>Edit</button>
           <button className="btn btn-secondary ms-2" onClick={() => navigate("/")}>Back</button>
         </div>
+      )}
+
+      <h3 className="mt-4">Items in Warehouse</h3>
+      {items.length > 0 ? (
+        <ul className="list-group mt-3">
+          {items.map((item) => (
+            <li key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
+              {item.name}
+              <span className="badge bg-secondary">{item.quantity}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No items in this warehouse.</p>
       )}
     </div>
   );

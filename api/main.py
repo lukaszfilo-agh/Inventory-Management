@@ -92,6 +92,16 @@ async def get_warehouse(warehouse_id: int, db: db_dependency):
     
     return warehouse
 
+@app.get('/warehouses/{warehouse_id}/items', response_model=List[ItemModel])
+async def get_warehouse_items(warehouse_id: int, db: db_dependency):
+    warehouse = db.query(models.Warehouse).filter(models.Warehouse.id == warehouse_id).one_or_none()
+
+    if not warehouse:
+        raise HTTPException(status_code=404, detail=f"Warehouse with ID {warehouse_id} does not exist.")
+    
+    items = db.query(models.Item).filter(models.Item.warehouse_id == warehouse_id).all()
+    return items
+
 @app.patch('/warehouses/{warehouse_id}', response_model=WarehouseModel)
 async def update_warehouse(warehouse_id: int, warehouse: WarehouseBase, db: db_dependency):
     warehouse_to_update = db.query(models.Warehouse).filter(models.Warehouse.id == warehouse_id).one_or_none()

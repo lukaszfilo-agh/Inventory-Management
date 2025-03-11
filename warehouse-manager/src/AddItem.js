@@ -41,7 +41,7 @@ const AddItem = () => {
   };
 
   const handleCategorySelect = (categoryId) => {
-    setNewItem((prevItem) => ({...prevItem, category_id: categoryId}));
+    setNewItem((prevItem) => ({ ...prevItem, category_id: categoryId }));
   };
 
   return (

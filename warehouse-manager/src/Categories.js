@@ -22,8 +22,8 @@ const Categories = () => {
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Categories</h1>
-      <button 
-        className="btn btn-success mb-3" 
+      <button
+        className="btn btn-success mb-3"
         onClick={() => navigate("/categories/add")}
       >
         Add Category

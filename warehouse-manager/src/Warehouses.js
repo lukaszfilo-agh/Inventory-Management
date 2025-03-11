@@ -22,8 +22,8 @@ const Warehouses = () => {
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Warehouses</h1>
-      <button 
-        className="btn btn-success mb-3" 
+      <button
+        className="btn btn-success mb-3"
         onClick={() => navigate("/warehouses/add")}
       >
         Add Warehouse
@@ -33,7 +33,7 @@ const Warehouses = () => {
           <div key={warehouse.id} className="list-group-item d-flex justify-content-between align-items-center">
             <span>{warehouse.name}</span>
             <div>
-              <button 
+              <button
                 className="btn btn-info btn-sm me-2"
                 onClick={() => navigate(`/warehouse/${warehouse.id}`)}
               >

@@ -66,6 +66,15 @@ async def get_warehouses(db: db_dependency):
     warehouses = db.query(models.Warehouse).all()
     return warehouses
 
+@app.get('/warehouses/{warehouse_id}', response_model=WarehouseModel)
+async def get_warehouse(warehouse_id: int, db: db_dependency):
+    warehouse = db.query(models.Warehouse).filter(models.Warehouse.id == warehouse_id).one_or_none()
+    
+    if not warehouse:
+        raise HTTPException(status_code=404, detail=f"Warehouse with ID {warehouse_id} does not exist.")
+    
+    return warehouse
+
 @app.delete("/warehouses/{warehouse_id}")
 def delete_warehouse(warehouse_id: int, db: Session = Depends(get_db)):
     warehouse = db.query(models.Warehouse).filter(models.Warehouse.id == warehouse_id).one_or_none()
@@ -95,6 +104,15 @@ async def create_item(item: ItemBase, db: db_dependency):
 async def get_items(db: db_dependency):
     items = db.query(models.Item).all()
     return items
+
+@app.get('/items/{item_id}', response_model=ItemModel)
+async def get_item(item_id: int, db: db_dependency):
+    item = db.query(models.Item).filter(models.Item.id == item_id).one_or_none()
+    
+    if not item:
+        raise HTTPException(status_code=404, detail=f"Item with ID {item_id} does not exist.")
+    
+    return item
 
 @app.delete("/items/{item_id}")
 def delete_item(item_id: int, db: Session = Depends(get_db)):

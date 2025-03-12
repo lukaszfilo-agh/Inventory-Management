@@ -34,6 +34,18 @@ async def get_item(item_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Item not found.")
     return item
 
+@router.patch("/{item_id}", response_model=ItemModel)
+async def update_item(item_id: int, item: ItemBase, db: Session = Depends(get_db)):
+    item_to_update = db.query(models.Item).filter(models.Item.id == item_id).one_or_none()
+    if not item_to_update:
+        raise HTTPException(status_code=404, detail="Item not found.")
+    
+    for key, value in item.model_dump(exclude_unset=True).items():
+        setattr(item_to_update, key, value)
+    db.commit()
+    db.refresh(item_to_update)
+    return item_to_update
+
 @router.delete("/{item_id}")
 async def delete_item(item_id: int, db: Session = Depends(get_db)):
     item = db.query(models.Item).filter(models.Item.id == item_id).one_or_none()

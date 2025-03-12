@@ -5,7 +5,7 @@ import os
 
 load_dotenv()
 
-DB_URL = os.getenv("PROD_DB")
+DB_URL = os.getenv("DATABASE_URL")
 
 # Replace with your actual PostgreSQL connection string
 engine = create_engine(DB_URL)

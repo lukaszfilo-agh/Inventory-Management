@@ -5,14 +5,15 @@ import api from "./api";
 const WarehouseDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [warehouse, setWarehouse] = useState({ name: "" });
+  const [warehouse, setWarehouse] = useState({ name: "", location: "" });
   const [items, setItems] = useState([]); // Store warehouse items
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [isEditingLocation, setIsEditingLocation] = useState(false);
 
   useEffect(() => {
     const fetchWarehouse = async () => {
       try {
-        const response = await api.get(`/warehouses/${id}/`);
+        const response = await api.get(`/warehouses/${id}`);
         setWarehouse(response.data);
       } catch (error) {
         console.error("Error fetching warehouse:", error);
@@ -21,7 +22,7 @@ const WarehouseDetails = () => {
 
     const fetchItems = async () => {
       try {
-        const response = await api.get(`/warehouses/${id}/items/`); // Adjust API endpoint as needed
+        const response = await api.get(`/warehouses/${id}/items/`);
         setItems(response.data);
       } catch (error) {
         console.error("Error fetching warehouse items:", error);
@@ -36,11 +37,21 @@ const WarehouseDetails = () => {
     setWarehouse({ ...warehouse, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e, field) => {
     e.preventDefault();
     try {
-      await api.patch(`/warehouses/${id}/`, { name: warehouse.name });
-      setIsEditing(false);
+      const updatedWarehouse = { 
+        name: warehouse.name, 
+        location: warehouse.location  // Make sure to include the location even if not updated
+      };
+      await api.patch(`/warehouses/${id}`, updatedWarehouse);
+      
+      if (field === "name") {
+        setIsEditingName(false);
+      }
+      if (field === "location") {
+        setIsEditingLocation(false);
+      }
     } catch (error) {
       console.error("Error updating warehouse:", error);
     }
@@ -49,8 +60,10 @@ const WarehouseDetails = () => {
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Warehouse Details</h1>
-      {isEditing ? (
-        <form onSubmit={handleSubmit}>
+      
+      {/* Edit Name */}
+      {isEditingName ? (
+        <form onSubmit={(e) => handleSubmit(e, "name")}>
           <div className="mb-3">
             <label className="form-label">Warehouse Name</label>
             <input
@@ -63,14 +76,40 @@ const WarehouseDetails = () => {
             />
           </div>
           <button type="submit" className="btn btn-success">Save</button>
-          <button type="button" className="btn btn-secondary ms-2" onClick={() => setIsEditing(false)}>
+          <button type="button" className="btn btn-secondary ms-2" onClick={() => setIsEditingName(false)}>
             Cancel
           </button>
         </form>
       ) : (
         <div>
           <h2>{warehouse.name}</h2>
-          <button className="btn btn-warning" onClick={() => setIsEditing(true)}>Edit</button>
+          <button className="btn btn-warning" onClick={() => setIsEditingName(true)}>Edit Name</button>
+        </div>
+      )}
+
+      {/* Edit Location */}
+      {isEditingLocation ? (
+        <form onSubmit={(e) => handleSubmit(e, "location")}>
+          <div className="mb-3">
+            <label className="form-label">Warehouse Location</label>
+            <input
+              type="text"
+              name="location"
+              value={warehouse.location}
+              onChange={handleChange}
+              className="form-control"
+              required
+            />
+          </div>
+          <button type="submit" className="btn btn-success">Save</button>
+          <button type="button" className="btn btn-secondary ms-2" onClick={() => setIsEditingLocation(false)}>
+            Cancel
+          </button>
+        </form>
+      ) : (
+        <div>
+          <p>Warehouse Location: {warehouse.location}</p>
+          <button className="btn btn-warning" onClick={() => setIsEditingLocation(true)}>Edit Location</button>
         </div>
       )}
 
@@ -87,6 +126,7 @@ const WarehouseDetails = () => {
       ) : (
         <p>No items in this warehouse.</p>
       )}
+      
       <button className="btn btn-secondary mt-3" onClick={() => navigate(-1)}>🔙 Back</button>
     </div>
   );

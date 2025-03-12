@@ -15,7 +15,7 @@ services:
       - inventory-manager-network
     environment:
       - FRONTEND_URL=http://localhost:3000
-      - DATABASE_URL=postgresql://inventory_manager_user:very_complex_password@postgres:5432/inventory_db
+      - DATABASE_URL=${LOCAL_DATABASE_URL}
 
   react-frontend:
     build:

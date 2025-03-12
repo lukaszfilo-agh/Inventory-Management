@@ -35,24 +35,24 @@ services:
     environment:
       - REACT_APP_API_URL=http://localhost:8000  # Define environment variables directly
 
-  postgres:
-    image: postgres:16
-    container_name: my_postgres
-    restart: always
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: inventory_manager_user
-      POSTGRES_PASSWORD: very_complex_password
-      POSTGRES_DB: inventory_db
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - inventory-manager-network
+#   postgres:
+#     image: postgres:16
+#     container_name: my_postgres
+#     restart: always
+#     ports:
+#       - "5432:5432"
+#     environment:
+#       POSTGRES_USER: inventory_manager_user
+#       POSTGRES_PASSWORD: very_complex_password
+#       POSTGRES_DB: inventory_db
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#     networks:
+#       - inventory-manager-network
 
-networks:
-  inventory-manager-network:
-    driver: bridge
+# networks:
+#   inventory-manager-network:
+#     driver: bridge
 
-volumes:
-  postgres_data:
+# volumes:
+#   postgres_data:

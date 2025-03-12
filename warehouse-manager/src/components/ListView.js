@@ -2,7 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
 
-const ListView = ({ title, apiEndpoint, addPath, itemKey, renderName, renderActions }) => {
+const ListView = ({ 
+  title, 
+  apiEndpoint, 
+  addPath, 
+  itemKey, 
+  renderName, 
+  renderActions 
+}) => {
   const [items, setItems] = useState([]);
   const navigate = useNavigate();
 
@@ -25,14 +32,31 @@ const ListView = ({ title, apiEndpoint, addPath, itemKey, renderName, renderActi
       <button className="btn btn-success mb-3" onClick={() => navigate(addPath)}>
         Add {title}
       </button>
-      <div className="list-group">
-        {items.map((item) => (
-          <div key={itemKey(item)} className="list-group-item d-flex justify-content-between align-items-center">
-            <span>{renderName(item)}</span>
-            <div>{renderActions(item, navigate)}</div>
-          </div>
-        ))}
-      </div>
+
+      {items.length > 0 ? (
+        <table className="table table-striped mt-3">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item) => (
+              <tr key={itemKey(item)}>
+                <td>{item.id}</td> {/* Displaying ID in its own column */}
+                <td>{renderName(item)}</td>
+                <td>
+                  <div>{renderActions(item, navigate)}</div> {/* Simplified to ensure no dots */}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p>No {title.toLowerCase()} available.</p>
+      )}
     </div>
   );
 };

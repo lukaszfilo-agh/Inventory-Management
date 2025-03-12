@@ -13,7 +13,6 @@ const Warehouses = () => {
           <button className="btn btn-info btn-sm me-2" onClick={() => navigate(`/warehouse/${warehouse.id}`)}>
             View Details
           </button>
-          <span className="badge bg-primary rounded-pill">{warehouse.id}</span>
         </>
       )}
     />

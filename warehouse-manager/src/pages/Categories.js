@@ -13,7 +13,6 @@ const Categories = () => {
           <button className="btn btn-info btn-sm me-2" onClick={() => navigate(`/categories/${category.id}`)}>
             View Details
           </button>
-          <span className="badge bg-primary rounded-pill">{category.id}</span>
         </>
       )}
     />

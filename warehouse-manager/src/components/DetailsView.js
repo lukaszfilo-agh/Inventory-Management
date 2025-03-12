@@ -57,33 +57,34 @@ const DetailsView = ({
       <h1 className="text-center mb-4">{title} Details</h1>
 
       {fields.map((field) => (
-        <div key={field.name}>
-          {isEditing[field.name] ? (
-            <form onSubmit={(e) => handleSubmit(e, field.name)}>
-              <div className="mb-3">
-                <label className="form-label">{field.label}</label>
+        <div key={field.name} className="mb-4">
+          <div className="d-flex align-items-center">
+            {/* Edit button and label */}
+            {isEditing[field.name] ? (
+              <form onSubmit={(e) => handleSubmit(e, field.name)} className="d-flex align-items-center w-100">
+                <label className="form-label w-25">{field.label}:</label>
                 <input
                   type="text"
                   name={field.name}
                   value={entity[field.name] || ""}
                   onChange={handleChange}
-                  className="form-control"
+                  className="form-control flex-grow-1"
                   required
                 />
+                <button type="submit" className="btn btn-success ms-3">Save</button>
+                <button type="button" className="btn btn-secondary ms-2" onClick={() => setIsEditing({ ...isEditing, [field.name]: false })}>
+                  Cancel
+                </button>
+              </form>
+            ) : (
+              <div className="d-flex justify-content-between w-100">
+                <h2>{field.label}: {entity[field.name]}</h2>
+                <button className="btn btn-warning" onClick={() => setIsEditing({ ...isEditing, [field.name]: true })}>
+                  Edit
+                </button>
               </div>
-              <button type="submit" className="btn btn-success">Save</button>
-              <button type="button" className="btn btn-secondary ms-2" onClick={() => setIsEditing({ ...isEditing, [field.name]: false })}>
-                Cancel
-              </button>
-            </form>
-          ) : (
-            <div>
-              <h2>{entity[field.name]}</h2>
-              <button className="btn btn-warning" onClick={() => setIsEditing({ ...isEditing, [field.name]: true })}>
-                Edit {field.label}
-              </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       ))}
 
@@ -91,14 +92,31 @@ const DetailsView = ({
 
       <h3 className="mt-4">Items in {title}</h3>
       {items.length > 0 ? (
-        <ul className="list-group mt-3">
-          {items.map((item) => (
-            <li key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
-              {item.name}
-              <span className="badge bg-secondary">{item.quantity}</span>
-            </li>
-          ))}
-        </ul>
+        <table className="table table-striped mt-3">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Quantity</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {items.map((item) => (
+              <tr key={item.id}>
+                <td>{item.name}</td>
+                <td>{item.quantity}</td>
+                <td>
+                  <button className="btn btn-primary btn-sm me-2">
+                    Edit
+                  </button>
+                  <button className="btn btn-danger btn-sm">
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       ) : (
         <p>No items in this {title.toLowerCase()}.</p>
       )}

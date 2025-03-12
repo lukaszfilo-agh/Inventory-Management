@@ -13,6 +13,7 @@ services:
       - inventory-manager-network
     environment:
       - FRONTEND_URL=http://localhost:3000
+      - DATABASE_URL=${PROD_DB}
 
   react-frontend:
     build:

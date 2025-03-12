@@ -15,6 +15,7 @@ services:
       - inventory-manager-network
     environment:
       - FRONTEND_URL=http://localhost:3000
+      - DATABASE_URL=postgresql://inventory_manager_user:very_complex_password@postgres:5432/inventory_db
 
   react-frontend:
     build:
@@ -33,6 +34,24 @@ services:
     environment:
       - REACT_APP_API_URL=http://localhost:8000  # Define environment variables directly
 
+  postgres:
+    image: postgres:16
+    container_name: my_postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: inventory_manager_user
+      POSTGRES_PASSWORD: very_complex_password
+      POSTGRES_DB: inventory_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - inventory-manager-network
+
 networks:
   inventory-manager-network:
     driver: bridge
+
+volumes:
+  postgres_data:

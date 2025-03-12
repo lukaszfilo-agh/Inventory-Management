@@ -14,6 +14,8 @@ services:
     environment:
       - FRONTEND_URL=http://localhost:3000
       - DATABASE_URL=${DATABASE_URL}
+      - RUNNING_IN_DOCKER=true
+      - FRONTEND_URL=http://localhost:3000
 
   react-frontend:
     build:
@@ -26,6 +28,7 @@ services:
     networks:
       - inventory-manager-network
     environment:
+      - RUNNING_IN_DOCKER=true
       - REACT_APP_API_URL=http://localhost:8000  # Define environment variables directly
 
 networks:

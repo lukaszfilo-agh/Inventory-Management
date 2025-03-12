@@ -36,7 +36,7 @@ const Items = () => {
 
   return (
     <div className="container mt-5">
-      <h1 className="text-center mb-4">Item List</h1>
+      <h1 className="text-center mb-4">Items</h1>
       <button
         className="btn btn-success mb-3"
         onClick={() => navigate("/items/add")}

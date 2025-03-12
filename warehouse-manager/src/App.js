@@ -1,16 +1,16 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Homepage from "./Homepage";
-import Navbar from "./Navbar";
-import Items from "./Items";
-import ItemDetails from "./ItemDetails";
-import AddItem from "./AddItem";
-import Warehouses from "./Warehouses";
-import AddWarehouse from "./AddWarehouse";
-import AddCategory from "./AddCategory";
-import WarehouseDetails from "./WarehouseDetails";
-import Categories from "./Categories";
-import CategoryDetails from "./CategoryDetails";
+import Homepage from "./pages/Homepage";
+import Navbar from "./components/Navbar";
+import Items from "./pages/Items";
+import ItemDetails from "./pages/ItemDetails";
+import AddItem from "./pages/AddItem";
+import Warehouses from "./pages/Warehouses";
+import AddWarehouse from "./pages/AddWarehouse";
+import AddCategory from "./pages/AddCategory";
+import WarehouseDetails from "./pages/WarehouseDetails";
+import Categories from "./pages/Categories";
+import CategoryDetails from "./pages/CategoryDetails";
 
 const App = () => {
   return (

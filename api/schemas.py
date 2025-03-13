@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 class WarehouseBase(BaseModel):
     name: str
@@ -34,7 +35,7 @@ class StockBase(BaseModel):
     item_id: int
     warehouse_id: int
     quantity: int
-    date_added: str
+    date_added: datetime
     price: float
 
 class StockModel(StockBase):

@@ -26,5 +26,8 @@ RUN npm install -g serve
 # Expose port 3000
 EXPOSE 3000
 
+# Set the environment variable at runtime (for the server-side)
+ENV REACT_APP_API_URL=${REACT_APP_API_URL}
+
 # Serve the React app
 CMD ["serve", "-s", "build", "-l", "3000"]

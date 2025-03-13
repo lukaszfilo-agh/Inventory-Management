@@ -8,6 +8,7 @@ This is a full-stack **Inventory Management System** built using **FastAPI**, **
 
 - ✅ Create and manage warehouses  
 - ✅ Add, edit, and delete items stored in warehouses  
+- ✅ Track stock levels in warehouses  
 - ✅ View items categorized by warehouse  
 - ✅ RESTful API built with FastAPI  
 - ✅ PostgreSQL database using SQLAlchemy ORM  
@@ -96,14 +97,16 @@ docker-compose down
 
 ## 🔗 API Endpoints  
 
-### 📦 Warehouse Endpoints  
+### 📃 Health Check  
 - `GET /health` - Health Check  
+
+### 📦 Warehouse Endpoints  
 - `GET /warehouses/` - Get Warehouses  
 - `POST /warehouses/` - Create Warehouse  
 - `GET /warehouses/{warehouse_id}` - Get Warehouse  
 - `PATCH /warehouses/{warehouse_id}` - Update Warehouse  
+- `GET /warehouses/{warehouse_id}/stock` - Get Warehouse Stock  
 - `DELETE /warehouses/{warehouse_id}` - Delete Warehouse  
-- `GET /warehouses/{warehouse_id}/items` - Get Warehouse Items  
 
 ### 💋 Category Endpoints  
 - `GET /categories/` - Get Categories  
@@ -116,7 +119,13 @@ docker-compose down
 - `GET /items/` - Get Items  
 - `POST /items/` - Create Item  
 - `GET /items/{item_id}` - Get Item  
+- `PATCH /items/{item_id}` - Update Item  
 - `DELETE /items/{item_id}` - Delete Item  
+
+### 📊 Stock Endpoints  
+- `GET /stock/` - Get all stock records  
+- `POST /stock/add/{item_id}` - Add stock for an item in a warehouse  
+- `GET /stock/get/{item_id}` - Get stock for a specific item  
 
 ---
 
@@ -157,3 +166,4 @@ This project is licensed under the **MIT License**.
 ---
 
 🔥 **Efficiently track your equipment with ease!** 🚀
+

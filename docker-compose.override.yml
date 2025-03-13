@@ -13,8 +13,9 @@ services:
       - inventory-manager-network
     environment:
       - FRONTEND_URL=http://localhost:3000
-      - DATABASE_URL=${DATABASE_URL}
-      # - DATABASE_URL=${LOCAL_DATABASE_URL}
+      # - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_URL=${LOCAL_DATABASE_URL}
+      - RUNNING_IN_DOCKER=True
 
   react-frontend:
     build:
@@ -33,24 +34,38 @@ services:
     environment:
       - REACT_APP_API_URL=http://localhost:8000 # Define environment variables directly
 
-#   postgres:
-#     image: postgres:16
-#     container_name: my_postgres
-#     restart: always
-#     ports:
-#       - "5432:5432"
-#     environment:
-#       POSTGRES_USER: inventory_manager_user
-#       POSTGRES_PASSWORD: very_complex_password
-#       POSTGRES_DB: inventory_db
-#     volumes:
-#       - postgres_data:/var/lib/postgresql/data
-#     networks:
-#       - inventory-manager-network
+  postgres:
+    image: postgres:16
+    container_name: my_postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: inventory_manager_user
+      POSTGRES_PASSWORD: very_complex_password
+      POSTGRES_DB: inventory_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - inventory-manager-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - inventory-manager-network
 
 networks:
   inventory-manager-network:
     driver: bridge
 
-# volumes:
-#   postgres_data:
+volumes:
+  postgres_data:
+  pgadmin_data:

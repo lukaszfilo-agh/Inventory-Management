@@ -1,8 +1,7 @@
-from fastapi import FastAPI, HTTPException, Depends
-from typing import Annotated, List
+from fastapi import FastAPI, Depends
+from typing import Annotated
 from sqlalchemy.orm import Session
-from pydantic import BaseModel
-from database import SessionLocal, engine
+from database import engine
 import models
 from fastapi.middleware.cors import CORSMiddleware
 from routers import warehouse, item, category, health, stock

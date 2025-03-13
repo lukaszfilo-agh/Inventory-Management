@@ -3,6 +3,8 @@ import axios from 'axios';
 // Use API URL instead of frontend URL
 const apiUrl = process.env.REACT_APP_API_URL;
 
+console.log('API URL:', apiUrl);
+
 const api = axios.create({
   baseURL: apiUrl, // Set API base URL
 });

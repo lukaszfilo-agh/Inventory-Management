@@ -12,10 +12,6 @@ class WarehouseModel(WarehouseBase):
 
 class ItemBase(BaseModel):
     name: str
-    quantity: int
-    date_added: str
-    price: float
-    warehouse_id: int
     category_id: int
 
 class ItemModel(ItemBase):
@@ -28,6 +24,19 @@ class CategoryBase(BaseModel):
     name: str
 
 class CategoryModel(CategoryBase):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+class StockBase(BaseModel):
+    item_id: int
+    warehouse_id: int
+    quantity: int
+    date_added: str
+    price: float
+
+class StockModel(StockBase):
     id: int
 
     class Config:

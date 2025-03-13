@@ -3,17 +3,14 @@ from typing import List
 from sqlalchemy.orm import Session
 import models
 from database import get_db
-from schemas import ItemBase, ItemModel
+from schemas import ItemBase, ItemModel, StockBase, StockModel
 
 router = APIRouter(prefix="/items", tags=["Items"])
 
 @router.post("/", response_model=ItemModel)
 async def create_item(item: ItemBase, db: Session = Depends(get_db)):
-    warehouse = db.query(models.Warehouse).filter(models.Warehouse.id == item.warehouse_id).one_or_none()
     category = db.query(models.Category).filter(models.Category.id == item.category_id).one_or_none()
     
-    if not warehouse:
-        raise HTTPException(status_code=404, detail="Warehouse not found.")
     if not category:
         raise HTTPException(status_code=404, detail="Category not found.")
 

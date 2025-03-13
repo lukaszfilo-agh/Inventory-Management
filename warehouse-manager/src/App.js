@@ -11,6 +11,7 @@ import AddCategory from "./pages/AddCategory";
 import WarehouseDetails from "./pages/WarehouseDetails";
 import Categories from "./pages/Categories";
 import CategoryDetails from "./pages/CategoryDetails";
+import AddStock from "./pages/AddStock";
 
 const App = () => {
   return (
@@ -27,6 +28,7 @@ const App = () => {
         <Route path="/categories/:id" element={<CategoryDetails />} />
         <Route path="/categories/add" element={<AddCategory />} />
         <Route path="/warehouse/:id" element={<WarehouseDetails />} />
+        <Route path="/stock/add/:id" element={<AddStock />} />
       </Routes>
     </Router>
   );

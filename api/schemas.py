@@ -1,112 +1,109 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from datetime import datetime
-
 
 class WarehouseBase(BaseModel):
     """
-    Schema for creating or updating a warehouse.
-
+    Schema used for creating or updating a warehouse. The `WarehouseBase` class does not include the `id`.
+    
     Attributes:
-        name (str): The name of the warehouse.
-        location (str): The location of the warehouse.
+        name (str): The name of the warehouse (unique).
+        location (str): The physical location of the warehouse.
     """
-    name: str
-    location: str
-
+    name: str = Field(..., description="The name of the warehouse (unique)")
+    location: str = Field(..., description="The physical location of the warehouse")
 
 class WarehouseModel(WarehouseBase):
     """
-    Schema representing a warehouse with its ID.
-
+    Schema used for representing a warehouse with its `id` included.
+    
     Attributes:
         id (int): The unique identifier for the warehouse.
+        name (str): The name of the warehouse.
+        location (str): The physical location of the warehouse.
     """
-    id: int
+    id: int = Field(..., description="The unique identifier for the warehouse")
 
     class Config:
         from_attributes = True
 
-
 class CategoryBase(BaseModel):
     """
-    Schema for creating or updating a category.
+    Schema used for creating or updating a category. The `CategoryBase` class does not include the `id`.
 
     Attributes:
         name (str): The name of the category.
     """
-    name: str
-
+    name: str = Field(..., description="The name of the category")
 
 class CategoryModel(CategoryBase):
     """
-    Schema representing a category with its ID.
-
+    Schema used for representing a category with its `id` included.
+    
     Attributes:
         id (int): The unique identifier for the category.
+        name (str): The name of the category.
     """
-    id: int
+    id: int = Field(..., description="The unique identifier for the category")
 
     class Config:
         from_attributes = True
-
 
 class ItemBase(BaseModel):
     """
-    Schema for creating or updating an item.
+    Schema used for creating or updating an item. The `ItemBase` class does not include the `id`.
 
     Attributes:
         name (str): The name of the item.
-        category_id (int): The ID of the category this item belongs to.
+        category_id (int): The unique identifier of the category the item belongs to.
     """
-    name: str
-    category_id: int
-
+    name: str = Field(..., description="The name of the item")
+    category_id: int = Field(..., description="The unique identifier of the category the item belongs to")
 
 class ItemModel(ItemBase):
     """
-    Schema representing an item with its ID and category details.
-
+    Schema used for representing an item with its `id` and associated category details.
+    
     Attributes:
         id (int): The unique identifier for the item.
-        category (CategoryBase): The category the item belongs to.
+        name (str): The name of the item.
+        category_id (int): The unique identifier of the category the item belongs to.
+        category (CategoryBase): The category that the item belongs to.
     """
-    id: int
-    category: CategoryBase  # Add category to the response
+    id: int = Field(..., description="The unique identifier for the item")
+    category: CategoryBase = Field(..., description="The category that the item belongs to")
 
     class Config:
         from_attributes = True
 
-
 class StockBase(BaseModel):
     """
-    Schema for creating or updating stock information.
+    Schema used for creating or updating stock information. The `StockBase` class does not include the `id`.
 
     Attributes:
-        item_id (int): The ID of the item.
-        warehouse_id (int): The ID of the warehouse.
+        item_id (int): The unique identifier of the item.
+        warehouse_id (int): The unique identifier of the warehouse where the item is stored.
         quantity (int): The quantity of the item in stock.
-        date_added (datetime): The date the stock was added.
+        date_added (datetime): The date and time when the stock was added to the warehouse.
         price (float): The price of the item in stock.
     """
-    item_id: int
-    warehouse_id: int
-    quantity: int
-    date_added: datetime
-    price: float
-
+    item_id: int = Field(..., description="The unique identifier of the item")
+    warehouse_id: int = Field(..., description="The unique identifier of the warehouse where the item is stored")
+    quantity: int = Field(..., description="The quantity of the item in stock")
+    date_added: datetime = Field(..., description="The date and time when the stock was added")
+    price: float = Field(..., description="The price of the item in stock")
 
 class StockModel(StockBase):
     """
-    Schema representing a stock entry with its ID, item, and warehouse details.
+    Schema used for representing a stock entry with its `id`, associated item, and warehouse details.
 
     Attributes:
         id (int): The unique identifier for the stock entry.
         item (ItemBase): The item associated with the stock.
         warehouse (WarehouseBase): The warehouse where the stock is stored.
     """
-    id: int
-    item: ItemBase
-    warehouse: WarehouseBase
+    id: int = Field(..., description="The unique identifier for the stock entry")
+    item: ItemBase = Field(..., description="The item associated with the stock")
+    warehouse: WarehouseBase = Field(..., description="The warehouse where the stock is stored")
 
     class Config:
         from_attributes = True

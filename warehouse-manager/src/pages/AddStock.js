@@ -4,42 +4,57 @@ import api from "../api";
 
 const AddStock = () => {
   const { id } = useParams();
-  const location = useLocation(); // Get the state passed through navigate
+  const location = useLocation();
   const navigate = useNavigate();
 
-  const [items, setItems] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [allItems, setAllItems] = useState([]); // Store all items
+  const [filteredItems, setFilteredItems] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
-  const [itemId, setItemId] = useState(id || ""); // If ID is passed, use it. Otherwise, allow selection.
+
+  const [categoryId, setCategoryId] = useState(""); // Track selected category
+  const [itemId, setItemId] = useState(id || "");
   const [warehouseId, setWarehouseId] = useState("");
   const [quantity, setQuantity] = useState(0);
   const [dateAdded, setDateAdded] = useState("");
   const [price, setPrice] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
-  const [loading, setLoading] = useState(true); // Loading state for initial fetch
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Only fetch items and warehouses if they're not already fetched
-    if (items.length === 0) fetchItems();
-    if (warehouses.length === 0) fetchWarehouses();
-  }, [items.length, warehouses.length]); // Run once when component mounts
+    fetchCategories();
+    fetchItems();
+    fetchWarehouses();
+  }, []);
 
   useEffect(() => {
-    if (location.state?.itemName) {
-      const selectedItem = items.find((item) => item.name === location.state.itemName);
-      if (selectedItem) {
-        setItemId(selectedItem.id); // Preselect the item if coming from ItemDetails
-      }
+    if (categoryId) {
+      const newFilteredItems = allItems.filter((item) => item.category_id === categoryId);
+      setFilteredItems(newFilteredItems);
+      setItemId(""); // Reset selected item when category changes
+    } else {
+      setFilteredItems(allItems);
     }
-  }, [location.state, items]); // Trigger when location state changes or items are fetched
+  }, [categoryId, allItems]); // Runs when category or allItems change
+
+  const fetchCategories = async () => {
+    try {
+      const response = await api.get("/categories");
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
 
   const fetchItems = async () => {
     try {
       const response = await api.get("/items");
-      setItems(response.data);
-      setLoading(false); // Stop loading once items are fetched
+      setAllItems(response.data); // Store all items in state
+      setFilteredItems(response.data); // Show all items initially
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching items:", error);
-      setLoading(false); // Stop loading on error
+      setLoading(false);
     }
   };
 
@@ -77,7 +92,6 @@ const AddStock = () => {
     }
   };
 
-  // Display loading state or content based on loading status
   if (loading) {
     return (
       <div className="container mt-5">
@@ -92,47 +106,43 @@ const AddStock = () => {
 
       <div className="row">
         <div className="col-md-6">
-          {/* Select Item if not coming from ItemDetails */}
-          {!id && (
-            <div className="mb-3">
-              <label htmlFor="item" className="form-label">Select Item</label>
-              <select
-                id="item"
-                className="form-select"
-                value={itemId}
-                onChange={(e) => setItemId(e.target.value)}
-              >
-                <option value="">Select an item</option>
-                {items.map((item) => (
-                  <option key={item.id} value={item.id}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+          {/* Select Category */}
+          <div className="mb-3">
+            <label htmlFor="category" className="form-label">Select Category</label>
+            <select
+              id="category"
+              className="form-select"
+              value={categoryId}
+              onChange={(e) => setCategoryId(Number(e.target.value) || "")}
+            >
+              <option value="">Select a category</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-          {/* Item selection is hidden if coming from ItemDetails */}
-          {id && (
-            <div className="mb-3">
-              <label htmlFor="item" className="form-label">Selected Item</label>
-              <select
-                id="item"
-                className="form-select"
-                value={itemId}
-                disabled
-              >
-                {itemId && items.length > 0 ? (
-                  <option value={itemId}>
-                    {items.find((item) => item.id === itemId)?.name || "Loading..."}
-                  </option>
-                ) : (
-                  <option>Loading...</option>
-                )}
-              </select>
-            </div>
-          )}
+          {/* Select Item */}
+          <div className="mb-3">
+            <label htmlFor="item" className="form-label">Select Item</label>
+            <select
+              id="item"
+              className="form-select"
+              value={itemId}
+              onChange={(e) => setItemId(e.target.value)}
+            >
+              <option value="">Select an item</option>
+              {filteredItems.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
+          {/* Select Warehouse */}
           <div className="mb-3">
             <label htmlFor="warehouse" className="form-label">Select Warehouse</label>
             <select
@@ -150,6 +160,7 @@ const AddStock = () => {
             </select>
           </div>
 
+          {/* Quantity */}
           <div className="mb-3">
             <label htmlFor="quantity" className="form-label">Quantity</label>
             <input
@@ -161,6 +172,7 @@ const AddStock = () => {
             />
           </div>
 
+          {/* Date Added */}
           <div className="mb-3">
             <label htmlFor="date_added" className="form-label">Date Added</label>
             <input
@@ -172,6 +184,7 @@ const AddStock = () => {
             />
           </div>
 
+          {/* Price */}
           <div className="mb-3">
             <label htmlFor="price" className="form-label">Price</label>
             <input

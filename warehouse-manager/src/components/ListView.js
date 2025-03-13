@@ -24,12 +24,16 @@ const ListView = ({
     };
 
     fetchItems();
-  }, [apiEndpoint]);
+  }, [apiEndpoint, title]);
 
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">{title}</h1>
-      <button className="btn btn-success mb-3" onClick={() => navigate(addPath)}>
+      
+      <button 
+        className="btn btn-success mb-3" 
+        onClick={() => navigate(addPath)}
+      >
         Add {title}
       </button>
 
@@ -45,10 +49,10 @@ const ListView = ({
           <tbody>
             {items.map((item) => (
               <tr key={itemKey(item)}>
-                <td>{item.id}</td> {/* Displaying ID in its own column */}
+                <td>{item.id}</td>
                 <td>{renderName(item)}</td>
                 <td>
-                  <div>{renderActions(item, navigate)}</div> {/* Simplified to ensure no dots */}
+                  <div>{renderActions(item, navigate)}</div>
                 </td>
               </tr>
             ))}

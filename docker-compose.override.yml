@@ -1,18 +1,19 @@
+name: inventory-manager-development
+
 services:
   fastapi-backend:
     build:
       context: ./api
       dockerfile: Dockerfile.dev
-    container_name: inventory-manager-backend
+    container_name: inventory-manager-backend-development
     ports:
       - "8000:8000"
     volumes:
       - ./api:/app
-      - ./api/db:/app/db
     networks:
       - inventory-manager-network
     environment:
-      - FRONTEND_URL=http://localhost:3000
+      - FRONTEND_URL=${FRONTEND_URL}
       # - DATABASE_URL=${DATABASE_URL}
       - DATABASE_URL=${LOCAL_DATABASE_URL}
       - RUNNING_IN_DOCKER=True
@@ -21,9 +22,7 @@ services:
     build:
       context: ./warehouse-manager
       dockerfile: Dockerfile.dev
-      args:
-        - REACT_APP_API_URL=http://localhost:8000
-    container_name: inventory-manager-frontend
+    container_name: inventory-manager-frontend-development
     ports:
       - "3000:3000"
     volumes:
@@ -32,11 +31,11 @@ services:
     networks:
       - inventory-manager-network
     environment:
-      - REACT_APP_API_URL=http://localhost:8000 # Define environment variables directly
+      - REACT_APP_API_URL=${REACT_APP_API_URL}
 
   postgres:
     image: postgres:16
-    container_name: my_postgres
+    container_name: my_postgres-development
     restart: always
     ports:
       - "5432:5432"
@@ -51,7 +50,7 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4:latest
-    container_name: pgadmin
+    container_name: pgadmin-development
     ports:
       - "5050:80"
     environment:

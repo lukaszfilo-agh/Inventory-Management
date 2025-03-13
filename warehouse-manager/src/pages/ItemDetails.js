@@ -5,25 +5,46 @@ import api from "../api";
 const ItemDetails = () => {
   const { id } = useParams();
   const [item, setItem] = useState(null);
-  const [warehouse, setWarehouse] = useState("");
+  const [stocks, setStocks] = useState([]);
+  const [warehouses, setWarehouses] = useState([]);
+  const [selectedWarehouse, setSelectedWarehouse] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchItemDetails();
+    fetchStockEntries();
+    fetchWarehouses();
   }, []);
 
   const fetchItemDetails = async () => {
     try {
       const response = await api.get(`/items/${id}`);
       setItem(response.data);
-
-      if (response.data.warehouse_id) {
-        const warehouseResponse = await api.get(`/warehouses/${response.data.warehouse_id}`);
-        setWarehouse(warehouseResponse.data.name);
-      }
     } catch (error) {
       console.error("Error fetching item details:", error);
     }
+  };
+
+  const fetchStockEntries = async () => {
+    try {
+      const response = await api.get(`/stock/get/${id}`);
+      setStocks(response.data);
+    } catch (error) {
+      console.error("Error fetching stock entries:", error);
+    }
+  };
+
+  const fetchWarehouses = async () => {
+    try {
+      const response = await api.get("/warehouses");
+      setWarehouses(response.data);
+    } catch (error) {
+      console.error("Error fetching warehouses:", error);
+    }
+  };
+
+  const handleAddStock = () => {
+    navigate(`/stock/add/${id}`);
   };
 
   if (!item) {
@@ -33,31 +54,57 @@ const ItemDetails = () => {
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">{item.name} Details</h1>
+      
+      {/* Display Item Name and Category */}
+      <div className="row">
+        <div className="col-6">
+          <h5>Name:</h5>
+          <p>{item.name}</p>
+        </div>
+        <div className="col-6">
+          <h5>Category:</h5>
+          <p>{item.category ? item.category.name : "No category assigned"}</p>
+        </div>
+      </div>
+
+      {/* Stock Entries Table */}
+      <h3 className="mt-4">Stock Entries</h3>
       <table className="table table-bordered">
-        <tbody>
-          <tr>
-            <th>Name</th>
-            <td>{item.name}</td>
-          </tr>
-          <tr>
-            <th>Quantity</th>
-            <td>{item.quantity}</td>
-          </tr>
-          <tr>
-            <th>Date Added</th>
-            <td>{item.date_added}</td>
-          </tr>
-          <tr>
-            <th>Price</th>
-            <td>${item.price}</td>
-          </tr>
+        <thead>
           <tr>
             <th>Warehouse</th>
-            <td>{warehouse || "Unknown"}</td>
+            <th>Quantity</th>
+            <th>Date Added</th>
           </tr>
+        </thead>
+        <tbody>
+          {stocks.length > 0 ? (
+            stocks.map((stock) => (
+              <tr key={stock.id}>
+                <td>{warehouses.find((wh) => wh.id === stock.warehouse_id)?.name || "Unknown"}</td>
+                <td>{stock.quantity}</td>
+                <td>{stock.date_added}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="3" className="text-center">No stock entries found</td>
+            </tr>
+          )}
         </tbody>
       </table>
-      <button className="btn btn-secondary" onClick={() => navigate(-1)}>🔙 Back</button>
+
+      {/* Add Stock Button */}
+      <div className="text-center mt-4">
+        <button className="btn btn-primary" onClick={handleAddStock}>
+          Add Stock
+        </button>
+      </div>
+
+      {/* Back Button */}
+      <button className="btn btn-secondary mt-3" onClick={() => navigate(-1)}>
+        🔙 Back
+      </button>
     </div>
   );
 };

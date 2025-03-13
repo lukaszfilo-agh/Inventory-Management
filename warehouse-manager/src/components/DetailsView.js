@@ -5,7 +5,8 @@ import api from "../api";
 const DetailsView = ({ 
   title, 
   apiEndpoint, 
-  itemApiEndpoint, 
+  itemApiEndpoint,  // For items (used in CategoryDetails)
+  stockApiEndpoint, // For stock (used in WarehouseDetails)
   fields, 
   renderExtraDetails 
 }) => {
@@ -13,6 +14,7 @@ const DetailsView = ({
   const navigate = useNavigate();
   const [entity, setEntity] = useState({});
   const [items, setItems] = useState([]);
+  const [stock, setStock] = useState([]);  // Stock state
   const [isEditing, setIsEditing] = useState({});
 
   useEffect(() => {
@@ -25,18 +27,33 @@ const DetailsView = ({
       }
     };
 
+    // Fetch items if it's a category view
     const fetchItems = async () => {
       try {
-        const response = await api.get(`${itemApiEndpoint}/${id}/items/`);
+        const response = await api.get(`${itemApiEndpoint}/${id}/items`);  // Fetch items for category
         setItems(response.data);
       } catch (error) {
         console.error(`Error fetching ${title.toLowerCase()} items:`, error);
       }
     };
 
+    // Fetch stock if it's a warehouse view
+    const fetchStock = async () => {
+      try {
+        const response = await api.get(`${stockApiEndpoint}/${id}/stock`);  // Fetch stock for warehouse
+        setStock(response.data);
+      } catch (error) {
+        console.error(`Error fetching ${title.toLowerCase()} stock:`, error);
+      }
+    };
+
     fetchData();
-    fetchItems();
-  }, [id, apiEndpoint, itemApiEndpoint]);
+    if (title === "Category") {
+      fetchItems();  // Fetch items only for Category
+    } else if (title === "Warehouse") {
+      fetchStock();  // Fetch stock only for Warehouse
+    }
+  }, [id, apiEndpoint, itemApiEndpoint, stockApiEndpoint, title]);
 
   const handleChange = (e) => {
     setEntity({ ...entity, [e.target.name]: e.target.value });
@@ -90,35 +107,70 @@ const DetailsView = ({
 
       {renderExtraDetails && renderExtraDetails(entity)}
 
-      <h3 className="mt-4">Items in {title}</h3>
-      {items.length > 0 ? (
-        <table className="table table-striped mt-3">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Quantity</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item) => (
-              <tr key={item.id}>
-                <td>{item.name}</td>
-                <td>{item.quantity}</td>
-                <td>
-                  <button className="btn btn-primary btn-sm me-2">
-                    Edit
-                  </button>
-                  <button className="btn btn-danger btn-sm">
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        <p>No items in this {title.toLowerCase()}.</p>
+      {title === "Category" && (
+        <>
+          <h3 className="mt-4">Items in {title}</h3>
+          {items.length > 0 ? (
+            <table className="table table-striped mt-3">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Quantity</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.name}</td>
+                    <td>{item.quantity}</td>
+                    <td>
+                      <button className="btn btn-primary btn-sm me-2" onClick={() => navigate(`/item/${item.id}`)}>
+                        View Item Details
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No items in this {title.toLowerCase()}.</p>
+          )}
+        </>
+      )}
+
+      {title === "Warehouse" && (
+        <>
+          <h3 className="mt-4">Stock in {title}</h3>
+          {stock.length > 0 ? (
+            <table className="table table-striped mt-3">
+              <thead>
+                <tr>
+                  <th>Item Name</th>
+                  <th>Quantity</th>
+                  <th>Date Added</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stock.map((stockEntry) => (
+                  <tr key={stockEntry.id}>
+                    <td>{stockEntry.item.name}</td>
+                    <td>{stockEntry.quantity}</td>
+                    <td>{stockEntry.date_added}</td>
+                    <td>
+                      <button className="btn btn-primary btn-sm me-2" onClick={() => navigate(`/item/${stockEntry.item_id}`)}>
+                        View Item Details
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p>No stock found in this {title.toLowerCase()}.</p>
+          )}
+        </>
       )}
 
       <button className="btn btn-secondary mt-3" onClick={() => navigate(-1)}>🔙 Back</button>

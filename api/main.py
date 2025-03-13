@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from database import SessionLocal, engine
 import models
 from fastapi.middleware.cors import CORSMiddleware
-from routers import warehouse, item, category, health
+from routers import warehouse, item, category, health, stock
 import os
 from database import get_db
 
@@ -29,6 +29,7 @@ app.include_router(health.router)
 app.include_router(warehouse.router)
 app.include_router(category.router)
 app.include_router(item.router)
+app.include_router(stock.router)
 
 # Dependency to get the DB session
 db_dependency = Annotated[Session, Depends(get_db)]

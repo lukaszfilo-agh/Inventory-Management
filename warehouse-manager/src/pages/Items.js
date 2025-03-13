@@ -57,7 +57,7 @@ const Items = () => {
               <td>{item.name}</td>
               <td>{item.quantity}</td>
               <td>
-                <button className="btn btn-primary btn-sm" onClick={() => navigate(`/item/${item.id}`)}>
+                <button className="btn btn-primary btn-sm" onClick={() => navigate(`/items/${item.id}`)}>
                   🔍 View Details
                 </button>
               </td>

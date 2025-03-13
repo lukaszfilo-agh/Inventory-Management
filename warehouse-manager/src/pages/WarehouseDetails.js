@@ -5,7 +5,7 @@ const WarehouseDetails = () => {
     <DetailsView
       title="Warehouse"
       apiEndpoint="/warehouses"
-      itemApiEndpoint="/warehouses"
+      stockApiEndpoint="/warehouses"  // Change to point to warehouses for stock
       fields={[
         { name: "name", label: "Warehouse Name" },
         { name: "location", label: "Warehouse Location" }

@@ -26,10 +26,15 @@ async def get_items(db: Session = Depends(get_db)):
 
 @router.get("/{item_id}", response_model=ItemModel)
 async def get_item(item_id: int, db: Session = Depends(get_db)):
-    item = db.query(models.Item).filter(models.Item.id == item_id).one_or_none()
+    item = db.query(models.Item).filter(models.Item.id == item_id).first()
+
     if not item:
-        raise HTTPException(status_code=404, detail="Item not found.")
-    return item
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    # Ensure that the category relationship is loaded
+    db.query(models.Category).filter(models.Category.id == item.category_id).first()  # Ensure category is loaded
+    
+    return item  # Pydantic will automatically use the from_attributes mechanism to serialize the model
 
 @router.patch("/{item_id}", response_model=ItemModel)
 async def update_item(item_id: int, item: ItemBase, db: Session = Depends(get_db)):

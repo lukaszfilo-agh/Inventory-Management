@@ -12,6 +12,7 @@ import WarehouseDetails from "./pages/WarehouseDetails";
 import Categories from "./pages/Categories";
 import CategoryDetails from "./pages/CategoryDetails";
 import AddStock from "./pages/AddStock";
+import Stock from "./pages/Stock";
 
 const App = () => {
   return (
@@ -20,7 +21,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route path="/items" element={<Items />} />
-        <Route path="/item/:id" element={<ItemDetails />} />
+        <Route path="/items/:id" element={<ItemDetails />} />
         <Route path="/items/add" element={<AddItem />} />
         <Route path="/warehouses" element={<Warehouses />} />
         <Route path="/warehouses/add" element={<AddWarehouse />} />
@@ -29,6 +30,7 @@ const App = () => {
         <Route path="/categories/add" element={<AddCategory />} />
         <Route path="/warehouse/:id" element={<WarehouseDetails />} />
         <Route path="/stock/add/:id" element={<AddStock />} />
+        <Route path="/stock" element={<Stock />} />
       </Routes>
     </Router>
   );

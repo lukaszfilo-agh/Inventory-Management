@@ -5,7 +5,7 @@ const CategoryDetails = () => {
     <DetailsView
       title="Category"
       apiEndpoint="/categories"
-      itemApiEndpoint="/categories"
+      itemApiEndpoint="/categories"  // Change to point to categories for items
       fields={[
         { name: "name", label: "Category Name" }
       ]}

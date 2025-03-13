@@ -7,6 +7,10 @@ from typing import List
 
 router = APIRouter(prefix="/stock", tags=["Stock"])
 
+@router.get("/", response_model=List[StockModel])
+async def get_stock(db: Session = Depends(get_db)):
+    return db.query(Stock).all()
+
 # Add Stock to Item in Warehouse
 @router.post("/add/{item_id}", response_model=StockModel)
 async def add_stock_to_item(item_id: int, stock: StockBase, db: Session = Depends(get_db)):

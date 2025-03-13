@@ -63,7 +63,7 @@ const ItemDetails = () => {
         </div>
         <div className="col-6">
           <h5>Category:</h5>
-          <p>{item.category}</p>
+          <p>{item.category ? item.category.name : "No category assigned"}</p>
         </div>
       </div>
 

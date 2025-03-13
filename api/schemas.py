@@ -10,21 +10,22 @@ class WarehouseModel(WarehouseBase):
     class Config:
         from_attributes = True
 
+class CategoryBase(BaseModel):
+    name: str
+
+class CategoryModel(CategoryBase):
+    id: int
+
+    class Config:
+        from_attributes = True
+
 class ItemBase(BaseModel):
     name: str
     category_id: int
 
 class ItemModel(ItemBase):
     id: int
-
-    class Config:
-        from_attributes = True
-
-class CategoryBase(BaseModel):
-    name: str
-
-class CategoryModel(CategoryBase):
-    id: int
+    category: CategoryBase  # Add category to the response
 
     class Config:
         from_attributes = True
@@ -38,6 +39,8 @@ class StockBase(BaseModel):
 
 class StockModel(StockBase):
     id: int
+    item: ItemBase
+    warehouse: WarehouseBase
 
     class Config:
         from_attributes = True

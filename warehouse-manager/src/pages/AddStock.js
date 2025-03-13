@@ -1,20 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import api from "../api";
 
 const AddStock = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // Might be undefined if opened from stock view
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [items, setItems] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
-  const [quantity, setQuantity] = useState(0);
+  const [itemId, setItemId] = useState(id || ""); // If ID is passed, use it. Otherwise, allow selection.
   const [warehouseId, setWarehouseId] = useState("");
+  const [quantity, setQuantity] = useState(0);
   const [dateAdded, setDateAdded] = useState("");
   const [price, setPrice] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate();
 
   useEffect(() => {
+    fetchItems();
     fetchWarehouses();
   }, []);
+
+  const fetchItems = async () => {
+    try {
+      const response = await api.get("/items");
+      setItems(response.data);
+    } catch (error) {
+      console.error("Error fetching items:", error);
+    }
+  };
 
   const fetchWarehouses = async () => {
     try {
@@ -26,18 +40,23 @@ const AddStock = () => {
   };
 
   const handleAddStock = async () => {
+    if (!itemId || !warehouseId) {
+      setErrorMessage("Please select both an item and a warehouse.");
+      return;
+    }
+
     try {
       const stockData = {
-        item_id: id,
+        item_id: itemId,
         warehouse_id: warehouseId,
-        quantity: quantity,
+        quantity,
         date_added: dateAdded,
-        price: price,
+        price,
       };
 
-      const response = await api.post(`/stock/add/${id}`, stockData);
+      const response = await api.post(`/stock/add/${itemId}`, stockData);
       if (response.data) {
-        navigate(`/items/${id}`);
+        navigate(`/items/${itemId}`);
       }
     } catch (error) {
       console.error("Error adding stock:", error);
@@ -47,10 +66,47 @@ const AddStock = () => {
 
   return (
     <div className="container mt-5">
-      <h1 className="text-center mb-4">Add Stock for Item</h1>
+      <h1 className="text-center mb-4">Add Stock</h1>
 
       <div className="row">
         <div className="col-md-6">
+          {/* Select Item if not coming from ItemDetails */}
+          {!id && (
+            <div className="mb-3">
+              <label htmlFor="item" className="form-label">Select Item</label>
+              <select
+                id="item"
+                className="form-select"
+                value={itemId}
+                onChange={(e) => setItemId(e.target.value)}
+              >
+                <option value="">Select an item</option>
+                {items.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Item selection is hidden if coming from ItemDetails */}
+          {id && (
+            <div className="mb-3">
+              <label htmlFor="item" className="form-label">Selected Item</label>
+              <select
+                id="item"
+                className="form-select"
+                value={itemId}
+                disabled
+              >
+                <option value={itemId}>
+                  {items.find((item) => item.id === itemId)?.name || "Loading..."}
+                </option>
+              </select>
+            </div>
+          )}
+
           <div className="mb-3">
             <label htmlFor="warehouse" className="form-label">Select Warehouse</label>
             <select

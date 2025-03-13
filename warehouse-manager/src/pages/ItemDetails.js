@@ -7,7 +7,6 @@ const ItemDetails = () => {
   const [item, setItem] = useState(null);
   const [stocks, setStocks] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
-  const [selectedWarehouse, setSelectedWarehouse] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,7 +43,7 @@ const ItemDetails = () => {
   };
 
   const handleAddStock = () => {
-    navigate(`/stock/add/${id}`);
+    navigate(`/stock/add/${id}`, { state: { itemName: item.name } });
   };
 
   if (!item) {
@@ -54,8 +53,7 @@ const ItemDetails = () => {
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">{item.name} Details</h1>
-      
-      {/* Display Item Name and Category */}
+
       <div className="row">
         <div className="col-6">
           <h5>Name:</h5>
@@ -67,7 +65,6 @@ const ItemDetails = () => {
         </div>
       </div>
 
-      {/* Stock Entries Table */}
       <h3 className="mt-4">Stock Entries</h3>
       <table className="table table-bordered">
         <thead>
@@ -94,14 +91,12 @@ const ItemDetails = () => {
         </tbody>
       </table>
 
-      {/* Add Stock Button */}
       <div className="text-center mt-4">
         <button className="btn btn-primary" onClick={handleAddStock}>
           Add Stock
         </button>
       </div>
 
-      {/* Back Button */}
       <button className="btn btn-secondary mt-3" onClick={() => navigate(-1)}>
         🔙 Back
       </button>

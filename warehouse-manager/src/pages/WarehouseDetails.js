@@ -10,9 +10,6 @@ const WarehouseDetails = () => {
         { name: "name", label: "Warehouse Name" },
         { name: "location", label: "Warehouse Location" }
       ]}
-      renderExtraDetails={(warehouse) => (
-        <p>Extra Info: {warehouse.someOtherField}</p>
-      )}
     />
   );
 };

@@ -41,7 +41,8 @@ for table in tables:
     cur.execute(f"DROP TABLE IF EXISTS {table[0]} CASCADE;")
 
 # Step 3: Reset auto-increment sequences
-cur.execute("SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = 'public';")
+cur.execute(
+    "SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = 'public';")
 sequences = cur.fetchall()
 
 for seq in sequences:

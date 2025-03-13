@@ -7,9 +7,8 @@ from dotenv import load_dotenv
 if os.getenv('RUNNING_IN_DOCKER') != 'true':
     load_dotenv()
 
-DEFAULT_DATABASE_URL = 'sqlite:///./db/inventory.db'
 
-DATABASE_URL = os.getenv("DATABASE_URL", DEFAULT_DATABASE_URL)
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 engine = create_engine(DATABASE_URL)
 

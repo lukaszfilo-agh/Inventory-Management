@@ -5,7 +5,7 @@ const Stock = () => {
     <ListView
       title="Stock"
       apiEndpoint="/stock"  // Adjust this to match your API
-      addPath="/add-stock"  // Adjust this if needed
+      addPath="/stock/add"  // Adjust this if needed
       itemKey={(stock) => stock.id}  // Stock ID as key
       renderName={(stock) => `${stock.item.name} (Warehouse: ${stock.warehouse.name})`}  // Show item and warehouse name
       renderActions={(stock, navigate) => (

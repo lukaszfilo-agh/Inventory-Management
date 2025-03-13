@@ -1,20 +1,62 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import api from "../api";
 
 const AddStock = () => {
   const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [categories, setCategories] = useState([]);
+  const [allItems, setAllItems] = useState([]); // Store all items
+  const [filteredItems, setFilteredItems] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
-  const [quantity, setQuantity] = useState(0);
+
+  const [categoryId, setCategoryId] = useState(""); // Track selected category
+  const [itemId, setItemId] = useState(id || "");
   const [warehouseId, setWarehouseId] = useState("");
+  const [quantity, setQuantity] = useState(0);
   const [dateAdded, setDateAdded] = useState("");
   const [price, setPrice] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    fetchCategories();
+    fetchItems();
     fetchWarehouses();
   }, []);
+
+  useEffect(() => {
+    if (categoryId) {
+      const newFilteredItems = allItems.filter((item) => item.category_id === categoryId);
+      setFilteredItems(newFilteredItems);
+      setItemId(""); // Reset selected item when category changes
+    } else {
+      setFilteredItems(allItems);
+    }
+  }, [categoryId, allItems]); // Runs when category or allItems change
+
+  const fetchCategories = async () => {
+    try {
+      const response = await api.get("/categories");
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  };
+
+  const fetchItems = async () => {
+    try {
+      const response = await api.get("/items");
+      setAllItems(response.data); // Store all items in state
+      setFilteredItems(response.data); // Show all items initially
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching items:", error);
+      setLoading(false);
+    }
+  };
 
   const fetchWarehouses = async () => {
     try {
@@ -26,18 +68,23 @@ const AddStock = () => {
   };
 
   const handleAddStock = async () => {
+    if (!itemId || !warehouseId) {
+      setErrorMessage("Please select both an item and a warehouse.");
+      return;
+    }
+
     try {
       const stockData = {
-        item_id: id,
+        item_id: itemId,
         warehouse_id: warehouseId,
-        quantity: quantity,
+        quantity,
         date_added: dateAdded,
-        price: price,
+        price,
       };
 
-      const response = await api.post(`/stock/add/${id}`, stockData);
+      const response = await api.post(`/stock/add/${itemId}`, stockData);
       if (response.data) {
-        navigate(`/items/${id}`);
+        navigate(`/items/${itemId}`);
       }
     } catch (error) {
       console.error("Error adding stock:", error);
@@ -45,12 +92,57 @@ const AddStock = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="container mt-5">
+        <h1 className="text-center mb-4">Loading...</h1>
+      </div>
+    );
+  }
+
   return (
     <div className="container mt-5">
-      <h1 className="text-center mb-4">Add Stock for Item</h1>
+      <h1 className="text-center mb-4">Add Stock</h1>
 
       <div className="row">
         <div className="col-md-6">
+          {/* Select Category */}
+          <div className="mb-3">
+            <label htmlFor="category" className="form-label">Select Category</label>
+            <select
+              id="category"
+              className="form-select"
+              value={categoryId}
+              onChange={(e) => setCategoryId(Number(e.target.value) || "")}
+            >
+              <option value="">Select a category</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Select Item */}
+          <div className="mb-3">
+            <label htmlFor="item" className="form-label">Select Item</label>
+            <select
+              id="item"
+              className="form-select"
+              value={itemId}
+              onChange={(e) => setItemId(e.target.value)}
+            >
+              <option value="">Select an item</option>
+              {filteredItems.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Select Warehouse */}
           <div className="mb-3">
             <label htmlFor="warehouse" className="form-label">Select Warehouse</label>
             <select
@@ -68,6 +160,7 @@ const AddStock = () => {
             </select>
           </div>
 
+          {/* Quantity */}
           <div className="mb-3">
             <label htmlFor="quantity" className="form-label">Quantity</label>
             <input
@@ -79,6 +172,7 @@ const AddStock = () => {
             />
           </div>
 
+          {/* Date Added */}
           <div className="mb-3">
             <label htmlFor="date_added" className="form-label">Date Added</label>
             <input
@@ -90,6 +184,7 @@ const AddStock = () => {
             />
           </div>
 
+          {/* Price */}
           <div className="mb-3">
             <label htmlFor="price" className="form-label">Price</label>
             <input

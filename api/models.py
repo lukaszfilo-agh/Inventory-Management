@@ -1,12 +1,12 @@
 from database import Base
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 class Warehouse(Base):
     __tablename__ = 'warehouses'
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
+    name = Column(String, index=True, unique=True)
     location = Column(String)
 
     stock = relationship("Stock", back_populates="warehouse")
@@ -16,7 +16,7 @@ class Item(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
-    category_id = Column(Integer, ForeignKey('categories.id'))
+    category_id = Column(Integer, ForeignKey('categories.id'), index=True)
 
     category = relationship("Category", back_populates="items")
     stock = relationship("Stock", back_populates="item")
@@ -26,9 +26,10 @@ class Stock(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     item_id = Column(Integer, ForeignKey('items.id'))
-    warehouse_id = Column(Integer, ForeignKey('warehouses.id'))
+    warehouse_id = Column(Integer, ForeignKey('warehouses.id'), index=True)
     quantity = Column(Integer, default=0)
-    date_added = Column(String)
+
+    date_added = Column(DateTime)
     price = Column(Float)
 
     item = relationship("Item", back_populates="stock")

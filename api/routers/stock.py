@@ -1,9 +1,11 @@
+from typing import List
+
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
+
 from models import Stock, Item, Warehouse
 from database import get_db
 from schemas import StockBase, StockModel
-from typing import List
 
 router = APIRouter(prefix="/stock", tags=["Stock"])
 
@@ -24,13 +26,7 @@ async def add_stock_to_item(item_id: int, stock: StockBase, db: Session = Depend
         raise HTTPException(status_code=404, detail="Warehouse not found.")
 
     # Create a new stock record with price
-    new_stock = Stock(
-        item_id=item_id,
-        warehouse_id=stock.warehouse_id,
-        quantity=stock.quantity,
-        date_added=stock.date_added,
-        price=stock.price,  # Include the price here
-    )
+    new_stock = Stock(**stock.model_dump())
 
     # Add the stock entry to the database
     db.add(new_stock)

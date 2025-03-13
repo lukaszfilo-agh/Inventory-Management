@@ -3,8 +3,8 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import api from "../api";
 
 const AddStock = () => {
-  const { id } = useParams(); // Might be undefined if opened from stock view
-  const location = useLocation();
+  const { id } = useParams();
+  const location = useLocation(); // Get the state passed through navigate
   const navigate = useNavigate();
 
   const [items, setItems] = useState([]);
@@ -15,18 +15,31 @@ const AddStock = () => {
   const [dateAdded, setDateAdded] = useState("");
   const [price, setPrice] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(true); // Loading state for initial fetch
 
   useEffect(() => {
-    fetchItems();
-    fetchWarehouses();
-  }, []);
+    // Only fetch items and warehouses if they're not already fetched
+    if (items.length === 0) fetchItems();
+    if (warehouses.length === 0) fetchWarehouses();
+  }, [items.length, warehouses.length]); // Run once when component mounts
+
+  useEffect(() => {
+    if (location.state?.itemName) {
+      const selectedItem = items.find((item) => item.name === location.state.itemName);
+      if (selectedItem) {
+        setItemId(selectedItem.id); // Preselect the item if coming from ItemDetails
+      }
+    }
+  }, [location.state, items]); // Trigger when location state changes or items are fetched
 
   const fetchItems = async () => {
     try {
       const response = await api.get("/items");
       setItems(response.data);
+      setLoading(false); // Stop loading once items are fetched
     } catch (error) {
       console.error("Error fetching items:", error);
+      setLoading(false); // Stop loading on error
     }
   };
 
@@ -64,6 +77,15 @@ const AddStock = () => {
     }
   };
 
+  // Display loading state or content based on loading status
+  if (loading) {
+    return (
+      <div className="container mt-5">
+        <h1 className="text-center mb-4">Loading...</h1>
+      </div>
+    );
+  }
+
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Add Stock</h1>
@@ -100,9 +122,13 @@ const AddStock = () => {
                 value={itemId}
                 disabled
               >
-                <option value={itemId}>
-                  {items.find((item) => item.id === itemId)?.name || "Loading..."}
-                </option>
+                {itemId && items.length > 0 ? (
+                  <option value={itemId}>
+                    {items.find((item) => item.id === itemId)?.name || "Loading..."}
+                  </option>
+                ) : (
+                  <option>Loading...</option>
+                )}
               </select>
             </div>
           )}

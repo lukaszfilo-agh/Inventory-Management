@@ -1,6 +1,6 @@
 # 📦 Inventory Management System  
 
-This is a full-stack **Inventory Management System** built using **FastAPI**, **SQLAlchemy**, and a **React frontend** with **Bootstrap 5** for styling. It allows users to manage warehouses and track items stored within them. It also supports **Docker** for containerized deployment and uses **PostgreSQL** as the database.
+This is a full-stack **Inventory Management System** built using **FastAPI**, **SQLAlchemy**, and a **React frontend** with **Bootstrap 5** for styling. It allows users to manage warehouses and track owned equipment stored within them. It also supports **Docker** for containerized deployment and uses **PostgreSQL** as the database.
 
 ---
 
@@ -21,27 +21,27 @@ This is a full-stack **Inventory Management System** built using **FastAPI**, **
 
 ### 🔹 Backend Setup (FastAPI + PostgreSQL)  
 
-#### 1⃣ Prerequisites  
+#### 1️⃣ Prerequisites  
 - Python 3.12.9+  
-- FastAPI 0.1.0  
+- FastAPI  
 - SQLAlchemy  
 - Pydantic  
 - Uvicorn  
 - PostgreSQL  
 - Docker & Docker Compose (for containerized setup)  
 
-#### 2⃣ Clone the repository  
+#### 2️⃣ Clone the repository  
 ```sh
 git clone https://github.com/lukaszfilo-agh/Inventory-Management
-cd inventory-management/api
+cd inventory-manager/api
 ```
 
-#### 3⃣ Install dependencies  
+#### 3️⃣ Install dependencies  
 ```sh
 pip install -r requirements.txt
 ```
 
-#### 4⃣ Run the FastAPI server  
+#### 4️⃣ Run the FastAPI server  
 ```sh
 uvicorn main:app --reload
 ```
@@ -52,21 +52,21 @@ uvicorn main:app --reload
 
 ### 🔹 Frontend Setup (React + Bootstrap 5)  
 
-#### 1⃣ Prerequisites  
+#### 1️⃣ Prerequisites  
 - Node.js 14+  
 - npm or yarn  
 
-#### 2⃣ Navigate to the frontend directory  
+#### 2️⃣ Navigate to the frontend directory  
 ```sh
 cd ../warehouse-manager
 ```
 
-#### 3⃣ Install dependencies  
+#### 3️⃣ Install dependencies  
 ```sh
 npm install
 ```
 
-#### 4⃣ Start the React app  
+#### 4️⃣ Start the React app  
 ```sh
 npm start
 ```
@@ -79,15 +79,15 @@ npm start
 
 ### Running the App with Docker Compose  
 
-#### 1⃣ Ensure Docker and Docker Compose are installed  
-#### 2⃣ Navigate to the project root directory and run:  
+#### 1️⃣ Ensure Docker and Docker Compose are installed  
+#### 2️⃣ Navigate to the project root directory and run:  
 ```sh
 docker-compose up --build
 ```
 
 This will start the **FastAPI backend**, **React frontend**, and **PostgreSQL database** in Docker containers.  
 
-#### 3⃣ Stop the application  
+#### 3️⃣ Stop the application  
 ```sh
 docker-compose down
 ```
@@ -105,7 +105,7 @@ docker-compose down
 - `DELETE /warehouses/{warehouse_id}` - Delete Warehouse  
 - `GET /warehouses/{warehouse_id}/items` - Get Warehouse Items  
 
-### 📋 Category Endpoints  
+### 💋 Category Endpoints  
 - `GET /categories/` - Get Categories  
 - `POST /categories/` - Create Category  
 - `GET /categories/{category_id}` - Get Category  
@@ -120,9 +120,9 @@ docker-compose down
 
 ---
 
-## 🛂 Folder Structure  
+## 🌐 Folder Structure  
 ```
-inventory-management/
+inventory-manager/
 │── api/  # FastAPI backend
 │   ├── main.py  # Entry point
 │   ├── models.py  # Database models
@@ -143,11 +143,11 @@ inventory-management/
 
 ---
 
-## 🌐 Future Enhancements  
-- 🔒 Implement authentication & user roles  
-- 📊 Add warehouse statistics & reports  
-- ☁️ Deploy the app to a cloud service (AWS, Azure, etc.)  
-- 📱 Improve mobile UI for better accessibility  
+## 🌟 Future Enhancements  
+- 🛠 Implement advanced search & filtering  
+- 📊 Add inventory reports & analytics  
+- ☁️ Cloud deployment (AWS, Azure, etc.)  
+- 📱 Optimize UI for mobile accessibility  
 
 ---
 
@@ -156,4 +156,4 @@ This project is licensed under the **MIT License**.
 
 ---
 
-🔥 **Enjoy managing your inventory with ease!** 🚀
+🔥 **Efficiently track your equipment with ease!** 🚀

@@ -1,39 +1,55 @@
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
+import psycopg2
+from urllib.parse import urlparse
 from dotenv import load_dotenv
 import os
 
+# Load environment variables
 load_dotenv()
 
-DB_URL = os.getenv("DATABASE_URL")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Replace with your actual PostgreSQL connection string
-engine = create_engine(DB_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Parse the database URL
+parsed_url = urlparse(DATABASE_URL)
+db_name = parsed_url.path[1:]  # Remove the leading "/"
 
-def reset_database():
-    db = SessionLocal()
-    try:
-        # Temporarily drop foreign key constraints
-        db.execute(text("ALTER TABLE items DROP CONSTRAINT items_warehouse_id_fkey;"))
-        db.execute(text("ALTER TABLE items DROP CONSTRAINT items_category_id_fkey;"))
+# Connect to the PostgreSQL database
+conn = psycopg2.connect(
+    dbname=db_name,
+    user=parsed_url.username,
+    password=parsed_url.password,
+    host=parsed_url.hostname,
+    port=parsed_url.port
+)
+cur = conn.cursor()
 
-        # Truncate tables and reset ID sequences
-        db.execute(text("TRUNCATE TABLE warehouses, items, categories RESTART IDENTITY CASCADE;"))
+# Step 1: Drop foreign key constraints first
+cur.execute("""
+    SELECT conname, conrelid::regclass 
+    FROM pg_constraint 
+    WHERE contype = 'f';
+""")
+fks = cur.fetchall()
 
-        # Recreate foreign key constraints
-        db.execute(text("""
-            ALTER TABLE items ADD CONSTRAINT items_warehouse_id_fkey 
-            FOREIGN KEY (warehouse_id) REFERENCES warehouses(id) ON DELETE CASCADE;
-        """))
-        db.execute(text("""
-            ALTER TABLE items ADD CONSTRAINT items_category_id_fkey 
-            FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE;
-        """))
+for fk in fks:
+    cur.execute(f"ALTER TABLE {fk[1]} DROP CONSTRAINT {fk[0]};")
 
-        db.commit()
-    finally:
-        db.close()
+# Step 2: Get and drop all tables
+cur.execute("SELECT tablename FROM pg_tables WHERE schemaname = 'public';")
+tables = cur.fetchall()
 
-# Run the function to reset the database
-reset_database()
+for table in tables:
+    cur.execute(f"DROP TABLE IF EXISTS {table[0]} CASCADE;")
+
+# Step 3: Reset auto-increment sequences
+cur.execute("SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = 'public';")
+sequences = cur.fetchall()
+
+for seq in sequences:
+    cur.execute(f"ALTER SEQUENCE {seq[0]} RESTART WITH 1;")
+
+# Commit changes and close connection
+conn.commit()
+cur.close()
+conn.close()
+
+print("Database wiped successfully.")

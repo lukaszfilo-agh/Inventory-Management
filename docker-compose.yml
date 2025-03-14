@@ -18,6 +18,8 @@ services:
   react-frontend:
     build:
       context: ./warehouse-manager
+      args:
+        - REACT_APP_API_URL=${REACT_APP_API_URL}
     container_name: inventory-manager-frontend-production
     ports:
       - "3000:3000"

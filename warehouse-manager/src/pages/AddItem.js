@@ -39,7 +39,9 @@ const AddItem = () => {
             <div className="card-body">
               <h5>Item Details</h5>
               <div className="mb-3">
-                <label htmlFor="name" className="form-label">Item Name</label>
+                <label htmlFor="name" className="form-label">
+                  Item Name
+                </label>
                 <input
                   name="name"
                   id="name"
@@ -50,17 +52,25 @@ const AddItem = () => {
                 />
               </div>
               <div className="mb-3">
-                <label htmlFor="category" className="form-label">Category</label>
+                <label htmlFor="category" className="form-label">
+                  Category
+                </label>
                 <CategoryDropdown
                   onSelect={handleCategorySelect}
                   selectedCategory={newItem.category_id}
                 />
               </div>
-              <button type="button" className="btn btn-primary w-100" onClick={handleAddItem}>
+              <button
+                type="button"
+                className="btn btn-primary w-100"
+                onClick={handleAddItem}
+              >
                 Add Item
               </button>
 
-              {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
+              {errorMessage && (
+                <div className="alert alert-danger mt-3">{errorMessage}</div>
+              )}
               {addedItem && (
                 <div className="alert alert-success mt-3">
                   Item added successfully! {addedItem.name}

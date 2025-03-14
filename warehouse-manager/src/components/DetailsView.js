@@ -2,19 +2,19 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api";
 
-const DetailsView = ({ 
-  title, 
-  apiEndpoint, 
-  itemApiEndpoint,  // For items (used in CategoryDetails)
+const DetailsView = ({
+  title,
+  apiEndpoint,
+  itemApiEndpoint, // For items (used in CategoryDetails)
   stockApiEndpoint, // For stock (used in WarehouseDetails)
-  fields, 
-  renderExtraDetails 
+  fields,
+  renderExtraDetails,
 }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [entity, setEntity] = useState({});
   const [items, setItems] = useState([]);
-  const [stock, setStock] = useState([]);  // Stock state
+  const [stock, setStock] = useState([]); // Stock state
   const [isEditing, setIsEditing] = useState({});
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const DetailsView = ({
     // Fetch items if it's a category view
     const fetchItems = async () => {
       try {
-        const response = await api.get(`${itemApiEndpoint}/${id}/items`);  // Fetch items for category
+        const response = await api.get(`${itemApiEndpoint}/${id}/items`); // Fetch items for category
         setItems(response.data);
       } catch (error) {
         console.error(`Error fetching ${title.toLowerCase()} items:`, error);
@@ -40,7 +40,7 @@ const DetailsView = ({
     // Fetch stock if it's a warehouse view
     const fetchStock = async () => {
       try {
-        const response = await api.get(`${stockApiEndpoint}/${id}/stock`);  // Fetch stock for warehouse
+        const response = await api.get(`${stockApiEndpoint}/${id}/stock`); // Fetch stock for warehouse
         setStock(response.data);
       } catch (error) {
         console.error(`Error fetching ${title.toLowerCase()} stock:`, error);
@@ -49,9 +49,9 @@ const DetailsView = ({
 
     fetchData();
     if (title === "Category") {
-      fetchItems();  // Fetch items only for Category
+      fetchItems(); // Fetch items only for Category
     } else if (title === "Warehouse") {
-      fetchStock();  // Fetch stock only for Warehouse
+      fetchStock(); // Fetch stock only for Warehouse
     }
   }, [id, apiEndpoint, itemApiEndpoint, stockApiEndpoint, title]);
 
@@ -78,7 +78,10 @@ const DetailsView = ({
           <div className="d-flex align-items-center">
             {/* Edit button and label */}
             {isEditing[field.name] ? (
-              <form onSubmit={(e) => handleSubmit(e, field.name)} className="d-flex align-items-center w-100">
+              <form
+                onSubmit={(e) => handleSubmit(e, field.name)}
+                className="d-flex align-items-center w-100"
+              >
                 <label className="form-label w-25">{field.label}:</label>
                 <input
                   type="text"
@@ -88,15 +91,30 @@ const DetailsView = ({
                   className="form-control flex-grow-1"
                   required
                 />
-                <button type="submit" className="btn btn-success ms-3">Save</button>
-                <button type="button" className="btn btn-secondary ms-2" onClick={() => setIsEditing({ ...isEditing, [field.name]: false })}>
+                <button type="submit" className="btn btn-success ms-3">
+                  Save
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-secondary ms-2"
+                  onClick={() =>
+                    setIsEditing({ ...isEditing, [field.name]: false })
+                  }
+                >
                   Cancel
                 </button>
               </form>
             ) : (
               <div className="d-flex justify-content-between w-100">
-                <h2>{field.label}: {entity[field.name]}</h2>
-                <button className="btn btn-warning" onClick={() => setIsEditing({ ...isEditing, [field.name]: true })}>
+                <h2>
+                  {field.label}: {entity[field.name]}
+                </h2>
+                <button
+                  className="btn btn-warning"
+                  onClick={() =>
+                    setIsEditing({ ...isEditing, [field.name]: true })
+                  }
+                >
                   Edit
                 </button>
               </div>
@@ -125,7 +143,10 @@ const DetailsView = ({
                     <td>{item.name}</td>
                     <td>{item.quantity}</td>
                     <td>
-                      <button className="btn btn-primary btn-sm me-2" onClick={() => navigate(`/item/${item.id}`)}>
+                      <button
+                        className="btn btn-primary btn-sm me-2"
+                        onClick={() => navigate(`/item/${item.id}`)}
+                      >
                         View Item Details
                       </button>
                     </td>
@@ -159,7 +180,10 @@ const DetailsView = ({
                     <td>{stockEntry.quantity}</td>
                     <td>{stockEntry.date_added}</td>
                     <td>
-                      <button className="btn btn-primary btn-sm me-2" onClick={() => navigate(`/item/${stockEntry.item_id}`)}>
+                      <button
+                        className="btn btn-primary btn-sm me-2"
+                        onClick={() => navigate(`/item/${stockEntry.item_id}`)}
+                      >
                         View Item Details
                       </button>
                     </td>
@@ -173,7 +197,9 @@ const DetailsView = ({
         </>
       )}
 
-      <button className="btn btn-secondary mt-3" onClick={() => navigate(-1)}>🔙 Back</button>
+      <button className="btn btn-secondary mt-3" onClick={() => navigate(-1)}>
+        🔙 Back
+      </button>
     </div>
   );
 };

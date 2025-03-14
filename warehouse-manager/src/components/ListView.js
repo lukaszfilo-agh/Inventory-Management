@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
 
-const ListView = ({ 
-  title, 
-  apiEndpoint, 
-  addPath, 
-  itemKey, 
-  renderName, 
-  renderActions 
+const ListView = ({
+  title,
+  apiEndpoint,
+  addPath,
+  itemKey,
+  renderName,
+  renderActions,
 }) => {
   const [items, setItems] = useState([]);
   const navigate = useNavigate();
@@ -29,9 +29,9 @@ const ListView = ({
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">{title}</h1>
-      
-      <button 
-        className="btn btn-success mb-3" 
+
+      <button
+        className="btn btn-success mb-3"
         onClick={() => navigate(addPath)}
       >
         Add {title}

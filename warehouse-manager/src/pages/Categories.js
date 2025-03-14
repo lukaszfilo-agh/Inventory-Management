@@ -10,7 +10,10 @@ const Categories = () => {
       renderName={(category) => category.name}
       renderActions={(category, navigate) => (
         <>
-          <button className="btn btn-info btn-sm me-2" onClick={() => navigate(`/categories/${category.id}`)}>
+          <button
+            className="btn btn-info btn-sm me-2"
+            onClick={() => navigate(`/categories/${category.id}`)}
+          >
             View Details
           </button>
         </>

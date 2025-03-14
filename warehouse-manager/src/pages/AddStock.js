@@ -29,7 +29,9 @@ const AddStock = () => {
 
   useEffect(() => {
     if (categoryId) {
-      const newFilteredItems = allItems.filter((item) => item.category_id === categoryId);
+      const newFilteredItems = allItems.filter(
+        (item) => item.category_id === categoryId
+      );
       setFilteredItems(newFilteredItems);
       setItemId(""); // Reset selected item when category changes
     } else {
@@ -108,7 +110,9 @@ const AddStock = () => {
         <div className="col-md-6">
           {/* Select Category */}
           <div className="mb-3">
-            <label htmlFor="category" className="form-label">Select Category</label>
+            <label htmlFor="category" className="form-label">
+              Select Category
+            </label>
             <select
               id="category"
               className="form-select"
@@ -126,7 +130,9 @@ const AddStock = () => {
 
           {/* Select Item */}
           <div className="mb-3">
-            <label htmlFor="item" className="form-label">Select Item</label>
+            <label htmlFor="item" className="form-label">
+              Select Item
+            </label>
             <select
               id="item"
               className="form-select"
@@ -144,7 +150,9 @@ const AddStock = () => {
 
           {/* Select Warehouse */}
           <div className="mb-3">
-            <label htmlFor="warehouse" className="form-label">Select Warehouse</label>
+            <label htmlFor="warehouse" className="form-label">
+              Select Warehouse
+            </label>
             <select
               id="warehouse"
               className="form-select"
@@ -162,7 +170,9 @@ const AddStock = () => {
 
           {/* Quantity */}
           <div className="mb-3">
-            <label htmlFor="quantity" className="form-label">Quantity</label>
+            <label htmlFor="quantity" className="form-label">
+              Quantity
+            </label>
             <input
               type="number"
               id="quantity"
@@ -174,7 +184,9 @@ const AddStock = () => {
 
           {/* Date Added */}
           <div className="mb-3">
-            <label htmlFor="date_added" className="form-label">Date Added</label>
+            <label htmlFor="date_added" className="form-label">
+              Date Added
+            </label>
             <input
               type="date"
               id="date_added"
@@ -186,7 +198,9 @@ const AddStock = () => {
 
           {/* Price */}
           <div className="mb-3">
-            <label htmlFor="price" className="form-label">Price</label>
+            <label htmlFor="price" className="form-label">
+              Price
+            </label>
             <input
               type="number"
               id="price"
@@ -196,7 +210,9 @@ const AddStock = () => {
             />
           </div>
 
-          {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
+          {errorMessage && (
+            <div className="alert alert-danger mt-3">{errorMessage}</div>
+          )}
 
           <button className="btn btn-primary w-100" onClick={handleAddStock}>
             Add Stock

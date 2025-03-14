@@ -78,14 +78,19 @@ const ItemDetails = () => {
           {stocks.length > 0 ? (
             stocks.map((stock) => (
               <tr key={stock.id}>
-                <td>{warehouses.find((wh) => wh.id === stock.warehouse_id)?.name || "Unknown"}</td>
+                <td>
+                  {warehouses.find((wh) => wh.id === stock.warehouse_id)
+                    ?.name || "Unknown"}
+                </td>
                 <td>{stock.quantity}</td>
                 <td>{stock.date_added}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="3" className="text-center">No stock entries found</td>
+              <td colSpan="3" className="text-center">
+                No stock entries found
+              </td>
             </tr>
           )}
         </tbody>

@@ -61,6 +61,9 @@ const Homepage = () => {
         <button className="btn btn-primary mx-3" onClick={() => navigate("/items")}>
           View Items
         </button>
+        <button className="btn btn-info mx-3" onClick={() => navigate("/stock")}>
+          View Stock
+        </button>
         <button className="btn btn-success mx-3" onClick={() => navigate("/warehouses")}>
           View Warehouses
         </button>

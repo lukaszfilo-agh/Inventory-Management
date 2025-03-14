@@ -10,7 +10,10 @@ const Warehouses = () => {
       renderName={(warehouse) => warehouse.name}
       renderActions={(warehouse, navigate) => (
         <>
-          <button className="btn btn-info btn-sm me-2" onClick={() => navigate(`/warehouse/${warehouse.id}`)}>
+          <button
+            className="btn btn-info btn-sm me-2"
+            onClick={() => navigate(`/warehouse/${warehouse.id}`)}
+          >
             View Details
           </button>
         </>

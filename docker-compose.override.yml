@@ -5,6 +5,9 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile.dev
+    depends_on:
+      postgres:
+        condition: service_started
     container_name: inventory-manager-backend-development
     ports:
       - "8000:8000"
@@ -22,6 +25,9 @@ services:
     build:
       context: ./warehouse-manager
       dockerfile: Dockerfile.dev
+    depends_on:
+      fastapi-backend:
+        condition: service_started
     container_name: inventory-manager-frontend-development
     ports:
       - "3000:3000"

@@ -1,10 +1,10 @@
 from fastapi import FastAPI, Depends
 from typing import Annotated
 from sqlalchemy.orm import Session
+from routers import health_router, item_router, stock_router, stockmovement_router, warehouse_router, category_router
 from database import engine
 import models
 from fastapi.middleware.cors import CORSMiddleware
-from routers import warehouse, item, category, health, stock
 import os
 from database import get_db
 
@@ -24,11 +24,12 @@ app.add_middleware(
 )
 
 # Register routers
-app.include_router(health.router)
-app.include_router(warehouse.router)
-app.include_router(category.router)
-app.include_router(item.router)
-app.include_router(stock.router)
+app.include_router(health_router.router)
+app.include_router(warehouse_router.router)
+app.include_router(category_router.router)
+app.include_router(item_router.router)
+app.include_router(stock_router.router)
+app.include_router(stockmovement_router.router)
 
 # Dependency to get the DB session
 db_dependency = Annotated[Session, Depends(get_db)]

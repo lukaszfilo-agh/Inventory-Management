@@ -3,7 +3,7 @@ from typing import List
 from sqlalchemy.orm import Session
 import models
 from database import get_db
-from schemas import WarehouseBase, WarehouseModel, ItemModel, StockModel
+from schemas import WarehouseBase, WarehouseModel
 
 router = APIRouter(prefix="/warehouses", tags=["Warehouses"])
 
@@ -55,23 +55,6 @@ async def get_warehouse(warehouse_id: int, db: Session = Depends(get_db)):
     if not warehouse:
         raise HTTPException(status_code=404, detail="Warehouse not found.")
     return warehouse
-
-
-@router.get("/{warehouse_id}/stock",
-            response_model=List[StockModel],
-            response_description="Stock in the specified warehouse",
-            summary="Get stock in a warehouse",
-            description="Fetches all stock items for a specific warehouse.")
-async def get_warehouse_stock(warehouse_id: int, db: Session = Depends(get_db)):
-    """
-    Endpoint to get all stock items for a specific warehouse.
-    - Returns a list of `StockModel` for the specified warehouse.
-    """
-    warehouse = db.query(models.Warehouse).filter(
-        models.Warehouse.id == warehouse_id).one_or_none()
-    if not warehouse:
-        raise HTTPException(status_code=404, detail="Warehouse not found.")
-    return warehouse.stock
 
 
 @router.patch("/{warehouse_id}",

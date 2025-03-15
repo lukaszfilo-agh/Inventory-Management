@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import api from "../api";
 
-const AddStock = () => {
+const StockMovementEdit = () => {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -18,6 +18,7 @@ const AddStock = () => {
   const [quantity, setQuantity] = useState(0);
   const [dateAdded, setDateAdded] = useState("");
   const [price, setPrice] = useState(0);
+  const [movementType, setMovementType] = useState("inflow"); // Default to inflow
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -69,28 +70,29 @@ const AddStock = () => {
     }
   };
 
-  const handleAddStock = async () => {
+  const handleAddStockMovement = async () => {
     if (!itemId || !warehouseId) {
       setErrorMessage("Please select both an item and a warehouse.");
       return;
     }
 
     try {
-      const stockData = {
+      const stockMovementData = {
         item_id: itemId,
         warehouse_id: warehouseId,
-        quantity,
-        date_added: dateAdded,
-        price,
+        quantity: quantity,
+        date: dateAdded,
+        price: price,
+        movement_type: movementType,
       };
 
-      const response = await api.post(`/stock/add/${itemId}`, stockData);
+      const response = await api.post(`/stock/movement/add`, stockMovementData);
       if (response.data) {
         navigate(`/items/${itemId}`);
       }
     } catch (error) {
-      console.error("Error adding stock:", error);
-      setErrorMessage("Failed to add stock. Please try again.");
+      console.error("Error adding stock movement:", error);
+      setErrorMessage("Failed to add stock movement. Please try again.");
     }
   };
 
@@ -104,7 +106,7 @@ const AddStock = () => {
 
   return (
     <div className="container mt-5">
-      <h1 className="text-center mb-4">Add Stock</h1>
+      <h1 className="text-center mb-4">Add Stock Movement</h1>
 
       <div className="row">
         <div className="col-md-6">
@@ -168,6 +170,22 @@ const AddStock = () => {
             </select>
           </div>
 
+          {/* Movement Type */}
+          <div className="mb-3">
+            <label htmlFor="movement_type" className="form-label">
+              Movement Type
+            </label>
+            <select
+              id="movement_type"
+              className="form-select"
+              value={movementType}
+              onChange={(e) => setMovementType(e.target.value)}
+            >
+              <option value="inflow">Inflow</option>
+              <option value="outflow">Outflow</option>
+            </select>
+          </div>
+
           {/* Quantity */}
           <div className="mb-3">
             <label htmlFor="quantity" className="form-label">
@@ -214,8 +232,8 @@ const AddStock = () => {
             <div className="alert alert-danger mt-3">{errorMessage}</div>
           )}
 
-          <button className="btn btn-primary w-100" onClick={handleAddStock}>
-            Add Stock
+          <button className="btn btn-primary w-100" onClick={handleAddStockMovement}>
+            Add Stock Movement
           </button>
         </div>
       </div>
@@ -227,4 +245,4 @@ const AddStock = () => {
   );
 };
 
-export default AddStock;
+export default StockMovementEdit;

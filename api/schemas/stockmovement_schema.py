@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
-from .item_schema import ItemBase
-from .warehouse_schema import WarehouseBase
+from .item_schema import ItemModel
+from .warehouse_schema import WarehouseModel
 
 class StockMovementBase(BaseModel):
     """
@@ -32,8 +32,8 @@ class StockMovementModel(StockMovementBase):
         warehouse (WarehouseBase): The warehouse where the stock movement occurred.
     """
     id: int = Field(..., description="The unique identifier for the stock movement entry")
-    item: ItemBase = Field(..., description="The item associated with the stock movement")
-    warehouse: WarehouseBase = Field(..., description="The warehouse where the stock movement occurred")
+    item: ItemModel = Field(..., description="The item associated with the stock movement")
+    warehouse: WarehouseModel = Field(..., description="The warehouse where the stock movement occurred")
 
     class Config:
         from_attributes = True

@@ -44,6 +44,7 @@ const App = () => {
         {/* Stock */}
         <Route path="/stock/movement" element={<StockMovement />} />
         <Route path="/stock/movement/add" element={<StockMovementEdit />} />
+        <Route path="/stock/movement/add/:id" element={<StockMovementEdit />} />
       </Routes>
     </Router>
   );

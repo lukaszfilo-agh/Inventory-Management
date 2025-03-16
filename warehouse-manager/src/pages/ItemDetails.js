@@ -6,13 +6,11 @@ const ItemDetails = () => {
   const { id } = useParams();
   const [item, setItem] = useState(null);
   const [stocks, setStocks] = useState([]);
-  const [warehouses, setWarehouses] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchItemDetails();
     fetchStockEntries();
-    fetchWarehouses();
   }, []);
 
   const fetchItemDetails = async () => {
@@ -33,17 +31,8 @@ const ItemDetails = () => {
     }
   };
 
-  const fetchWarehouses = async () => {
-    try {
-      const response = await api.get("/warehouses");
-      setWarehouses(response.data);
-    } catch (error) {
-      console.error("Error fetching warehouses:", error);
-    }
-  };
-
   const handleAddStock = () => {
-    navigate(`/stock/add/${id}`, { state: { itemName: item.name } });
+    navigate(`/stock/movement/add/${id}`, { state: { itemName: item.name } });
   };
 
   if (!item) {
@@ -65,13 +54,12 @@ const ItemDetails = () => {
         </div>
       </div>
 
-      <h3 className="mt-4">Stock Entries</h3>
+      <h3 className="mt-4">Stock in warehouses</h3>
       <table className="table table-bordered">
         <thead>
           <tr>
             <th>Warehouse</th>
             <th>Quantity</th>
-            <th>Date Added</th>
           </tr>
         </thead>
         <tbody>
@@ -79,11 +67,9 @@ const ItemDetails = () => {
             stocks.map((stock) => (
               <tr key={stock.id}>
                 <td>
-                  {warehouses.find((wh) => wh.id === stock.warehouse_id)
-                    ?.name || "Unknown"}
+                  {stock.warehouse ? stock.warehouse.name : "No warehouse assigned"}
                 </td>
-                <td>{stock.quantity}</td>
-                <td>{stock.date_added}</td>
+                <td>{stock.stock_level}</td>
               </tr>
             ))
           ) : (

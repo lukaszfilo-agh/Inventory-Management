@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
-from .item_schema import ItemBase
-from .warehouse_schema import WarehouseBase
+from .item_schema import ItemModel
+from .warehouse_schema import WarehouseModel
 
 class StockBase(BaseModel):
     """
@@ -28,8 +28,8 @@ class StockModel(StockBase):
         warehouse (WarehouseBase): The warehouse where the stock is stored.
     """
     id: int = Field(..., description="The unique identifier for the stock entry")
-    item: ItemBase = Field(..., description="The item associated with the stock")
-    warehouse: WarehouseBase = Field(..., description="The warehouse where the stock is stored")
+    item: ItemModel = Field(..., description="The item associated with the stock")
+    warehouse: WarehouseModel = Field(..., description="The warehouse where the stock is stored")
 
     class Config:
         from_attributes = True

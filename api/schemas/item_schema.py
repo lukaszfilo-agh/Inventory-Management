@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from .category_schema import CategoryBase
+from .category_schema import CategoryModel
 
 
 class ItemBase(BaseModel):
@@ -25,7 +25,7 @@ class ItemModel(ItemBase):
         category (CategoryBase): The category that the item belongs to.
     """
     id: int = Field(..., description="The unique identifier for the item")
-    category: CategoryBase = Field(..., description="The category that the item belongs to")
+    category: CategoryModel = Field(..., description="The category that the item belongs to")
 
     class Config:
         from_attributes = True

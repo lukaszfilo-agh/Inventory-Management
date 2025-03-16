@@ -27,7 +27,7 @@ const Navbar = () => (
           </li>
           <li className="nav-item">
             <Link className="nav-link" to="/stock/movement">
-              Stock
+              Stock Movement
             </Link>
           </li>
           <li className="nav-item">

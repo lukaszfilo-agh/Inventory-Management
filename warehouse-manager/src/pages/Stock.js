@@ -7,6 +7,7 @@ const Stock = () => {
   useEffect(() => {
     fetchStockEntries();
   }, []);
+
   const fetchStockEntries = async () => {
     try {
       const response = await api.get(`/stock/get`);
@@ -15,7 +16,16 @@ const Stock = () => {
       console.error("Error fetching stock entries:", error);
     }
   };
-    
+
+  const groupedStocks = stocks.reduce((acc, stock) => {
+    const warehouseName = stock.warehouse.name;
+    if (!acc[warehouseName]) {
+      acc[warehouseName] = [];
+    }
+    acc[warehouseName].push(stock);
+    return acc;
+  }, {});
+
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Stock</h1>
@@ -23,18 +33,26 @@ const Stock = () => {
       <table className="table table-bordered">
         <thead>
           <tr>
-            <th>Item</th>
             <th>Warehouse</th>
+            <th>Item</th>
             <th>Quantity</th>
           </tr>
         </thead>
         <tbody>
-          {stocks.map((stock) => (
-            <tr key={stock.id}>
-              <td>{stock.item.name}</td>
-              <td>{stock.warehouse.name}</td>
-              <td>{stock.stock_level}</td>
-            </tr>
+          {Object.keys(groupedStocks).map((warehouseName) => (
+            <React.Fragment key={warehouseName}>
+              {groupedStocks[warehouseName].map((stock, index) => (
+                <tr key={stock.id}>
+                  {index === 0 && (
+                    <td rowSpan={groupedStocks[warehouseName].length} className="font-weight-bold">
+                      {warehouseName}
+                    </td>
+                  )}
+                  <td>{stock.item.name}</td>
+                  <td>{stock.stock_level}</td>
+                </tr>
+              ))}
+            </React.Fragment>
           ))}
         </tbody>
       </table>

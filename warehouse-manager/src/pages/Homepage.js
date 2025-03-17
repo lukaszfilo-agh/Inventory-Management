@@ -73,6 +73,21 @@ const Homepage = () => {
       </div>
 
       <div className="mt-5">
+        <h2>Features</h2>
+        <ul>
+          <li><strong>Create and manage warehouses:</strong> Add, edit, and delete warehouse details.</li>
+          <li><strong>Add, edit, and delete items:</strong> Manage items stored in warehouses.</li>
+          <li><strong>Track stock levels:</strong> Monitor the quantity of items in each warehouse.</li>
+          <li><strong>View items categorized by warehouse:</strong> Easily see which items are stored in each warehouse.</li>
+          <li><strong>RESTful API:</strong> Built with FastAPI for efficient backend operations.</li>
+          <li><strong>PostgreSQL database:</strong> Uses SQLAlchemy ORM for database interactions.</li>
+          <li><strong>React frontend:</strong> User-friendly interface styled with Bootstrap 5.</li>
+          <li><strong>Real-time updates:</strong> Interface updates in real-time as data changes.</li>
+          <li><strong>Docker support:</strong> Easy deployment with Docker containers.</li>
+        </ul>
+      </div>
+
+      <div className="mt-5">
         <h2>How to Use</h2>
         <ul>
           <li><strong>View Items:</strong> Manage and view your items in the inventory.</li>

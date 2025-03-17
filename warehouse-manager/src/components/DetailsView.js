@@ -40,7 +40,7 @@ const DetailsView = ({
     // Fetch stock if it's a warehouse view
     const fetchStock = async () => {
       try {
-        const response = await api.get(`${stockApiEndpoint}/${id}/stock`); // Fetch stock for warehouse
+        const response = await api.get(`${stockApiEndpoint}/${id}`); // Fetch stock for warehouse
         setStock(response.data);
       } catch (error) {
         console.error(`Error fetching ${title.toLowerCase()} stock:`, error);
@@ -133,7 +133,6 @@ const DetailsView = ({
               <thead>
                 <tr>
                   <th>Name</th>
-                  <th>Quantity</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -141,7 +140,6 @@ const DetailsView = ({
                 {items.map((item) => (
                   <tr key={item.id}>
                     <td>{item.name}</td>
-                    <td>{item.quantity}</td>
                     <td>
                       <button
                         className="btn btn-primary btn-sm me-2"
@@ -169,7 +167,6 @@ const DetailsView = ({
                 <tr>
                   <th>Item Name</th>
                   <th>Quantity</th>
-                  <th>Date Added</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -177,8 +174,7 @@ const DetailsView = ({
                 {stock.map((stockEntry) => (
                   <tr key={stockEntry.id}>
                     <td>{stockEntry.item.name}</td>
-                    <td>{stockEntry.quantity}</td>
-                    <td>{stockEntry.date_added}</td>
+                    <td>{stockEntry.stock_level}</td>
                     <td>
                       <button
                         className="btn btn-primary btn-sm me-2"

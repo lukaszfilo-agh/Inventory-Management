@@ -24,7 +24,7 @@ const ItemDetails = () => {
 
   const fetchStockEntries = async () => {
     try {
-      const response = await api.get(`/stock/get/${id}`);
+      const response = await api.get(`/stock/get/item/${id}`);
       setStocks(response.data);
     } catch (error) {
       console.error("Error fetching stock entries:", error);

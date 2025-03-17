@@ -23,7 +23,7 @@ async def get_stock(db: Session = Depends(get_db)):
     return db.query(Stock).all()
 
 
-@router.get("/get/{item_id}",
+@router.get("/get/item/{item_id}",
             response_model=List[StockModel],
             response_description="List of stock for the specified item",
             summary="Get stock for a specific item",
@@ -41,7 +41,7 @@ async def get_stock_for_item(item_id: int, db: Session = Depends(get_db)):
     stock = db.query(Stock).filter(Stock.item_id == item_id).all()
     return stock
 
-@router.get("/get/{warehouse_id}",
+@router.get("/get/warehouse/{warehouse_id}",
             response_model=List[StockModel],
             response_description="List of stock for the specified warehouse",
             summary="Get stock for a specific warehouse",

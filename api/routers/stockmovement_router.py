@@ -9,7 +9,7 @@ from schemas import StockMovementBase, StockMovementModel
 
 router = APIRouter(prefix="/stock/movement", tags=["Stock Movement"])
 
-@router.get("/",
+@router.get("/get",
             response_model=List[StockMovementModel],
             response_description="A list of all stock movements",
             summary="Get all stock movements",

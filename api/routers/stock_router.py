@@ -10,7 +10,7 @@ from schemas import StockModel
 router = APIRouter(prefix="/stock", tags=["Stock"])
 
 
-@router.get("/",
+@router.get("/get",
             response_model=List[StockModel],
             response_description="A list of all stock items",
             summary="Get all stock",

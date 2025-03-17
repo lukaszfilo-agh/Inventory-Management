@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from datetime import datetime
+from datetime import date
 from .item_schema import ItemModel
 from .warehouse_schema import WarehouseModel
 
@@ -19,7 +19,7 @@ class StockMovementBase(BaseModel):
     warehouse_id: int = Field(..., description="The unique identifier of the warehouse where the stock movement occurred")
     movement_type: str = Field(..., description="The type of movement (inflow or outflow)")
     quantity: int = Field(..., description="The quantity of the item moved")
-    date: datetime = Field(..., description="The date and time when the movement occurred")
+    movement_date: date = Field(..., description="The date and time when the movement occurred")
     price: int = Field(..., description="The price of the item")
 
 class StockMovementModel(StockMovementBase):

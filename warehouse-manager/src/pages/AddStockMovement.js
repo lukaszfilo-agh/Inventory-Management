@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import api from "../api";
 
-const StockMovementEdit = () => {
+const AddStockMovement = () => {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -81,7 +81,7 @@ const StockMovementEdit = () => {
         item_id: itemId,
         warehouse_id: warehouseId,
         quantity: quantity,
-        date: dateAdded,
+        movement_date: dateAdded,
         price: price,
         movement_type: movementType,
       };
@@ -108,7 +108,7 @@ const StockMovementEdit = () => {
     <div className="container mt-5">
       <h1 className="text-center mb-4">Add Stock Movement</h1>
 
-      <div className="row">
+      <div className="row justify-content-center">
         <div className="col-md-6">
           {/* Select Category */}
           <div className="mb-3">
@@ -245,4 +245,4 @@ const StockMovementEdit = () => {
   );
 };
 
-export default StockMovementEdit;
+export default AddStockMovement;

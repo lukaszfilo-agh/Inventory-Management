@@ -1,7 +1,7 @@
 from database import Base
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean, CheckConstraint
+from sqlalchemy import Column, Integer, String, ForeignKey, Date, Boolean, CheckConstraint
 from sqlalchemy.orm import relationship
-from datetime import datetime
+from datetime import date
 
 class Warehouse(Base):
     """
@@ -68,7 +68,7 @@ class StockMovement(Base):
     warehouse_id = Column(Integer, ForeignKey('warehouses.id'))
     movement_type = Column(String, CheckConstraint("movement_type IN ('inflow', 'outflow')"))
     quantity = Column(Integer, nullable=False)
-    date = Column(DateTime, default=datetime.now)
+    movement_date = Column(Date, default=date.today)
     price = Column(Integer, nullable=False)
 
     item = relationship("Item", back_populates="stock_movements")

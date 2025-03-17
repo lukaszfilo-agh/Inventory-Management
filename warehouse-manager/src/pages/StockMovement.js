@@ -1,33 +1,54 @@
-import ListView from "../components/ListView";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import api from "../api";
 
 const StockMovement = () => {
+  const [movements, setMovements] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchStockMovements();
+  }, []);
+
+  const fetchStockMovements = async () => {
+    try {
+      const response = await api.get(`/stock/movement/get`);
+      setMovements(response.data);
+    } catch (error) {
+      console.error("Error fetching stock movements:", error);
+    }
+  };
+
   return (
-    <ListView
-      title="Stock Movement"
-      apiEndpoint="/stock/movement" // Adjusted to match the stock movement API endpoint
-      addPath="/stock/movement/add" // Adjusted to match the add stock movement endpoint
-      itemKey={(stockMovement) => stockMovement.id} // Stock Movement ID as key
-      renderName={(stockMovement) =>
-        `${stockMovement.item.name} (Warehouse: ${stockMovement.warehouse.name})`
-      } // Show item and warehouse name
-      renderActions={(stockMovement, navigate) => (
-        <>
-          <button
-            className="btn btn-primary btn-sm me-2"
-            onClick={() => navigate(`/items/${stockMovement.item_id}`)}
-          >
-            View Item
-          </button>
-          <button
-            className="btn btn-secondary btn-sm"
-            onClick={() => navigate(`/warehouse/${stockMovement.warehouse_id}`)}
-          >
-            View Warehouse
-          </button>
-        </>
-      )}
-    />
-  );
+    <div className="container mt-5">
+      <h1 className="text-center mb-4">Stock Movements</h1>
+      <button className="btn btn-success mb-3" onClick={() => navigate("/stock/movement/add")}>
+        Add Stock Movement
+      </button>
+      <table className="table table-bordered">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Warehouse</th>
+            <th>Quantity</th>
+            <th>Movement Type</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {movements.map((movement) => (
+            <tr key={movement.id}>
+              <td>{movement.item.name}</td>
+              <td>{movement.warehouse.name}</td>
+              <td>{movement.quantity}</td>
+              <td>{movement.movement_type}</td>
+              <td>{movement.movement_date}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
 };
 
 export default StockMovement;

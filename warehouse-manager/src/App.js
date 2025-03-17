@@ -13,7 +13,8 @@ import Categories from "./pages/Categories";
 import CategoryDetails from "./pages/CategoryDetails";
 import AddCategory from "./pages/AddCategory";
 import StockMovement from "./pages/StockMovement";
-import StockMovementEdit from "./pages/StockMovementEdit";
+import AddStockMovement from "./pages/AddStockMovement";
+import Stock from "./pages/Stock";
 
 // Components
 import Navbar from "./components/Navbar";
@@ -42,9 +43,10 @@ const App = () => {
         <Route path="/categories/add" element={<AddCategory />} />
 
         {/* Stock */}
+        <Route path="/stock" element={<Stock />} />
         <Route path="/stock/movement" element={<StockMovement />} />
-        <Route path="/stock/movement/add" element={<StockMovementEdit />} />
-        <Route path="/stock/movement/add/:id" element={<StockMovementEdit />} />
+        <Route path="/stock/movement/add" element={<AddStockMovement />} />
+        <Route path="/stock/movement/add/:id" element={<AddStockMovement />} />
       </Routes>
     </Router>
   );

@@ -2,60 +2,83 @@ import React, { useState } from "react";
 import api from "../api";
 
 const AddWarehouse = () => {
-  const [warehouseName, setWarehouseName] = useState("");
-  const [location, setLocation] = useState("");
-  const [message, setMessage] = useState("");
+  const [newWarehouse, setNewWarehouse] = useState({
+    name: "",
+    location: "",
+  });
 
-  const handleAddWarehouse = async (e) => {
-    e.preventDefault();
+  const [addedWarehouse, setAddedWarehouse] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
+  const handleAddWarehouse = async () => {
     try {
-      const response = await api.post("/warehouses/", {
-        name: warehouseName,
-        location: location,
+      const response = await api.post("/warehouses/", newWarehouse);
+      setAddedWarehouse(response.data);
+      setNewWarehouse({
+        name: "",
+        location: "",
       });
-      setMessage(`Warehouse "${response.data.name}" added successfully!`);
-      setWarehouseName("");
-      setLocation("");
+      setErrorMessage("");
     } catch (error) {
       console.error("Error adding warehouse:", error);
-      setMessage("Failed to add warehouse.");
+      setErrorMessage("Failed to add warehouse. Please try again.");
     }
+  };
+
+  const handleChange = (e) => {
+    setNewWarehouse({ ...newWarehouse, [e.target.name]: e.target.value });
   };
 
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">Add Warehouse</h1>
-      <form onSubmit={handleAddWarehouse}>
-        <div className="mb-3">
-          <label className="form-label">Warehouse Name</label>
-          <input
-            type="text"
-            className="form-control"
-            value={warehouseName}
-            onChange={(e) => setWarehouseName(e.target.value)}
-            required
-          />
+      <div className="row justify-content-center">
+        <div className="col-md-6">
+          <div className="card p-4 shadow-sm">
+            <div className="card-body">
+              <div className="mb-3">
+                <label htmlFor="name" className="form-label">
+                  Warehouse Name
+                </label>
+                <input
+                  name="name"
+                  id="name"
+                  className="form-control"
+                  value={newWarehouse.name}
+                  onChange={handleChange}
+                  placeholder="Enter warehouse name"
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="location" className="form-label">
+                  Location
+                </label>
+                <input
+                  name="location"
+                  id="location"
+                  className="form-control"
+                  value={newWarehouse.location}
+                  onChange={handleChange}
+                  placeholder="Enter location"
+                  required
+                />
+              </div>
+              <button className="btn btn-primary" onClick={handleAddWarehouse}>
+                Add Warehouse
+              </button>
+              {errorMessage && (
+                <div className="alert alert-danger mt-3">{errorMessage}</div>
+              )}
+              {addedWarehouse && (
+                <div className="alert alert-success mt-3">
+                  Warehouse added successfully!
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-        <div className="mb-3">
-          <label className="form-label">Location</label>
-          <input
-            type="text"
-            className="form-control"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">
-          Add Warehouse
-        </button>
-      </form>
-      {message && (
-        <div className="mt-3 alert alert-info" role="alert">
-          {message}
-        </div>
-      )}
+      </div>
     </div>
   );
 };

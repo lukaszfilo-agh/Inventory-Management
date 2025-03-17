@@ -9,6 +9,10 @@ const AddCategory = () => {
   const [addedCategory, setAddedCategory] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
 
+  useEffect(() => {
+    document.title = "Warehouse Manager | Add Category";
+  }, []);
+
   const handleAddCategory = async () => {
     try {
       const response = await api.post("/categories/", newCategory);

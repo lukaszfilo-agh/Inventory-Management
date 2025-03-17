@@ -10,6 +10,10 @@ const StockMovement = () => {
     fetchStockMovements();
   }, []);
 
+  useEffect(() => {
+    document.title = "Warehouse Manager | Stock Movements";
+  }, []);
+
   const fetchStockMovements = async () => {
     try {
       const response = await api.get(`/stock/movement/get`);

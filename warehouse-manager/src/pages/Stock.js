@@ -8,6 +8,10 @@ const Stock = () => {
     fetchStockEntries();
   }, []);
 
+  useEffect(() => {
+    document.title = "Warehouse Manager | Stock";
+  }, []);
+
   const fetchStockEntries = async () => {
     try {
       const response = await api.get(`/stock/get`);

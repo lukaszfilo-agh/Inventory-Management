@@ -18,6 +18,10 @@ const DetailsView = ({
   const [isEditing, setIsEditing] = useState({});
 
   useEffect(() => {
+    document.title = "Warehouse Manager | " + title + " Details";
+  }, []);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await api.get(`${apiEndpoint}/${id}`);

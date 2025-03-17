@@ -15,6 +15,10 @@ const ItemDetails = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = "Warehouse Manager | Item Details";
+  }, []);
+
+  useEffect(() => {
     fetchItemDetails();
     fetchStockEntries();
   }, []);

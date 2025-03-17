@@ -11,6 +11,10 @@ const AddItem = () => {
   const [addedItem, setAddedItem] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
 
+  useEffect(() => {
+    document.title = "Warehouse Manager | Add Item";
+  }, []);
+
   const handleAddItem = async () => {
     try {
       const response = await api.post("/items/", newItem);

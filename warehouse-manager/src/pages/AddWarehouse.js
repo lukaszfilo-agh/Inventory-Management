@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import api from "../api";
 
 const AddWarehouse = () => {
@@ -9,6 +9,10 @@ const AddWarehouse = () => {
 
   const [addedWarehouse, setAddedWarehouse] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    document.title = "Warehouse Manager | Add Warehouse";
+  }, []);
 
   const handleAddWarehouse = async () => {
     try {

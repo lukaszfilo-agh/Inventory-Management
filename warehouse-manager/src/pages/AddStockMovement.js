@@ -23,6 +23,10 @@ const AddStockMovement = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    document.title = "Warehouse Manager | Add Stock Movement";
+  }, []);
+
+  useEffect(() => {
     fetchCategories();
     fetchItems();
     fetchWarehouses();

@@ -8,6 +8,10 @@ const Homepage = () => {
   const [apiMessage, setApiMessage] = useState("");
 
   useEffect(() => {
+    document.title = "Warehouse Manager | Homepage";
+  }, []);
+
+  useEffect(() => {
     const checkApiHealth = async () => {
       try {
         const response = await api.get("/health"); // Assuming your API has a `/health` endpoint

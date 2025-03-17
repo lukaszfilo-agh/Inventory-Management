@@ -10,7 +10,19 @@ from database import get_db
 
 frontend_url = os.getenv("FRONTEND_URL")
 
-app = FastAPI()
+app = FastAPI(
+    title="Inventory Manager API",
+    description="API for managing warehouses, stock movements, and items.",
+    version="1.0.0",
+    contact={
+        "name": "Łukasz",
+        "email": "lukif02@gmail.com",
+    },
+    license_info={
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT",
+    },
+)
 
 origins = [
     frontend_url

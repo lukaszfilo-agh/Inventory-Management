@@ -1,7 +1,7 @@
 name: inventory-manager-development
 
 services:
-  fastapi-backend:
+  inventory-backend:
     build:
       context: ./api
       dockerfile: Dockerfile.dev
@@ -21,19 +21,19 @@ services:
       - DATABASE_URL=${LOCAL_DATABASE_URL}
       - RUNNING_IN_DOCKER=True
 
-  react-frontend:
+  inventory-frontend:
     build:
       context: ./warehouse-manager
       dockerfile: Dockerfile.dev
     depends_on:
-      fastapi-backend:
+      inventory-backend:
         condition: service_started
     container_name: inventory-manager-frontend-development
     ports:
       - "3000:3000"
     volumes:
       - ./warehouse-manager:/app
-      - /app/node_modules # Prevents overwriting node_modules
+      - frontend_data:/app/node_modules # Prevents overwriting node_modules
     networks:
       - inventory-manager-network
     environment:
@@ -41,8 +41,7 @@ services:
 
   postgres:
     image: postgres:16
-    container_name: my_postgres-development
-    restart: always
+    container_name: postgres_inventory-development
     ports:
       - "5432:5432"
     environment:
@@ -72,5 +71,6 @@ networks:
     driver: bridge
 
 volumes:
+  frontend_data:
   postgres_data:
   pgadmin_data:

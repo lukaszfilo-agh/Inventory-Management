@@ -147,7 +147,7 @@ const DetailsView = ({
                     <td>
                       <button
                         className="btn btn-primary btn-sm me-2"
-                        onClick={() => navigate(`/item/${item.id}`)}
+                        onClick={() => navigate(`/items/${item.id}`)}
                       >
                         View Item Details
                       </button>
@@ -182,7 +182,7 @@ const DetailsView = ({
                     <td>
                       <button
                         className="btn btn-primary btn-sm me-2"
-                        onClick={() => navigate(`/item/${stockEntry.item_id}`)}
+                        onClick={() => navigate(`/items/${stockEntry.item_id}`)}
                       >
                         View Item Details
                       </button>

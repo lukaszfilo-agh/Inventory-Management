@@ -13,6 +13,10 @@ const ListView = ({
   const [items, setItems] = useState([]);
   const navigate = useNavigate();
 
+    useEffect(() => {
+      document.title = "Warehouse Manager | " + title;
+    }, []);
+
   useEffect(() => {
     const fetchItems = async () => {
       try {

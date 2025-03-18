@@ -3,7 +3,7 @@ from typing import List
 from sqlalchemy.orm import Session
 import models
 from database import get_db
-from schemas import ItemBase, ItemModel, StockBase, StockModel
+from schemas import ItemBase, ItemModel
 
 router = APIRouter(prefix="/items", tags=["Items"])
 

@@ -4,17 +4,22 @@ import api from "../api";
 const AddItem = () => {
   const [newItem, setNewItem] = useState({
     name: "",
+    description: "",
     category_id: 0,
   });
 
   const [addedItem, setAddedItem] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
 
+  useEffect(() => {
+    document.title = "Warehouse Manager | Add Item";
+  }, []);
+
   const handleAddItem = async () => {
     try {
       const response = await api.post("/items/", newItem);
       setAddedItem(response.data);
-      setNewItem({ name: "", category_id: 0 });
+      setNewItem({ name: "", description: "", category_id: 0 });
       setErrorMessage("");
     } catch (error) {
       console.error("Error adding item:", error);
@@ -49,6 +54,19 @@ const AddItem = () => {
                   value={newItem.name}
                   onChange={handleChange}
                   placeholder="Enter item name"
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="description" className="form-label">
+                  Item Description
+                </label>
+                <textarea
+                  name="description"
+                  id="description"
+                  className="form-control"
+                  value={newItem.description}
+                  onChange={handleChange}
+                  placeholder="Enter item description"
                 />
               </div>
               <div className="mb-3">

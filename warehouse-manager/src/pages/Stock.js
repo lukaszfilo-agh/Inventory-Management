@@ -1,32 +1,66 @@
-import ListView from "../components/ListView";
+import React, { useState, useEffect } from "react";
+import api from "../api";
 
 const Stock = () => {
+  const [stocks, setStocks] = useState([]);
+
+  useEffect(() => {
+    fetchStockEntries();
+  }, []);
+
+  useEffect(() => {
+    document.title = "Warehouse Manager | Stock";
+  }, []);
+
+  const fetchStockEntries = async () => {
+    try {
+      const response = await api.get(`/stock/get`);
+      setStocks(response.data);
+    } catch (error) {
+      console.error("Error fetching stock entries:", error);
+    }
+  };
+
+  const groupedStocks = stocks.reduce((acc, stock) => {
+    const warehouseName = stock.warehouse.name;
+    if (!acc[warehouseName]) {
+      acc[warehouseName] = [];
+    }
+    acc[warehouseName].push(stock);
+    return acc;
+  }, {});
+
   return (
-    <ListView
-      title="Stock"
-      apiEndpoint="/stock" // Adjust this to match your API
-      addPath="/stock/add" // Adjust this if needed
-      itemKey={(stock) => stock.id} // Stock ID as key
-      renderName={(stock) =>
-        `${stock.item.name} (Warehouse: ${stock.warehouse.name})`
-      } // Show item and warehouse name
-      renderActions={(stock, navigate) => (
-        <>
-          <button
-            className="btn btn-primary btn-sm me-2"
-            onClick={() => navigate(`/items/${stock.item_id}`)}
-          >
-            View Item
-          </button>
-          <button
-            className="btn btn-secondary btn-sm"
-            onClick={() => navigate(`/warehouse/${stock.warehouse_id}`)}
-          >
-            View Warehouse
-          </button>
-        </>
-      )}
-    />
+    <div className="container mt-5">
+      <h1 className="text-center mb-4">Stock</h1>
+      <h3 className="mt-4">Stock in warehouses</h3>
+      <table className="table table-bordered">
+        <thead>
+          <tr>
+            <th>Warehouse</th>
+            <th>Item</th>
+            <th>Quantity</th>
+          </tr>
+        </thead>
+        <tbody>
+          {Object.keys(groupedStocks).map((warehouseName) => (
+            <React.Fragment key={warehouseName}>
+              {groupedStocks[warehouseName].map((stock, index) => (
+                <tr key={stock.id}>
+                  {index === 0 && (
+                    <td rowSpan={groupedStocks[warehouseName].length} className="font-weight-bold">
+                      {warehouseName}
+                    </td>
+                  )}
+                  <td>{stock.item.name}</td>
+                  <td>{stock.stock_level}</td>
+                </tr>
+              ))}
+            </React.Fragment>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 

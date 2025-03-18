@@ -12,8 +12,9 @@ import WarehouseDetails from "./pages/WarehouseDetails";
 import Categories from "./pages/Categories";
 import CategoryDetails from "./pages/CategoryDetails";
 import AddCategory from "./pages/AddCategory";
+import StockMovement from "./pages/StockMovement";
+import AddStockMovement from "./pages/AddStockMovement";
 import Stock from "./pages/Stock";
-import AddStock from "./pages/AddStock";
 
 // Components
 import Navbar from "./components/Navbar";
@@ -43,8 +44,9 @@ const App = () => {
 
         {/* Stock */}
         <Route path="/stock" element={<Stock />} />
-        <Route path="/stock/add" element={<AddStock />} />
-        <Route path="/stock/add/:id" element={<AddStock />} />
+        <Route path="/stock/movement" element={<StockMovement />} />
+        <Route path="/stock/movement/add" element={<AddStockMovement />} />
+        <Route path="/stock/movement/add/:id" element={<AddStockMovement />} />
       </Routes>
     </Router>
   );

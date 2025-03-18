@@ -1,7 +1,8 @@
-import psycopg2
-from urllib.parse import urlparse
-from dotenv import load_dotenv
 import os
+from urllib.parse import urlparse
+
+import psycopg2
+from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()

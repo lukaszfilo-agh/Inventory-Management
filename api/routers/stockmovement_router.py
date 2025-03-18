@@ -1,10 +1,10 @@
 from typing import List
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from models import Stock, Item, Warehouse, StockMovement
 from database import get_db
+from models import Item, Stock, StockMovement, Warehouse
 from schemas import StockMovementBase, StockMovementModel
 
 router = APIRouter(prefix="/stock/movement", tags=["Stock Movement"])

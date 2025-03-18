@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
+
 class CategoryBase(BaseModel):
     """
     Schema used for creating or updating a category. The `CategoryBase` class does not include the `id`.

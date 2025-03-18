@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
+
 class WarehouseBase(BaseModel):
     """
     Schema used for creating or updating a warehouse. The `WarehouseBase` class does not include the `id`.

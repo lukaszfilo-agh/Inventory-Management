@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field
+
 from .item_schema import ItemModel
 from .warehouse_schema import WarehouseModel
+
 
 class StockBase(BaseModel):
     """

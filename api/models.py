@@ -1,7 +1,11 @@
-from database import Base
-from sqlalchemy import Column, Integer, String, ForeignKey, Date, Boolean, CheckConstraint
-from sqlalchemy.orm import relationship
 from datetime import date
+
+from sqlalchemy import (CheckConstraint, Column, Date, ForeignKey,
+                        Integer, String)
+from sqlalchemy.orm import relationship
+
+from database import Base
+
 
 class Warehouse(Base):
     """

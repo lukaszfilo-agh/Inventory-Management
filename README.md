@@ -131,7 +131,7 @@ docker-compose down
 
 ## 🌐 Folder Structure  
 ```
-│📁 inventory-manager/
+📁 inventory-manager/
 ├───📁 backend/
 │   ├───📁 app/
 │   │   ├───📁 api/

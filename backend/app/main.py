@@ -2,7 +2,7 @@ from typing import Annotated
 
 import models as models
 from api import api_router
-from core import Settings, engine, get_db
+from core import settings, engine, get_db
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -22,7 +22,7 @@ app = FastAPI(
 )
 
 origins = [
-    Settings().FRONTEND_URL,
+    settings.FRONTEND_URL,
 ]
 
 app.add_middleware(

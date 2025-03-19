@@ -9,4 +9,4 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     FRONTEND_URL: str
 
-print(Settings().model_dump())
+settings = Settings()

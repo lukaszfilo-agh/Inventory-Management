@@ -131,23 +131,93 @@ docker-compose down
 
 ## 🌐 Folder Structure  
 ```
-inventory-manager/
-│── api/  # FastAPI backend
-│   ├── main.py  # Entry point
-│   ├── models.py  # Database models
-│   ├── routers/  # API routes
-│   ├── database.py  # Database connection setup
-│   ├── schemas.py  # Pydantic models
-│   ├── requirements.txt  # Python dependencies
-│── warehouse-manager/  # React frontend
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── App.js
-│   │   ├── index.js
-│   ├── package.json  # Frontend dependencies
-│── docker-compose.yml  # Docker setup
-│── .env  # Environment variables
+│📁 inventory-manager/
+├───📁 backend/
+│   ├───📁 app/
+│   │   ├───📁 api/
+│   │   │   ├───📁 routers/
+│   │   │   │   ├───📄 __init__.py
+│   │   │   │   ├───📄 category_router.py
+│   │   │   │   ├───📄 health_router.py
+│   │   │   │   ├───📄 item_router.py
+│   │   │   │   ├───📄 stock_router.py
+│   │   │   │   ├───📄 stockmovement_router.py
+│   │   │   │   └───📄 warehouse_router.py
+│   │   │   ├───📄 __init__.py
+│   │   │   └───📄 main.py
+│   │   ├───📁 core/
+│   │   │   ├───📄 __init__.py
+│   │   │   ├───📄 config.py
+│   │   │   └───📄 database.py
+│   │   ├───📁 models/
+│   │   │   ├───📄 __init__.py
+│   │   │   ├───📄 category_model.py
+│   │   │   ├───📄 item_model.py
+│   │   │   ├───📄 other_models_na.py
+│   │   │   ├───📄 stock_model.py
+│   │   │   ├───📄 stock_movement_model.py
+│   │   │   └───📄 warehouse_model.py
+│   │   ├───📁 schemas/
+│   │   │   ├───📄 __init__.py
+│   │   │   ├───📄 category_schema.py
+│   │   │   ├───📄 item_schema.py
+│   │   │   ├───📄 stock_schema.py
+│   │   │   ├───📄 stockmovement_schema.py
+│   │   │   └───📄 warehouse_schema.py
+│   │   └───📄 main.py
+│   ├───📄 .dockerignore
+│   ├───📄 Dockerfile
+│   ├───📄 Dockerfile.dev
+│   ├───📄 db_clean.py
+│   └───📄 requirements.txt
+├───📁 frontend/
+│   ├───📁 node_modules/
+│   ├───📁 public/
+│   │   ├───📄 favicon.ico
+│   │   ├───📄 index.html
+│   │   ├───📄 logo192.png
+│   │   ├───📄 logo512.png
+│   │   ├───📄 manifest.json
+│   │   └───📄 robots.txt
+│   ├───📁 src/
+│   │   ├───📁 components/
+│   │   │   ├───📄 DetailsView.js
+│   │   │   ├───📄 ListView.js
+│   │   │   └───📄 Navbar.js
+│   │   ├───📁 pages/
+│   │   │   ├───📄 AddCategory.js
+│   │   │   ├───📄 AddItem.js
+│   │   │   ├───📄 AddStockMovement.js
+│   │   │   ├───📄 AddWarehouse.js
+│   │   │   ├───📄 Categories.js
+│   │   │   ├───📄 CategoryDetails.js
+│   │   │   ├───📄 Homepage.js
+│   │   │   ├───📄 ItemDetails.js
+│   │   │   ├───📄 Items.js
+│   │   │   ├───📄 Stock.js
+│   │   │   ├───📄 StockMovement.js
+│   │   │   ├───📄 WarehouseDetails.js
+│   │   │   └───📄 Warehouses.js
+│   │   ├───📄 App.css
+│   │   ├───📄 App.js
+│   │   ├───📄 App.test.js
+│   │   ├───📄 api.js
+│   │   ├───📄 index.css
+│   │   ├───📄 index.js
+│   │   ├───📄 logo.svg
+│   │   ├───📄 reportWebVitals.js
+│   │   └───📄 setupTests.js
+│   ├───📄 .env
+│   ├───📄 .gitignore
+│   ├───📄 Dockerfile
+│   ├───📄 Dockerfile.dev
+│   ├───📄 README.md
+│   ├───📄 package-lock.json
+│   └───📄 package.json
+├───📄 .gitignore
+├───📄 README.md
+├───📄 docker-compose.override.yml
+└───📄 docker-compose.yml
 ```
 
 ---

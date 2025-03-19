@@ -4,7 +4,7 @@ from sqlalchemy import (CheckConstraint, Column, Date, ForeignKey,
                         Integer, String)
 from sqlalchemy.orm import relationship
 
-from database import Base
+from core.database import Base
 
 
 class Warehouse(Base):

@@ -3,7 +3,7 @@ name: inventory-manager-development
 services:
   inventory-backend:
     build:
-      context: ./api
+      context: ./backend
       dockerfile: Dockerfile.dev
     depends_on:
       postgres:
@@ -12,14 +12,14 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./api:/app
+      - ./backend:/app
     networks:
       - inventory-manager-network
     environment:
       - FRONTEND_URL=${FRONTEND_URL}
-      # - DATABASE_URL=${DATABASE_URL}
-      - DATABASE_URL=${LOCAL_DATABASE_URL}
-      - RUNNING_IN_DOCKER=True
+      - DATABASE_URL=${DATABASE_URL}
+      - LOCAL_DATABASE_URL=${LOCAL_DATABASE_URL}
+      - REACT_APP_API_URL=${REACT_APP_API_URL}
 
   inventory-frontend:
     build:

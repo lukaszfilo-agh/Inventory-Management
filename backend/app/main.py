@@ -1,16 +1,14 @@
-import os
 from typing import Annotated
 
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
-import models
-from database import engine, get_db
-from routers import (category_router, health_router, item_router, stock_router,
-                     stockmovement_router, warehouse_router)
+import models.models as models
+from core.database import engine, get_db
+from api import api_router
 
-frontend_url = os.getenv("FRONTEND_URL")
+from core.config import Settings
 
 app = FastAPI(
     title="Inventory Manager API",
@@ -27,7 +25,7 @@ app = FastAPI(
 )
 
 origins = [
-    frontend_url
+    Settings().FRONTEND_URL,
 ]
 
 app.add_middleware(
@@ -38,12 +36,7 @@ app.add_middleware(
 )
 
 # Register routers
-app.include_router(health_router.router)
-app.include_router(warehouse_router.router)
-app.include_router(category_router.router)
-app.include_router(item_router.router)
-app.include_router(stock_router.router)
-app.include_router(stockmovement_router.router)
+app.include_router(api_router)
 
 # Dependency to get the DB session
 db_dependency = Annotated[Session, Depends(get_db)]

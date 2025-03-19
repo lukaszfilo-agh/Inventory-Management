@@ -1,14 +1,11 @@
 from typing import Annotated
 
+import models as models
+from api import api_router
+from core import Settings, engine, get_db
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-
-import models.models as models
-from core.database import engine, get_db
-from api import api_router
-
-from core.config import Settings
 
 app = FastAPI(
     title="Inventory Manager API",

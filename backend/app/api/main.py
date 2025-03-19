@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
-from .routers import category_router, health_router, item_router, stock_router, stockmovement_router, warehouse_router
+from .routers import (category_router, health_router, item_router,
+                      stock_router, stockmovement_router, warehouse_router)
 
 api_router = APIRouter()
 api_router.include_router(health_router.router)

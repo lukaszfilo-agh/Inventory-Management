@@ -3,17 +3,19 @@ name: inventory-manager-production
 services:
   fastapi-backend:
     build:
-      context: ./api
+      context: ./backend
     container_name: inventory-manager-backend-production
+    depends_on:
+      postgres:
+        condition: service_started
     ports:
       - "8000:8000"
     networks:
       - inventory-manager-network
     environment:
       - FRONTEND_URL=${FRONTEND_URL}
-      # - DATABASE_URL=${DATABASE_URL}
-      - DATABASE_URL=${LOCAL_DATABASE_URL}
-      - RUNNING_IN_DOCKER=True
+      - DATABASE_URL=${DATABASE_URL}
+      - REACT_APP_API_URL=${REACT_APP_API_URL}
 
   react-frontend:
     build:
@@ -26,7 +28,6 @@ services:
     networks:
       - inventory-manager-network
     environment:
-      - RUNNING_IN_DOCKER=True
       - REACT_APP_API_URL=${REACT_APP_API_URL}
 
   postgres:

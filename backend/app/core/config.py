@@ -6,7 +6,6 @@ class Settings(BaseSettings):
     )
 
     DATABASE_URL: str
-    LOCAL_DATABASE_URL: str
     REACT_APP_API_URL: str
     FRONTEND_URL: str
 

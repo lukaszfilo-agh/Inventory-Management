@@ -22,7 +22,7 @@ services:
 
   inventory-frontend:
     build:
-      context: ./warehouse-manager
+      context: ./frontend
       dockerfile: Dockerfile.dev
     depends_on:
       inventory-backend:
@@ -31,7 +31,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./warehouse-manager:/app
+      - ./frontend:/app
       - frontend_data:/app/node_modules # Prevents overwriting node_modules
     networks:
       - inventory-manager-network

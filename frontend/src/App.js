@@ -15,6 +15,7 @@ import AddCategory from "./pages/AddCategory";
 import StockMovement from "./pages/StockMovement";
 import AddStockMovement from "./pages/AddStockMovement";
 import Stock from "./pages/Stock";
+import Login from "./pages/Login";
 
 // Components
 import Navbar from "./components/Navbar";
@@ -47,6 +48,9 @@ const App = () => {
         <Route path="/stock/movement" element={<StockMovement />} />
         <Route path="/stock/movement/add" element={<AddStockMovement />} />
         <Route path="/stock/movement/add/:id" element={<AddStockMovement />} />
+
+        {/* Login */}
+        <Route path="/login" element={<Login />} />
       </Routes>
     </Router>
   );

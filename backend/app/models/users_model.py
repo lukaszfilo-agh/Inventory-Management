@@ -11,3 +11,6 @@ class User(Base):
     hashed_password = Column(String)
     role = Column(String, default="viewer")  # Roles: admin, manager, viewer
     is_active = Column(Boolean, default=True)
+
+    class Config:
+        orm_mode = True

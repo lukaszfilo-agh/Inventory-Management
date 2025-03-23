@@ -7,6 +7,8 @@ from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
+print(settings)
+
 app = FastAPI(
     title="Inventory Manager API",
     description="API for managing warehouses, stock movements, and items.",

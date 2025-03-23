@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
@@ -31,6 +31,8 @@ const PrivateRoute = ({ element, requiredRole }) => {
 };
 
 const App = () => {
+  const [token, setToken] = useState(localStorage.getItem("token"));
+
   return (
     <Router>
       <Navbar />
@@ -60,7 +62,7 @@ const App = () => {
         <Route path="/stock/movement/add/:id" element={<AddStockMovement />} />
 
         {/* Login */}
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login setToken={setToken} />} />
 
         {/* Users */}
         <Route path="/users" element={<PrivateRoute element={<UserList />} requiredRole="admin" />} />

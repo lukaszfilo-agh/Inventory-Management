@@ -3,15 +3,11 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from schemas import UserModel
 from models import User
+from core import oauth2_scheme, role_required
 
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 
-router = APIRouter()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
-
 router = APIRouter(prefix="/login", tags=["Login"])
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 @router.post("/")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
@@ -21,3 +17,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
     
     token = create_access_token({"sub": user.username, "role": user.role})
     return {"access_token": token, "token_type": "bearer"}
+
+@router.get("/admin-only")
+def admin_only_endpoint(user: UserModel = Depends(role_required(["admin"]))):
+    return {"message": "Welcome, admin!"}

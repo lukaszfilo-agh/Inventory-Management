@@ -13,7 +13,7 @@ const Login = ({ setToken }) => {
             formData.append("username", username);
             formData.append("password", password);
 
-            const response = await api.post("http://localhost:8000/login/", formData, {
+            const response = await api.post("/login/", formData, {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                 },

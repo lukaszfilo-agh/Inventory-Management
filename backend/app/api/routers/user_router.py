@@ -1,15 +1,13 @@
-import models as models
-from core import get_db, get_current_user
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from schemas import UserModel, UserBase
-from core import hash_password
-from pydantic import BaseModel
-from models import User
 from typing import List
-from core import oauth2_scheme
 
+import models as models
+from core import get_current_user, get_db, hash_password, oauth2_scheme
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
+from models import User
+from pydantic import BaseModel
+from schemas import UserBase, UserModel
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/users", tags=["Users"])
 

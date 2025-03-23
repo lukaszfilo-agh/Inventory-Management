@@ -1,11 +1,10 @@
-from core import get_db, verify_password, create_access_token
+from core import (create_access_token, get_db, oauth2_scheme, role_required,
+                  verify_password)
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from schemas import UserModel
-from models import User
-from core import oauth2_scheme, role_required
-
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from models import User
+from schemas import UserModel
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/login", tags=["Login"])
 

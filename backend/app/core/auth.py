@@ -1,13 +1,15 @@
-from fastapi import Depends, HTTPException
-from jose import jwt, JWTError
 from datetime import datetime, timedelta
-from passlib.context import CryptContext
-from sqlalchemy.orm import Session
-from fastapi.security import OAuth2PasswordBearer
-from .database import get_db
-from schemas import UserModel
-from models.users_model import User
+
 from core import settings
+from fastapi import Depends, HTTPException
+from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
+from models.users_model import User
+from passlib.context import CryptContext
+from schemas import UserModel
+from sqlalchemy.orm import Session
+
+from .database import get_db
 
 SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = settings.ALGORITHM

@@ -2,7 +2,7 @@ from typing import Annotated
 
 import models as models
 from api import api_router
-from core import settings, engine, get_db
+from core import engine, get_db, settings
 from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session

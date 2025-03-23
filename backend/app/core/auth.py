@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 
-from core import settings
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
@@ -9,6 +8,7 @@ from passlib.context import CryptContext
 from schemas import UserModel
 from sqlalchemy.orm import Session
 
+from .config import settings
 from .database import get_db
 
 SECRET_KEY = settings.SECRET_KEY
@@ -55,3 +55,24 @@ def role_required(allowed_roles: list):
             raise HTTPException(status_code=403, detail="Access forbidden: insufficient permissions")
         return user
     return role_checker
+
+def create_default_user(db: Session):
+    """
+    Creates a default admin user if no users exist in the database.
+    """
+    # Check if any user exists
+    if not db.query(User).first():
+        # Create a default admin user
+        admin_user = User(
+            username="admin",
+            hashed_password=hash_password("admin"),  # Replace with a secure password
+            role="admin"  # Assuming the User model has a 'role' field
+        )
+        db.add(admin_user)
+        db.commit()
+        db.refresh(admin_user)
+        print("Default admin user created.")
+        return admin_user
+    else:
+        print("Default admin user already exists.")
+        return None

@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import api from "../api";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
   const [error, setError] = useState("");
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     document.title = "Warehouse Manager | User List";
 
     const fetchUsers = async () => {
       try {
-          const token = localStorage.getItem("token"); // Retrieve the token from localStorage
-          console.log(token);
+        const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+        console.log(token);
         const response = await api.get("/users/", {
           headers: {
             Authorization: `Bearer ${token}`, // Include the token in the Authorization header
@@ -27,10 +29,20 @@ const UserList = () => {
     fetchUsers();
   }, []);
 
+  const handleAddUser = () => {
+    navigate("/users/register"); // Navigate to the AddUser page
+  };
+
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">User List</h1>
       {error && <div className="alert alert-danger">{error}</div>}
+      <div className="d-flex justify-content-between mb-3">
+        <h2>Users</h2>
+        <button className="btn btn-primary" onClick={handleAddUser}>
+          Add User
+        </button>
+      </div>
       {users.length > 0 ? (
         <table className="table table-striped">
           <thead>

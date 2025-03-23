@@ -28,12 +28,18 @@ def create_user(user_data: UserCreate, db: Session = Depends(get_db), current_us
     hashed_password = hash_password(user_data.password)
 
     # Create new user
-    new_user = User(username=user_data.username, hashed_password=hashed_password, role=user_data.role)
+    new_user = User(
+        username=user_data.username,
+        hashed_password=hashed_password,
+        role=user_data.role,
+        is_active=True  # Assuming new users are active by default
+    )
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
 
-    return {"message": "User created successfully", "username": new_user.username}
+    # Use model_dump to return a dictionary representation of the user
+    return UserModel.model_validate(new_user).model_dump()
 
 @router.get("/", response_model=List[UserModel])
 def get_users(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):

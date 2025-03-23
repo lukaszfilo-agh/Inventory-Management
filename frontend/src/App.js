@@ -18,6 +18,7 @@ import AddStockMovement from "./pages/AddStockMovement";
 import Stock from "./pages/Stock";
 import Login from "./pages/Login";
 import UserList from "./pages/UserList";
+import AddUser from "./pages/AddUser";
 
 // Components
 import Navbar from "./components/Navbar";
@@ -65,6 +66,7 @@ const App = () => {
         <Route path="/login" element={<Login setToken={setToken} />} />
 
         {/* Users */}
+        <Route path="/users/register" element={<PrivateRoute element={<AddUser />} requiredRole="admin" />} />
         <Route path="/users" element={<PrivateRoute element={<UserList />} requiredRole="admin" />} />
       </Routes>
     </Router>

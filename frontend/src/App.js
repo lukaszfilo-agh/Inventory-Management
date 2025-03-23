@@ -1,5 +1,6 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 // Pages
 import Homepage from "./pages/Homepage";
@@ -16,9 +17,18 @@ import StockMovement from "./pages/StockMovement";
 import AddStockMovement from "./pages/AddStockMovement";
 import Stock from "./pages/Stock";
 import Login from "./pages/Login";
+import UserList from "./pages/UserList";
 
 // Components
 import Navbar from "./components/Navbar";
+
+const PrivateRoute = ({ element, requiredRole }) => {
+  const token = localStorage.getItem("token");
+  if (!token) return <Navigate to="/login" />;
+
+  const decodedToken = jwtDecode(token);
+  return decodedToken.role === requiredRole ? element : <Navigate to="/" />;
+};
 
 const App = () => {
   return (
@@ -51,6 +61,9 @@ const App = () => {
 
         {/* Login */}
         <Route path="/login" element={<Login />} />
+
+        {/* Users */}
+        <Route path="/users" element={<PrivateRoute element={<UserList />} requiredRole="admin" />} />
       </Routes>
     </Router>
   );

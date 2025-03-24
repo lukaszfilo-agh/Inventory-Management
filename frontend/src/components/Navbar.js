@@ -62,20 +62,32 @@ const Navbar = () => {
                 </Link>
               </li>
             )}
-            <li className="nav-item">
-              {user ? (
-                <>
-                  <span className="nav-link">Welcome, {user.name}</span>
+            {user ? (
+              <>
+                <li className="nav-item">
+                  <button
+                    className="btn btn-link nav-link"
+                    onClick={() => navigate("/users/myprofile")}
+                  >
+                    My Profile
+                  </button>
+                </li>
+                {/* <li className="nav-item">
+                  <span className="nav-link">Welcome, {user.first_name}</span>
+                </li> */}
+                <li className="nav-item">
                   <button className="btn btn-link nav-link" onClick={handleLogout}>
                     Logout
                   </button>
-                </>
-              ) : (
+                </li>
+              </>
+            ) : (
+              <li className="nav-item">
                 <Link className="nav-link" to="/login">
                   Login
                 </Link>
-              )}
-            </li>
+              </li>
+            )}
           </ul>
         </div>
       </div>

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api";
+import { UserContext } from "../context/UserContext";
 
 const ItemDetails = () => {
   const { id } = useParams();
@@ -13,6 +14,7 @@ const ItemDetails = () => {
   });
   const [editedItem, setEditedItem] = useState({});
   const navigate = useNavigate();
+  const { user } = useContext(UserContext); // Access user from UserContext
 
   useEffect(() => {
     document.title = "Warehouse Manager | Item Details";
@@ -95,9 +97,11 @@ const ItemDetails = () => {
           ) : (
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <p style={{ margin: 0 }}>{item.name}</p>
-              <button className="btn btn-primary" onClick={() => handleEditToggle("name")}>
-                Edit
-              </button>
+              {user && ["admin", "user"].includes(user.role) && ( // Role check
+                <button className="btn btn-primary" onClick={() => handleEditToggle("name")}>
+                  Edit
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -122,9 +126,11 @@ const ItemDetails = () => {
           ) : (
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <p style={{ margin: 0 }}>{item.category ? item.category.name : "No category assigned"}</p>
-              <button className="btn btn-primary" onClick={() => handleEditToggle("category")}>
-                Edit
-              </button>
+              {user && ["admin", "user"].includes(user.role) && ( // Role check
+                <button className="btn btn-primary" onClick={() => handleEditToggle("category")}>
+                  Edit
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -150,9 +156,11 @@ const ItemDetails = () => {
           ) : (
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <p style={{ margin: 0 }}>{item.description}</p>
-              <button className="btn btn-primary" onClick={() => handleEditToggle("description")}>
-                Edit
-              </button>
+              {user && ["admin", "user"].includes(user.role) && ( // Role check
+                <button className="btn btn-primary" onClick={() => handleEditToggle("description")}>
+                  Edit
+                </button>
+              )}
             </div>
           )}
         </div>
@@ -187,9 +195,11 @@ const ItemDetails = () => {
       </table>
 
       <div className="text-center mt-4">
-        <button className="btn btn-primary" onClick={handleAddStock}>
-          Add Stock
-        </button>
+        {user && ["admin", "user"].includes(user.role) && ( // Role check
+          <button className="btn btn-primary" onClick={handleAddStock}>
+            Add Stock
+          </button>
+        )}
       </div>
 
       <button className="btn btn-secondary mt-3" onClick={() => navigate(-1)}>

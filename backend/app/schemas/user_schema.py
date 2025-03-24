@@ -2,6 +2,8 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
+from datetime import date
+
 
 class UserBase(BaseModel):
     """
@@ -19,16 +21,38 @@ class UserBase(BaseModel):
         min_length=3,
         max_length=50,
     )
-    role: str = Field(
+    first_name: str = Field(
         ...,
-        description="The role of the user (e.g., 'admin', 'user')",
+        description="The first name of the user",
         min_length=3,
-        max_length=20,
+        max_length=50,
+    )
+    last_name: str = Field(
+        ...,
+        description="The last name of the user",
+        min_length=3,
+        max_length=50,
+    )
+    email: str = Field(
+        ...,
+        description="The email address of the user",
+        min_length=3,
+        max_length=50,
     )
     hashed_password: str = Field(
         ...,
         description="The hashed password of the user",
         min_length=8,
+    )
+    date_joined: date = Field(
+        ...,
+        description="The date the user joined the platform",
+    )
+    role: str = Field(
+        ...,
+        description="The role of the user (e.g., 'admin', 'user')",
+        min_length=3,
+        max_length=20,
     )
     is_active: Optional[bool] = Field(
         True,
@@ -56,6 +80,28 @@ class UserModel(BaseModel):
         description="The username of the user",
         min_length=3,
         max_length=50,
+    )
+    first_name: str = Field(
+        ...,
+        description="The first name of the user",
+        min_length=3,
+        max_length=50,
+    )
+    last_name: str = Field(
+        ...,
+        description="The last name of the user",
+        min_length=3,
+        max_length=50,
+    )
+    email: str = Field(
+        ...,
+        description="The email address of the user",
+        min_length=3,
+        max_length=50,
+    )
+    date_joined: date = Field(
+        ...,
+        description="The date the user joined the platform",
     )
     role: str = Field(
         ...,

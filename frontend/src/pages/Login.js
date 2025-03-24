@@ -34,7 +34,7 @@ const Login = () => {
             setUser(userResponse.data);
 
             // Redirect to homepage
-            navigate("/");
+            navigate("/users/myprofile");
         } catch (error) {
             console.error("Login error:", error.response || error.message);
             alert("Invalid credentials");

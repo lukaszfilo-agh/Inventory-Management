@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 import api from "../api";
 
 const ListView = ({
@@ -12,6 +13,7 @@ const ListView = ({
 }) => {
   const [items, setItems] = useState([]);
   const navigate = useNavigate();
+  const { user } = useContext(UserContext);
 
     useEffect(() => {
       document.title = "Warehouse Manager | " + title;
@@ -33,14 +35,14 @@ const ListView = ({
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">{title}</h1>
-
-      <button
+      {user && ["admin", "user"].includes(user.role) && (
+        <button
         className="btn btn-success mb-3"
         onClick={() => navigate(addPath)}
       >
         Add {title}
       </button>
-
+      )}
       {items.length > 0 ? (
         <table className="table table-striped mt-3">
           <thead>

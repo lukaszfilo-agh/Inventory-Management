@@ -4,7 +4,11 @@ import api from "../api";
 const AddUser = () => {
   const [formData, setFormData] = useState({
     username: "",
+    first_name: "",
+    last_name: "",
+    email: "",
     password: "",
+    date_joined: new Date().toISOString().split("T")[0], // Default to today's date
     role: "user", // Default role
   });
 
@@ -25,11 +29,19 @@ const AddUser = () => {
       const token = localStorage.getItem("token"); // Retrieve the token from localStorage
       const response = await api.post("/users/register", formData, {
         headers: {
-          Authorization: `Bearer ${token}`, // Assuming token is stored in localStorage
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
         },
       });
-      setMessage(response.data.message || "User created successfully!");
-      setFormData({ username: "", password: "", role: "user" }); // Reset form
+      setMessage("User created successfully!");
+      setFormData({
+        username: "",
+        first_name: "",
+        last_name: "",
+        email: "",
+        password: "",
+        date_joined: new Date().toISOString().split("T")[0],
+        role: "user",
+      }); // Reset form
     } catch (err) {
       setError(err.response?.data?.detail || "An error occurred");
     }
@@ -56,6 +68,48 @@ const AddUser = () => {
           />
         </div>
         <div className="mb-3">
+          <label htmlFor="first_name" className="form-label">
+            First Name
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="first_name"
+            name="first_name"
+            value={formData.first_name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="last_name" className="form-label">
+            Last Name
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="last_name"
+            name="last_name"
+            value={formData.last_name}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="email" className="form-label">
+            Email
+          </label>
+          <input
+            type="email"
+            className="form-control"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="mb-3">
           <label htmlFor="password" className="form-label">
             Password
           </label>
@@ -65,6 +119,20 @@ const AddUser = () => {
             id="password"
             name="password"
             value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="date_joined" className="form-label">
+            Date Joined
+          </label>
+          <input
+            type="date"
+            className="form-control"
+            id="date_joined"
+            name="date_joined"
+            value={formData.date_joined}
             onChange={handleChange}
             required
           />

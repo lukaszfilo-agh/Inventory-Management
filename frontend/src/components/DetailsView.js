@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api";
+import { UserContext } from "../context/UserContext";
 
 const DetailsView = ({
   title,
   apiEndpoint,
-  itemApiEndpoint, // For items (used in CategoryDetails)
-  stockApiEndpoint, // For stock (used in WarehouseDetails)
+  itemApiEndpoint,
+  stockApiEndpoint,
   fields,
   renderExtraDetails,
 }) => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useContext(UserContext);
   const [entity, setEntity] = useState({});
   const [items, setItems] = useState([]);
-  const [stock, setStock] = useState([]); // Stock state
+  const [stock, setStock] = useState([]);
   const [isEditing, setIsEditing] = useState({});
 
   useEffect(() => {
@@ -31,20 +33,18 @@ const DetailsView = ({
       }
     };
 
-    // Fetch items if it's a category view
     const fetchItems = async () => {
       try {
-        const response = await api.get(`${itemApiEndpoint}/${id}/items`); // Fetch items for category
+        const response = await api.get(`${itemApiEndpoint}/${id}/items`);
         setItems(response.data);
       } catch (error) {
         console.error(`Error fetching ${title.toLowerCase()} items:`, error);
       }
     };
 
-    // Fetch stock if it's a warehouse view
     const fetchStock = async () => {
       try {
-        const response = await api.get(`${stockApiEndpoint}/${id}`); // Fetch stock for warehouse
+        const response = await api.get(`${stockApiEndpoint}/${id}`);
         setStock(response.data);
       } catch (error) {
         console.error(`Error fetching ${title.toLowerCase()} stock:`, error);
@@ -53,9 +53,9 @@ const DetailsView = ({
 
     fetchData();
     if (title === "Category") {
-      fetchItems(); // Fetch items only for Category
+      fetchItems();
     } else if (title === "Warehouse") {
-      fetchStock(); // Fetch stock only for Warehouse
+      fetchStock();
     }
   }, [id, apiEndpoint, itemApiEndpoint, stockApiEndpoint, title]);
 
@@ -80,7 +80,6 @@ const DetailsView = ({
       {fields.map((field) => (
         <div key={field.name} className="mb-4">
           <div className="d-flex align-items-center">
-            {/* Edit button and label */}
             {isEditing[field.name] ? (
               <form
                 onSubmit={(e) => handleSubmit(e, field.name)}
@@ -95,32 +94,38 @@ const DetailsView = ({
                   className="form-control flex-grow-1"
                   required
                 />
-                <button type="submit" className="btn btn-success ms-3">
-                  Save
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-secondary ms-2"
-                  onClick={() =>
-                    setIsEditing({ ...isEditing, [field.name]: false })
-                  }
-                >
-                  Cancel
-                </button>
+                {user && ["admin", "user"].includes(user.role) && (
+                  <>
+                    <button type="submit" className="btn btn-success ms-3">
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-secondary ms-2"
+                      onClick={() =>
+                        setIsEditing({ ...isEditing, [field.name]: false })
+                      }
+                    >
+                      Cancel
+                    </button>
+                  </>
+                )}
               </form>
             ) : (
               <div className="d-flex justify-content-between w-100">
                 <h2>
                   {field.label}: {entity[field.name]}
                 </h2>
-                <button
-                  className="btn btn-warning"
-                  onClick={() =>
-                    setIsEditing({ ...isEditing, [field.name]: true })
-                  }
-                >
-                  Edit
-                </button>
+                {user && ["admin", "user"].includes(user.role) && (
+                  <button
+                    className="btn btn-warning"
+                    onClick={() =>
+                      setIsEditing({ ...isEditing, [field.name]: true })
+                    }
+                  >
+                    Edit
+                  </button>
+                )}
               </div>
             )}
           </div>

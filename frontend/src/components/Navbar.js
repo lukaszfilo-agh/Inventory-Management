@@ -1,20 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user, logout } = useContext(UserContext); // Use logout from UserContext
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Check if the user is logged in by checking for a token in localStorage
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token); // Set isLoggedIn to true if token exists
-  }, []);
-
   const handleLogout = () => {
-    // Remove the token from localStorage and update the state
-    localStorage.removeItem("token");
-    setIsLoggedIn(false);
+    logout(); // Call the logout function from UserContext
     navigate("/login"); // Redirect to the login page
   };
 
@@ -62,16 +55,21 @@ const Navbar = () => {
                 Categories
               </Link>
             </li>
+            {user && user.role === "admin" && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/users">
+                  Users
+                </Link>
+              </li>
+            )}
             <li className="nav-item">
-              <Link className="nav-link" to="/users">
-                Users
-              </Link>
-            </li>
-            <li className="nav-item">
-              {isLoggedIn ? (
-                <button className="btn btn-link nav-link" onClick={handleLogout}>
-                  Logout
-                </button>
+              {user ? (
+                <>
+                  <span className="nav-link">Welcome, {user.name}</span>
+                  <button className="btn btn-link nav-link" onClick={handleLogout}>
+                    Logout
+                  </button>
+                </>
               ) : (
                 <Link className="nav-link" to="/login">
                   Login

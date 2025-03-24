@@ -18,7 +18,7 @@ class UserCreate(BaseModel):
     role: str  # "admin" or "user"
 
 @router.post("/register", response_model=UserModel)
-def create_user(user_data: UserCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+async def create_user(user_data: UserCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     # Check if user already exists
     existing_user = db.query(User).filter(User.username == user_data.username).first()
     if existing_user:
@@ -42,10 +42,10 @@ def create_user(user_data: UserCreate, db: Session = Depends(get_db), current_us
     return UserModel.model_validate(new_user).model_dump()
 
 @router.get("/", response_model=List[UserModel])
-def get_users(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+async def get_users(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return db.query(User).all()
 
 
-@router.get("/me", response_model=UserModel)
-def get_me(current_user: UserModel = Depends(get_current_user)):
+@router.get("/details", response_model=UserModel)
+async def get_me(current_user: UserModel = Depends(get_current_user)):
     return current_user

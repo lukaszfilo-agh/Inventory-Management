@@ -1,10 +1,12 @@
-import { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 import api from "../api";
 
-const Login = ({ setToken }) => {
+const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const { setUser } = useContext(UserContext); // Access setUser from UserContext
     const navigate = useNavigate();
 
     const handleLogin = async () => {
@@ -19,9 +21,19 @@ const Login = ({ setToken }) => {
                 },
             });
 
-            setToken(response.data.access_token);
-            localStorage.setItem("token", response.data.access_token);
+            // Save token to localStorage
+            const token = response.data.access_token;
+            localStorage.setItem("token", token);
 
+            // Fetch user details after login
+            const userResponse = await api.get("/users/details", {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            // Update user in context
+            setUser(userResponse.data);
+
+            // Redirect to homepage
             navigate("/");
         } catch (error) {
             console.error("Login error:", error.response || error.message);
@@ -40,6 +52,7 @@ const Login = ({ setToken }) => {
                         id="username"
                         className="form-control"
                         placeholder="Enter your username"
+                        value={username}
                         onChange={(e) => setUsername(e.target.value)}
                     />
                 </div>
@@ -50,6 +63,7 @@ const Login = ({ setToken }) => {
                         id="password"
                         className="form-control"
                         placeholder="Enter your password"
+                        value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
                 </div>

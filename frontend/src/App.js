@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { UserProvider } from "./context/UserContext"; // Import UserProvider
 
 // Pages
 import Homepage from "./pages/Homepage";
@@ -19,6 +20,7 @@ import Stock from "./pages/Stock";
 import Login from "./pages/Login";
 import UserList from "./pages/UserList";
 import AddUser from "./pages/AddUser";
+import MyProfile from "./pages/MyProfile";
 
 // Components
 import Navbar from "./components/Navbar";
@@ -28,48 +30,59 @@ const PrivateRoute = ({ element, requiredRole }) => {
   if (!token) return <Navigate to="/login" />;
 
   const decodedToken = jwtDecode(token);
-  return decodedToken.role === requiredRole ? element : <Navigate to="/" />;
+  const userRole = decodedToken.role;
+
+  // Check if the user's role is included in the requiredRole list
+  if (Array.isArray(requiredRole)) {
+    return requiredRole.includes(userRole) ? element : <Navigate to="/" />;
+  }
+
+  // Fallback for single role (if requiredRole is not an array)
+  return userRole === requiredRole ? element : <Navigate to="/" />;
 };
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem("token"));
 
   return (
-    <Router>
-      <Navbar />
-      <Routes>
-        {/* Homepage */}
-        <Route path="/" element={<Homepage />} />
+    <UserProvider>
+      <Router>
+        <Navbar />
+        <Routes>
+          {/* Homepage */}
+          <Route path="/" element={<Homepage />} />
 
-        {/* Items */}
-        <Route path="/items" element={<Items />} />
-        <Route path="/items/:id" element={<ItemDetails />} />
-        <Route path="/items/add" element={<AddItem />} />
+          {/* Items */}
+          <Route path="/items" element={<Items />} />
+          <Route path="/items/:id" element={<ItemDetails />} />
+          <Route path="/items/add" element={<AddItem />} />
 
-        {/* Warehouses */}
-        <Route path="/warehouses" element={<Warehouses />} />
-        <Route path="/warehouses/add" element={<AddWarehouse />} />
-        <Route path="/warehouse/:id" element={<WarehouseDetails />} />
+          {/* Warehouses */}
+          <Route path="/warehouses" element={<Warehouses />} />
+          <Route path="/warehouses/add" element={<AddWarehouse />} />
+          <Route path="/warehouse/:id" element={<WarehouseDetails />} />
 
-        {/* Categories */}
-        <Route path="/categories" element={<Categories />} />
-        <Route path="/categories/:id" element={<CategoryDetails />} />
-        <Route path="/categories/add" element={<AddCategory />} />
+          {/* Categories */}
+          <Route path="/categories" element={<Categories />} />
+          <Route path="/categories/:id" element={<CategoryDetails />} />
+          <Route path="/categories/add" element={<AddCategory />} />
 
-        {/* Stock */}
-        <Route path="/stock" element={<Stock />} />
-        <Route path="/stock/movement" element={<StockMovement />} />
-        <Route path="/stock/movement/add" element={<AddStockMovement />} />
-        <Route path="/stock/movement/add/:id" element={<AddStockMovement />} />
+          {/* Stock */}
+          <Route path="/stock" element={<Stock />} />
+          <Route path="/stock/movement" element={<StockMovement />} />
+          <Route path="/stock/movement/add" element={<AddStockMovement />} />
+          <Route path="/stock/movement/add/:id" element={<AddStockMovement />} />
 
-        {/* Login */}
-        <Route path="/login" element={<Login setToken={setToken} />} />
+          {/* Login */}
+          <Route path="/login" element={<Login setToken={setToken} />} />
 
-        {/* Users */}
-        <Route path="/users/register" element={<PrivateRoute element={<AddUser />} requiredRole="admin" />} />
-        <Route path="/users" element={<PrivateRoute element={<UserList />} requiredRole="admin" />} />
-      </Routes>
-    </Router>
+          {/* Users */}
+          <Route path="/users/register" element={<PrivateRoute element={<AddUser />} requiredRole={["admin"]} />} />
+          <Route path="/users" element={<PrivateRoute element={<UserList />} requiredRole={["admin"]} />} />
+          <Route path="/users/myprofile" element={<PrivateRoute element={<MyProfile />} requiredRole={["admin", "user"]} />} />
+        </Routes>
+      </Router>
+    </UserProvider>
   );
 };
 

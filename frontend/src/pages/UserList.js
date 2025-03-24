@@ -13,8 +13,7 @@ const UserList = () => {
     const fetchUsers = async () => {
       try {
         const token = localStorage.getItem("token"); // Retrieve the token from localStorage
-        console.log(token);
-        const response = await api.get("/users/", {
+        const response = await api.get("/users/get", {
           headers: {
             Authorization: `Bearer ${token}`, // Include the token in the Authorization header
           },
@@ -31,6 +30,10 @@ const UserList = () => {
 
   const handleAddUser = () => {
     navigate("/users/register"); // Navigate to the AddUser page
+  };
+
+  const handleViewDetails = (userId) => {
+    navigate(`/users/${userId}`); // Navigate to the user details page
   };
 
   return (
@@ -51,6 +54,7 @@ const UserList = () => {
               <th>Username</th>
               <th>Role</th>
               <th>Active</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -60,6 +64,14 @@ const UserList = () => {
                 <td>{user.username}</td>
                 <td>{user.role}</td>
                 <td>{user.is_active ? "Yes" : "No"}</td>
+                <td>
+                  <button
+                    className="btn btn-sm btn-info"
+                    onClick={() => handleViewDetails(user.id)}
+                  >
+                    View Details
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>

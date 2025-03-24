@@ -23,6 +23,8 @@ class UserCreate(BaseModel):
 
 @router.post("/register", response_model=UserModel)
 async def create_user(user_data: UserCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to perform this action")
     try:
         # Validate input data using Pydantic
         validated_data = UserCreate(**user_data.dict())
@@ -55,10 +57,20 @@ async def create_user(user_data: UserCreate, db: Session = Depends(get_db), curr
     except ValidationError as e:
         raise HTTPException(status_code=422, detail=e.errors())
 
-@router.get("/", response_model=List[UserModel])
+@router.get("/get", response_model=List[UserModel])
 async def get_users(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to perform this action")
     return db.query(User).all()
 
+@router.get("/get/{user_id}", response_model=UserModel)
+async def get_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to perform this action")
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
 
 @router.get("/details", response_model=UserModel)
 async def get_me(current_user: UserModel = Depends(get_current_user)):

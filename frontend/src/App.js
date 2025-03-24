@@ -21,6 +21,7 @@ import Login from "./pages/Login";
 import UserList from "./pages/UserList";
 import AddUser from "./pages/AddUser";
 import MyProfile from "./pages/MyProfile";
+import UserDetails from "./pages/UserDetails"; // Import UserDetails page
 
 // Components
 import Navbar from "./components/Navbar";
@@ -80,6 +81,7 @@ const App = () => {
           <Route path="/users/register" element={<PrivateRoute element={<AddUser />} requiredRole={["admin"]} />} />
           <Route path="/users" element={<PrivateRoute element={<UserList />} requiredRole={["admin"]} />} />
           <Route path="/users/myprofile" element={<PrivateRoute element={<MyProfile />} requiredRole={["admin", "user"]} />} />
+          <Route path="/users/:userId" element={<PrivateRoute element={<UserDetails />} requiredRole={["admin"]} />} />
         </Routes>
       </Router>
     </UserProvider>

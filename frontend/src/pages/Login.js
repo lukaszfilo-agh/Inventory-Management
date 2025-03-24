@@ -42,34 +42,41 @@ const Login = () => {
     };
 
     return (
-        <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-            <div className="card p-4 shadow" style={{ width: "400px" }}>
-                <h3 className="text-center mb-4">Login</h3>
-                <div className="mb-3">
-                    <label htmlFor="username" className="form-label">Username</label>
-                    <input
-                        type="text"
-                        id="username"
-                        className="form-control"
-                        placeholder="Enter your username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
+        <div className="container mt-5">
+            <h1 className="text-center mb-4">Login</h1>
+            <div className="row justify-content-center">
+                <div className="col-md-6">
+                    <div className="card p-4 shadow-sm">
+                        <div className="card-body">
+                            <div className="mb-3">
+                                <label htmlFor="username" className="form-label">Username</label>
+                                <input
+                                    type="text"
+                                    id="username"
+                                    className="form-control"
+                                    placeholder="Enter your username"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                />
+                            </div>
+                            <div className="mb-3">
+                                <label htmlFor="password" className="form-label">Password</label>
+                                <input
+                                    type="password"
+                                    id="password"
+                                    className="form-control"
+                                    placeholder="Enter your password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    onKeyDown={(e) => e.key === "Enter" && handleLogin()} // Trigger login on Enter
+                                />
+                            </div>
+                            <button className="btn btn-primary w-100" onClick={handleLogin}>
+                                Login
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div className="mb-3">
-                    <label htmlFor="password" className="form-label">Password</label>
-                    <input
-                        type="password"
-                        id="password"
-                        className="form-control"
-                        placeholder="Enter your password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
-                <button className="btn btn-primary w-100" onClick={handleLogin}>
-                    Login
-                </button>
             </div>
         </div>
     );

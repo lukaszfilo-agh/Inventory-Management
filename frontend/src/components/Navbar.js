@@ -65,12 +65,9 @@ const Navbar = () => {
             {user ? (
               <>
                 <li className="nav-item">
-                  <button
-                    className="btn btn-link nav-link"
-                    onClick={() => navigate("/users/myprofile")}
-                  >
+                  <Link className="nav-link" to="/users/myprofile">
                     My Profile
-                  </button>
+                  </Link>
                 </li>
                 {/* <li className="nav-item">
                   <span className="nav-link">Welcome, {user.first_name}</span>

@@ -3,13 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 
 const Navbar = () => {
-  const { user, logout } = useContext(UserContext); // Use logout from UserContext
+  const { user } = useContext(UserContext); // Use logout from UserContext
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout(); // Call the logout function from UserContext
-    navigate("/login"); // Redirect to the login page
-  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -73,9 +68,9 @@ const Navbar = () => {
                   <span className="nav-link">Welcome, {user.first_name}</span>
                 </li> */}
                 <li className="nav-item">
-                  <button className="btn btn-link nav-link" onClick={handleLogout}>
+                  <Link className="nav-link" to="/logout">
                     Logout
-                  </button>
+                  </Link>
                 </li>
               </>
             ) : (

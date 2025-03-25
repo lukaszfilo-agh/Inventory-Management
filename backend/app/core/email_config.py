@@ -19,4 +19,4 @@ def send_email(to_email: str, subject: str, content: str):
         return response
     except Exception as e:
         print(f"Error: {e}")
-        return None
+        raise  # Re-raise the exception to propagate it to the caller

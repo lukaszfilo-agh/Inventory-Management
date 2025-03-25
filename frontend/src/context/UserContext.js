@@ -41,7 +41,6 @@ export const UserProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
-    window.location.href = "/login"; // Redirect to login
   };
 
   return (

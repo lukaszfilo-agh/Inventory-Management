@@ -22,6 +22,7 @@ import UserList from "./pages/UserList";
 import AddUser from "./pages/AddUser";
 import MyProfile from "./pages/MyProfile";
 import UserDetails from "./pages/UserDetails"; // Import UserDetails page
+import Logout from "./pages/Logout";
 
 // Components
 import Navbar from "./components/Navbar";
@@ -76,6 +77,7 @@ const App = () => {
 
           {/* Login */}
           <Route path="/login" element={<Login setToken={setToken} />} />
+          <Route path="/logout" element={<Logout setToken={setToken} />} />
 
           {/* Users */}
           <Route path="/users/register" element={<PrivateRoute element={<AddUser />} requiredRole={["admin"]} />} />

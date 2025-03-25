@@ -1,12 +1,12 @@
 from typing import List
 
 import models as models
-from core import get_current_user, get_db, hash_password, oauth2_scheme
+from core import (get_admin_emails, get_current_user, get_db, hash_password,
+                  send_email)
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer
 from models import User
 from pydantic import BaseModel, ValidationError
-from schemas import UserBase, UserModel
+from schemas import UserModel
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -52,6 +52,10 @@ async def create_user(user_data: UserCreate, db: Session = Depends(get_db), curr
         db.commit()
         db.refresh(new_user)
 
+        admin_emails = get_admin_emails(db)
+        for email in admin_emails:
+            send_email(email, "New User Registration", f"User {new_user.username} has registered.")
+
         return UserModel.model_validate(new_user).model_dump()
 
     except ValidationError as e:
@@ -75,3 +79,14 @@ async def get_user(user_id: int, db: Session = Depends(get_db), current_user: Us
 @router.get("/details", response_model=UserModel)
 async def get_me(current_user: UserModel = Depends(get_current_user)):
     return current_user
+
+@router.delete("/delete/{user_id}")
+async def delete_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to perform this action")
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    db.delete(user)
+    db.commit()
+    return {"status": "ok", "message": f"User {user_id} deleted"}

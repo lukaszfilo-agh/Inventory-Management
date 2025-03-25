@@ -1,12 +1,10 @@
-from typing import Annotated
+import logging
 
 import models as models
 from api import api_router
-from core import engine, get_db, settings, create_default_user
-from fastapi import Depends, FastAPI
+from core import create_default_user, engine, get_db, settings
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
-import logging
 
 # Initialize logger
 logger = logging.getLogger("uvicorn")

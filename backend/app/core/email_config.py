@@ -1,6 +1,8 @@
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+
 from .config import settings
+
 
 def send_email(to_email: str, subject: str, content: str):
     try:

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
 import api from "../api";
 
 const UserDetails = () => {
   const { userId } = useParams();
+  const navigate = useNavigate(); // Initialize useNavigate
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -17,6 +19,7 @@ const UserDetails = () => {
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching user details:", error);
+        setError("Failed to fetch user details.");
       } finally {
         setLoading(false);
       }
@@ -25,8 +28,32 @@ const UserDetails = () => {
     fetchUser();
   }, [userId]);
 
+  const handleGoBack = () => {
+    navigate(-1); // Navigate to the previous page
+  };
+
+  const handleDeleteUser = async () => {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      try {
+        const token = localStorage.getItem("token");
+        await api.delete(`/users/delete/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        alert("User deleted successfully.");
+        navigate("/users"); // Navigate back to the user list
+      } catch (error) {
+        console.error("Error deleting user:", error);
+        alert("Failed to delete user. Please try again.");
+      }
+    }
+  };
+
   if (loading) {
     return <div className="text-center mt-5">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center mt-5 text-danger">{error}</div>;
   }
 
   if (!user) {
@@ -77,6 +104,14 @@ const UserDetails = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div className="d-flex justify-content-between mb-3 mt-3">
+        <button className="btn btn-secondary" onClick={handleGoBack}>
+          Go Back
+        </button>
+        <button className="btn btn-danger" onClick={handleDeleteUser}>
+          Delete User
+        </button>
       </div>
     </div>
   );

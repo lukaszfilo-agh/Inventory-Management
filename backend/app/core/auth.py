@@ -80,3 +80,9 @@ def create_default_user(db: Session):
     else:
         print("Default admin user already exists.")
         return None
+
+def get_admin_emails(db: Session):
+    """
+    Fetches all admin emails from the database.
+    """
+    return [user.email for user in db.query(User).filter(User.role == "admin").all()]

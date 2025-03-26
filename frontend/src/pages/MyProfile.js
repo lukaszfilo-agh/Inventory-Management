@@ -15,6 +15,7 @@ const MyProfile = () => {
     email: false,
   });
   const [editedUser, setEditedUser] = useState({ ...user });
+  const [editField, setEditField] = useState(null); // Track the field being edited
 
   const handlePasswordChange = async () => {
     if (newPassword !== confirmPassword) {
@@ -78,6 +79,15 @@ const MyProfile = () => {
     }
   };
 
+  const handleEditModalOpen = (field) => {
+    setEditField(field);
+    setEditedUser({ ...editedUser, [field]: user[field] });
+  };
+
+  const handleEditModalClose = () => {
+    setEditField(null);
+  };
+
   if (loading) {
     return <div className="text-center mt-5">Loading...</div>;
   }
@@ -87,94 +97,77 @@ const MyProfile = () => {
   }
 
   return (
-    <div className="container mt-5 mb-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <div className="card shadow-lg">
-            <div className="card-header bg-primary text-white text-center">
-              <h3 className="mb-0">My Profile</h3>
-            </div>
-            <div className="card-body p-4">
-              <table className="table table-bordered">
-                <tbody>
-                  {["username", "first_name", "last_name", "email"].map((field) => (
-                    <tr key={field}>
-                      <th className="fw-bold">{field.replace("_", " ").toUpperCase()}</th>
-                      <td>
-                        {isEditing[field] ? (
-                          <div className="d-flex">
-                            <input
-                              type="text"
-                              name={field}
-                              value={editedUser[field]}
-                              onChange={handleInputChange}
-                              className="form-control me-2"
-                            />
-                            <button
-                              className="btn btn-success btn-sm me-2"
-                              onClick={() => handleSaveChanges(field)}
-                            >
-                              Save
-                            </button>
-                            <button
-                              className="btn btn-secondary btn-sm"
-                              onClick={() => handleEditToggle(field)}
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        ) : (
+    <div className="vh-100 d-flex justify-content-center align-items-center">
+      <div className="container mt-5 mb-5">
+        <div className="row justify-content-center">
+          <div className="col-md-6">
+            <div className="card shadow-lg">
+              <div className="card-header bg-primary text-white text-center">
+                <h3 className="mb-0">My Profile</h3>
+              </div>
+              <div className="card-body p-4">
+                <table className="table table-bordered mx-auto" style={{ maxWidth: "90%" }}>
+                  <tbody>
+                    {["username", "first_name", "last_name", "email"].map((field) => (
+                      <tr key={field}>
+                        <th className="fw-bold">{field.replace("_", " ").toUpperCase()}</th>
+                        <td>
                           <div className="d-flex justify-content-between align-items-center">
                             <span>{user[field]}</span>
                             <button
                               className="btn btn-primary btn-sm"
-                              onClick={() => handleEditToggle(field)}
+                              onClick={() => handleEditModalOpen(field)}
+                              style={{ whiteSpace: "nowrap" }}
                             >
                               Edit
                             </button>
                           </div>
-                        )}
+                        </td>
+                      </tr>
+                    ))}
+                    <tr>
+                      <th className="fw-bold">Role</th>
+                      <td>
+                        <span className={`badge ${user.role === "admin" ? "bg-danger" : "bg-secondary"}`}>
+                          {user.role}
+                        </span>
                       </td>
                     </tr>
-                  ))}
-                  <tr>
-                    <th className="fw-bold">Role</th>
-                    <td>
-                      <span className={`badge ${user.role === "admin" ? "bg-danger" : "bg-secondary"}`}>
-                        {user.role}
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th className="fw-bold">Joined Date</th>
-                    <td>{new Date(user.date_joined).toLocaleDateString()}</td>
-                  </tr>
-                  <tr>
-                    <th className="fw-bold">Active</th>
-                    <td>
-                      <span className={`badge ${user.is_active ? "bg-success" : "bg-danger"}`}>
-                        {user.is_active ? "Yes" : "No"}
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <div className="text-center mt-4">
-                <button
-                  className="btn btn-warning"
-                  onClick={() => setShowModal(true)}
-                >
-                  Edit Password
-                </button>
+                    <tr>
+                      <th className="fw-bold">Joined Date</th>
+                      <td>{new Date(user.date_joined).toLocaleDateString()}</td>
+                    </tr>
+                    <tr>
+                      <th className="fw-bold">Active</th>
+                      <td>
+                        <span className={`badge ${user.is_active ? "bg-success" : "bg-danger"}`}>
+                          {user.is_active ? "Yes" : "No"}
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div className="text-center mt-4">
+                  <button
+                    className="btn btn-warning"
+                    onClick={() => setShowModal(true)}
+                  >
+                    Edit Password
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
+      {showModal || editField ? (
+        <div className="overlay"></div>
+      ) : null}
+
       {showModal && (
-        <div className="modal d-block" tabIndex="-1">
-          <div className="modal-dialog">
+        <div className="modal d-block">
+          <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Change Password</h5>
@@ -225,6 +218,56 @@ const MyProfile = () => {
                   type="button"
                   className="btn btn-primary"
                   onClick={handlePasswordChange}
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {editField && (
+        <div className="modal d-block">
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Edit {editField.replace("_", " ")}</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={handleEditModalClose}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <div className="mb-3">
+                  <label className="form-label">
+                    {editField.replace("_", " ").toUpperCase()}
+                  </label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name={editField}
+                    value={editedUser[editField]}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleEditModalClose}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    handleSaveChanges(editField);
+                    handleEditModalClose();
+                  }}
                 >
                   Save Changes
                 </button>

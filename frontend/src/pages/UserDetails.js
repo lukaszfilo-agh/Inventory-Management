@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // Import useNavigate
+import { useParams, useNavigate } from "react-router-dom";
 import api from "../api";
 
 const UserDetails = () => {
   const { userId } = useParams();
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -29,7 +29,7 @@ const UserDetails = () => {
   }, [userId]);
 
   const handleGoBack = () => {
-    navigate(-1); // Navigate to the previous page
+    navigate(-1);
   };
 
   const handleDeleteUser = async () => {
@@ -40,7 +40,7 @@ const UserDetails = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         alert("User deleted successfully.");
-        navigate("/users"); // Navigate back to the user list
+        navigate("/users");
       } catch (error) {
         console.error("Error deleting user:", error);
         alert("Failed to delete user. Please try again.");
@@ -61,57 +61,67 @@ const UserDetails = () => {
   }
 
   return (
-    <div className="container mt-5">
-      <div className="card shadow-lg">
-        <div className="card-header bg-primary text-white text-center">
-          <h3 className="mb-0">User Details</h3>
-        </div>
-        <div className="card-body">
-          <div className="row mb-3">
-            <div className="col-md-4 text-end fw-bold">Username:</div>
-            <div className="col-md-8">{user.username}</div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-md-4 text-end fw-bold">First Name:</div>
-            <div className="col-md-8">{user.first_name}</div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-md-4 text-end fw-bold">Last Name:</div>
-            <div className="col-md-8">{user.last_name}</div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-md-4 text-end fw-bold">Email:</div>
-            <div className="col-md-8">{user.email}</div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-md-4 text-end fw-bold">Role:</div>
-            <div className="col-md-8">
-              <span className={`badge ${user.role === "admin" ? "bg-danger" : "bg-secondary"}`}>
-                {user.role}
-              </span>
+    <div className="vh-100 d-flex justify-content-center align-items-center">
+      <div className="container mt-5 mb-5">
+        <div className="row justify-content-center">
+          <div className="col-md-6">
+            <div className="card shadow-lg">
+              <div className="card-header bg-primary text-white text-center">
+                <h3 className="mb-0">User Details</h3>
+              </div>
+              <div className="card-body p-4">
+                <table className="table table-bordered mx-auto" style={{ maxWidth: "90%" }}>
+                  <tbody>
+                    <tr>
+                      <th className="fw-bold">USERNAME</th>
+                      <td>{user.username}</td>
+                    </tr>
+                    <tr>
+                      <th className="fw-bold">FIRST NAME</th>
+                      <td>{user.first_name}</td>
+                    </tr>
+                    <tr>
+                      <th className="fw-bold">LAST NAME</th>
+                      <td>{user.last_name}</td>
+                    </tr>
+                    <tr>
+                      <th className="fw-bold">EMAIL</th>
+                      <td>{user.email}</td>
+                    </tr>
+                    <tr>
+                      <th className="fw-bold">ROLE</th>
+                      <td>
+                        <span className={`badge ${user.role === "admin" ? "bg-danger" : "bg-secondary"}`}>
+                          {user.role}
+                        </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th className="fw-bold">JOINED DATE</th>
+                      <td>{new Date(user.date_joined).toLocaleDateString()}</td>
+                    </tr>
+                    <tr>
+                      <th className="fw-bold">ACTIVE</th>
+                      <td>
+                        <span className={`badge ${user.is_active ? "bg-success" : "bg-danger"}`}>
+                          {user.is_active ? "Yes" : "No"}
+                        </span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div className="d-flex justify-content-between mt-4">
+                  <button className="btn btn-secondary" onClick={handleGoBack}>
+                    Go Back
+                  </button>
+                  <button className="btn btn-danger" onClick={handleDeleteUser}>
+                    Delete User
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="row mb-3">
-            <div className="col-md-4 text-end fw-bold">Joined Date:</div>
-            <div className="col-md-8">{new Date(user.date_joined).toLocaleDateString()}</div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-md-4 text-end fw-bold">Active:</div>
-            <div className="col-md-8">
-              <span className={`badge ${user.is_active ? "bg-success" : "bg-danger"}`}>
-                {user.is_active ? "Yes" : "No"}
-              </span>
-            </div>
-          </div>
         </div>
-      </div>
-      <div className="d-flex justify-content-between mb-3 mt-3">
-        <button className="btn btn-secondary" onClick={handleGoBack}>
-          Go Back
-        </button>
-        <button className="btn btn-danger" onClick={handleDeleteUser}>
-          Delete User
-        </button>
       </div>
     </div>
   );

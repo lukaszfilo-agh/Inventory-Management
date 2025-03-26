@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 
+// Styles
+import "./styles.css";
+
 // Contexts
 import { UserProvider } from "./context/UserContext";
 

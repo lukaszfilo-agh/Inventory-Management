@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api";
+import UserDetailsTable from "../components/UserDetailsTable";
 
 const UserDetails = () => {
   const { userId } = useParams();
@@ -70,46 +71,7 @@ const UserDetails = () => {
                 <h3 className="mb-0">User Details</h3>
               </div>
               <div className="card-body p-4">
-                <table className="table table-bordered mx-auto" style={{ maxWidth: "90%" }}>
-                  <tbody>
-                    <tr>
-                      <th className="fw-bold">USERNAME</th>
-                      <td>{user.username}</td>
-                    </tr>
-                    <tr>
-                      <th className="fw-bold">FIRST NAME</th>
-                      <td>{user.first_name}</td>
-                    </tr>
-                    <tr>
-                      <th className="fw-bold">LAST NAME</th>
-                      <td>{user.last_name}</td>
-                    </tr>
-                    <tr>
-                      <th className="fw-bold">EMAIL</th>
-                      <td>{user.email}</td>
-                    </tr>
-                    <tr>
-                      <th className="fw-bold">ROLE</th>
-                      <td>
-                        <span className={`badge ${user.role === "admin" ? "bg-danger" : "bg-secondary"}`}>
-                          {user.role}
-                        </span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th className="fw-bold">JOINED DATE</th>
-                      <td>{new Date(user.date_joined).toLocaleDateString()}</td>
-                    </tr>
-                    <tr>
-                      <th className="fw-bold">ACTIVE</th>
-                      <td>
-                        <span className={`badge ${user.is_active ? "bg-success" : "bg-danger"}`}>
-                          {user.is_active ? "Yes" : "No"}
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <UserDetailsTable user={user} />
                 <div className="d-flex justify-content-between mt-4">
                   <button className="btn btn-secondary" onClick={handleGoBack}>
                     Go Back

@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
 import { UserContext } from "../context/UserContext";
 import api from "../api";
+import UserDetailsTable from "../components/UserDetailsTable";
+import Modal from "../components/Modal";
 
 const MyProfile = () => {
   const { user, loading, refreshUser } = useContext(UserContext);
@@ -8,14 +10,8 @@ const MyProfile = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [isEditing, setIsEditing] = useState({
-    username: false,
-    first_name: false,
-    last_name: false,
-    email: false,
-  });
+  const [editField, setEditField] = useState(null);
   const [editedUser, setEditedUser] = useState({ ...user });
-  const [editField, setEditField] = useState(null); // Track the field being edited
 
   const handlePasswordChange = async () => {
     if (newPassword !== confirmPassword) {
@@ -48,10 +44,6 @@ const MyProfile = () => {
     }
   };
 
-  const handleEditToggle = (field) => {
-    setIsEditing({ ...isEditing, [field]: !isEditing[field] });
-  };
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditedUser({ ...editedUser, [name]: value });
@@ -73,7 +65,6 @@ const MyProfile = () => {
 
       await refreshUser();
       alert(`${field.replace("_", " ")} updated successfully!`);
-      setIsEditing({ ...isEditing, [field]: false });
     } catch (error) {
       alert(error.response?.data?.detail || `Failed to update ${field}.`);
     }
@@ -106,52 +97,13 @@ const MyProfile = () => {
                 <h3 className="mb-0">My Profile</h3>
               </div>
               <div className="card-body p-4">
-                <table className="table table-bordered mx-auto" style={{ maxWidth: "90%" }}>
-                  <tbody>
-                    {["username", "first_name", "last_name", "email"].map((field) => (
-                      <tr key={field}>
-                        <th className="fw-bold">{field.replace("_", " ").toUpperCase()}</th>
-                        <td>
-                          <div className="d-flex justify-content-between align-items-center">
-                            <span>{user[field]}</span>
-                            <button
-                              className="btn btn-primary btn-sm"
-                              onClick={() => handleEditModalOpen(field)}
-                              style={{ whiteSpace: "nowrap" }}
-                            >
-                              Edit
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                    <tr>
-                      <th className="fw-bold">Role</th>
-                      <td>
-                        <span className={`badge ${user.role === "admin" ? "bg-danger" : "bg-secondary"}`}>
-                          {user.role}
-                        </span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th className="fw-bold">Joined Date</th>
-                      <td>{new Date(user.date_joined).toLocaleDateString()}</td>
-                    </tr>
-                    <tr>
-                      <th className="fw-bold">Active</th>
-                      <td>
-                        <span className={`badge ${user.is_active ? "bg-success" : "bg-danger"}`}>
-                          {user.is_active ? "Yes" : "No"}
-                        </span>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <UserDetailsTable
+                  user={user}
+                  editableFields={["username", "first_name", "last_name", "email"]}
+                  onEdit={handleEditModalOpen}
+                />
                 <div className="text-center mt-4">
-                  <button
-                    className="btn btn-warning"
-                    onClick={() => setShowModal(true)}
-                  >
+                  <button className="btn btn-warning" onClick={() => setShowModal(true)}>
                     Edit Password
                   </button>
                 </div>
@@ -161,120 +113,62 @@ const MyProfile = () => {
         </div>
       </div>
 
-      {showModal || editField ? (
-        <div className="overlay"></div>
-      ) : null}
-
       {showModal && (
-        <div className="modal d-block">
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Change Password</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={() => setShowModal(false)}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <div className="mb-3">
-                  <label className="form-label">Current Password</label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">New Password</label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Confirm Password</label>
-                  <input
-                    type="password"
-                    className="form-control"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={() => setShowModal(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={handlePasswordChange}
-                >
-                  Save Changes
-                </button>
-              </div>
-            </div>
+        <Modal
+          title="Change Password"
+          onClose={() => setShowModal(false)}
+          onSave={handlePasswordChange}
+        >
+          <div className="mb-3">
+            <label className="form-label">Current Password</label>
+            <input
+              type="password"
+              className="form-control"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+            />
           </div>
-        </div>
+          <div className="mb-3">
+            <label className="form-label">New Password</label>
+            <input
+              type="password"
+              className="form-control"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Confirm Password</label>
+            <input
+              type="password"
+              className="form-control"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+          </div>
+        </Modal>
       )}
 
       {editField && (
-        <div className="modal d-block">
-          <div className="modal-dialog modal-dialog-centered">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Edit {editField.replace("_", " ")}</h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  onClick={handleEditModalClose}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <div className="mb-3">
-                  <label className="form-label">
-                    {editField.replace("_", " ").toUpperCase()}
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name={editField}
-                    value={editedUser[editField]}
-                    onChange={handleInputChange}
-                  />
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={handleEditModalClose}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => {
-                    handleSaveChanges(editField);
-                    handleEditModalClose();
-                  }}
-                >
-                  Save Changes
-                </button>
-              </div>
-            </div>
+        <Modal
+          title={`Edit ${editField.replace("_", " ")}`}
+          onClose={handleEditModalClose}
+          onSave={() => {
+            handleSaveChanges(editField);
+            handleEditModalClose();
+          }}
+        >
+          <div className="mb-3">
+            <label className="form-label">{editField.replace("_", " ").toUpperCase()}</label>
+            <input
+              type="text"
+              className="form-control"
+              name={editField}
+              value={editedUser[editField]}
+              onChange={handleInputChange}
+            />
           </div>
-        </div>
+        </Modal>
       )}
     </div>
   );

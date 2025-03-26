@@ -13,11 +13,28 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const isTokenExpired = (token) => {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      return payload.exp * 1000 < Date.now();
+    } catch (error) {
+      console.error("Error decoding token:", error);
+      return true;
+    }
+  };
+
   useEffect(() => {
     const fetchUserDetails = async () => {
       try {
         const token = localStorage.getItem("token");
         if (token) {
+          if (isTokenExpired(token)) {
+            console.warn("Token is expired");
+            localStorage.removeItem("token");
+            setUser(null);
+            window.location.href = "/login"; // Redirect to login
+            return;
+          }
           const response = await api.get("/users/details", {
             headers: { Authorization: `Bearer ${token}` },
           });
@@ -48,6 +65,13 @@ export const UserProvider = ({ children }) => {
     try {
       const token = localStorage.getItem("token");
       if (token) {
+        if (isTokenExpired(token)) {
+          console.warn("Token is expired");
+          localStorage.removeItem("token");
+          setUser(null);
+          window.location.href = "/login"; // Redirect to login
+          return;
+        }
         const response = await api.get("/users/details", {
           headers: { Authorization: `Bearer ${token}` },
         });

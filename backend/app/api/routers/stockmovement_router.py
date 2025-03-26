@@ -42,7 +42,6 @@ async def add_stock_movement(stock_movement: StockMovementBase, db: Session = De
     db.add(new_stock_movement)
 
     stock = db.query(Stock).filter(Stock.item_id == stock_movement.item_id, Stock.warehouse_id == stock_movement.warehouse_id).one_or_none()
-    print(StockMovementBase)
     if stock:
         if stock_movement.movement_type == "inflow":
             stock.stock_level += stock_movement.quantity

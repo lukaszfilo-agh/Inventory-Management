@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api";
 import { UserContext } from "../context/UserContext";
+import Modal from "./Modal"; // Import Modal component
 
 const DetailsView = ({
   title,
@@ -18,6 +19,7 @@ const DetailsView = ({
   const [items, setItems] = useState([]);
   const [stock, setStock] = useState([]);
   const [isEditing, setIsEditing] = useState({});
+  const [modalField, setModalField] = useState(null); // Track field being edited
 
   useEffect(() => {
     document.title = "Warehouse Manager | " + title + " Details";
@@ -63,11 +65,10 @@ const DetailsView = ({
     setEntity({ ...entity, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e, field) => {
-    e.preventDefault();
+  const handleSubmit = async (field) => {
     try {
       await api.patch(`${apiEndpoint}/${id}/`, { [field]: entity[field] });
-      setIsEditing({ ...isEditing, [field]: false });
+      setModalField(null); // Close modal after saving
     } catch (error) {
       console.error(`Error updating ${field}:`, error);
     }
@@ -79,54 +80,17 @@ const DetailsView = ({
 
       {fields.map((field) => (
         <div key={field.name} className="mb-4">
-          <div className="d-flex align-items-center">
-            {isEditing[field.name] ? (
-              <form
-                onSubmit={(e) => handleSubmit(e, field.name)}
-                className="d-flex align-items-center w-100"
+          <div className="d-flex justify-content-between w-100">
+            <h2>
+              {field.label}: {entity[field.name]}
+            </h2>
+            {user && ["admin", "user"].includes(user.role) && (
+              <button
+                className="btn btn-warning"
+                onClick={() => setModalField(field.name)} // Open modal for editing
               >
-                <label className="form-label w-25">{field.label}:</label>
-                <input
-                  type="text"
-                  name={field.name}
-                  value={entity[field.name] || ""}
-                  onChange={handleChange}
-                  className="form-control flex-grow-1"
-                  required
-                />
-                {user && ["admin", "user"].includes(user.role) && (
-                  <>
-                    <button type="submit" className="btn btn-success ms-3">
-                      Save
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-secondary ms-2"
-                      onClick={() =>
-                        setIsEditing({ ...isEditing, [field.name]: false })
-                      }
-                    >
-                      Cancel
-                    </button>
-                  </>
-                )}
-              </form>
-            ) : (
-              <div className="d-flex justify-content-between w-100">
-                <h2>
-                  {field.label}: {entity[field.name]}
-                </h2>
-                {user && ["admin", "user"].includes(user.role) && (
-                  <button
-                    className="btn btn-warning"
-                    onClick={() =>
-                      setIsEditing({ ...isEditing, [field.name]: true })
-                    }
-                  >
-                    Edit
-                  </button>
-                )}
-              </div>
+                Edit
+              </button>
             )}
           </div>
         </div>
@@ -205,6 +169,25 @@ const DetailsView = ({
       <button className="btn btn-secondary mt-3" onClick={() => navigate(-1)}>
         🔙 Back
       </button>
+
+      {modalField && (
+        <Modal
+          title={`Edit ${fields.find((f) => f.name === modalField).label}`}
+          onClose={() => setModalField(null)}
+          onSave={() => handleSubmit(modalField)}
+        >
+          <input
+            type="text"
+            name={modalField}
+            value={entity[modalField] || ""}
+            onChange={(e) =>
+              setEntity({ ...entity, [modalField]: e.target.value })
+            }
+            className="form-control"
+            required
+          />
+        </Modal>
+      )}
     </div>
   );
 };

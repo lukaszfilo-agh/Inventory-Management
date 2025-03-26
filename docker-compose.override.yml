@@ -41,6 +41,8 @@ services:
       - inventory-manager-network
     environment:
       - REACT_APP_API_URL=${REACT_APP_API_URL}
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
 
   postgres:
     image: postgres:16

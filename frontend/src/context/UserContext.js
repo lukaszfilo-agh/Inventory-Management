@@ -6,6 +6,7 @@ export const UserContext = createContext({
   setUser: () => {},
   loading: true,
   logout: () => {},
+  refreshUser: () => {},
 });
 
 export const UserProvider = ({ children }) => {
@@ -43,8 +44,22 @@ export const UserProvider = ({ children }) => {
     setUser(null);
   };
 
+  const refreshUser = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (token) {
+        const response = await api.get("/users/details", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUser(response.data);
+      }
+    } catch (error) {
+      console.error("Error refreshing user details:", error);
+    }
+  };
+
   return (
-    <UserContext.Provider value={{ user, setUser, loading, logout }}>
+    <UserContext.Provider value={{ user, setUser, loading, logout, refreshUser }}>
       {children}
     </UserContext.Provider>
   );

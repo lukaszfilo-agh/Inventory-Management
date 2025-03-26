@@ -6,20 +6,11 @@ from core import (get_admin_emails, get_current_user, get_db, hash_password,
 from fastapi import APIRouter, Depends, HTTPException
 from models import User
 from pydantic import BaseModel, ValidationError
-from schemas import UserModel
+from schemas import UserModel, UserCreate, PasswordChangeRequest, UserUpdate
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
-# Pydantic model for user registration
-class UserCreate(BaseModel):
-    username: str
-    first_name: str
-    last_name: str
-    email: str
-    password: str
-    date_joined: str
-    role: str  # "admin" or "user"
 
 @router.post("/register", response_model=UserModel)
 async def create_user(user_data: UserCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -80,10 +71,24 @@ async def get_user(user_id: int, db: Session = Depends(get_db), current_user: Us
 async def get_me(current_user: UserModel = Depends(get_current_user)):
     return current_user
 
-# Pydantic model for password change
-class PasswordChangeRequest(BaseModel):
-    current_password: str
-    new_password: str
+@router.patch("/update/me", response_model=UserModel)
+async def update_user(
+    user_data: UserUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    user_to_update = db.query(User).filter(User.id == current_user.id).first()
+    if not user_to_update:
+        raise HTTPException(status_code=404, detail="User not found")
+    try:
+        validated_data = user_data.dict(exclude_unset=True)  # Pydantic handles validation
+        for key, value in validated_data.items():
+            setattr(user_to_update, key, value)
+        db.commit()
+        db.refresh(user_to_update)
+        return UserModel.model_validate(user_to_update).model_dump()
+    except ValidationError as e:
+        raise HTTPException(status_code=422, detail=e.errors())
 
 @router.patch("/change-password")
 async def change_password(

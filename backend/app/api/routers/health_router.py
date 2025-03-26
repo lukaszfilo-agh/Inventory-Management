@@ -11,7 +11,7 @@ router = APIRouter(prefix="/health", tags=["Health"])
             description="Endpoint to check if the API is running properly. Returns a status and message.")
 async def health_check():
     """
-    This endpoint checks the health of the API.
+    Check the health of the API.
     - Returns a status of 'ok' and a message confirming that the API is running.
     """
     return {'status': 'ok', 'message': 'API is running'}
@@ -22,12 +22,15 @@ async def health_check():
             summary="Email Health Check Endpoint",
             description="Endpoint to check if the email service is running properly. Returns a status and message.")
 async def email_health_check(current_user: UserModel = Depends(get_current_user)):
+    """
+    Check the health of the email service.
+    - Only accessible by admin users.
+    - Sends a test email and returns the response.
+    """
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to perform this action")
     try:
-        if current_user.role != "admin":
-            raise HTTPException(
-                status_code=403, detail="Not authorized to perform this action")
-        response = send_email("lukif02@gmail.com",
-                              "Test Email", "This is a test email.")
+        response = send_email("lukif02@gmail.com", "Test Email", "This is a test email.")
         return {"status": "ok", "message": f"{response}"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
@@ -38,4 +41,8 @@ async def email_health_check(current_user: UserModel = Depends(get_current_user)
             summary="Admin Only Endpoint",
             description="Endpoint that can only be accessed by users with the 'admin' role.")
 async def admin_only_endpoint(current_user: UserModel = Depends(role_required(["admin"]))):
+    """
+    Access an admin-only endpoint.
+    - Returns a welcome message for admin users.
+    """
     return {"message": "Welcome, admin!"}

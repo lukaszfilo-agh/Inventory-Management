@@ -1,19 +1,24 @@
 from typing import List
 
-import models as models
 from core import (get_admin_emails, get_current_user, get_db, hash_password,
                   send_email, verify_password)
 from fastapi import APIRouter, Depends, HTTPException
 from models import User
-from pydantic import BaseModel, ValidationError
+from pydantic import ValidationError
 from schemas import UserModel, UserCreate, PasswordChangeRequest, UserUpdate
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
 
-@router.post("/register", response_model=UserModel)
+@router.post("/register", response_model=UserModel, summary="Register a new user")
 async def create_user(user_data: UserCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """
+    Register a new user.
+    - Only accessible by admin users.
+    - Validates input, checks for duplicate usernames, and hashes the password.
+    - Sends a notification email to all admins.
+    """
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized to perform this action")
     try:
@@ -52,14 +57,24 @@ async def create_user(user_data: UserCreate, db: Session = Depends(get_db), curr
     except ValidationError as e:
         raise HTTPException(status_code=422, detail=e.errors())
 
-@router.get("/get", response_model=List[UserModel])
+@router.get("/get", response_model=List[UserModel], summary="Get all users")
 async def get_users(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """
+    Retrieve all users.
+    - Only accessible by admin users.
+    - Returns a list of all users in the system.
+    """
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized to perform this action")
     return db.query(User).all()
 
-@router.get("/get/{user_id}", response_model=UserModel)
+@router.get("/get/{user_id}", response_model=UserModel, summary="Get a specific user")
 async def get_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """
+    Retrieve a specific user by their ID.
+    - Only accessible by admin users.
+    - Returns the `UserModel` for the requested user.
+    """
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized to perform this action")
     user = db.query(User).filter(User.id == user_id).first()
@@ -67,16 +82,25 @@ async def get_user(user_id: int, db: Session = Depends(get_db), current_user: Us
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-@router.get("/details", response_model=UserModel)
+@router.get("/details", response_model=UserModel, summary="Get current user details")
 async def get_me(current_user: UserModel = Depends(get_current_user)):
+    """
+    Retrieve details of the currently authenticated user.
+    - Returns the `UserModel` for the current user.
+    """
     return current_user
 
-@router.patch("/update/me", response_model=UserModel)
+@router.patch("/update/me", response_model=UserModel, summary="Update current user details")
 async def update_user(
     user_data: UserUpdate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    """
+    Update details of the currently authenticated user.
+    - Accepts partial updates in the form of `UserUpdate`.
+    - Returns the updated `UserModel`.
+    """
     user_to_update = db.query(User).filter(User.id == current_user.id).first()
     if not user_to_update:
         raise HTTPException(status_code=404, detail="User not found")
@@ -90,12 +114,17 @@ async def update_user(
     except ValidationError as e:
         raise HTTPException(status_code=422, detail=e.errors())
 
-@router.patch("/change-password")
+@router.patch("/change-password", summary="Change current user's password")
 async def change_password(
     password_data: PasswordChangeRequest,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
+    """
+    Change the password of the currently authenticated user.
+    - Verifies the current password before updating.
+    - Returns a success message upon successful password change.
+    """
     user_to_update = db.query(User).filter(User.id == current_user.id).first()
     if not user_to_update:
         raise HTTPException(status_code=404, detail="User not found")
@@ -108,8 +137,13 @@ async def change_password(
     else:
         raise HTTPException(status_code=400, detail="Incorrect old password")
 
-@router.delete("/delete/{user_id}")
+@router.delete("/delete/{user_id}", summary="Delete a user")
 async def delete_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    """
+    Delete a user by their ID.
+    - Only accessible by admin users.
+    - Returns a success message upon successful deletion.
+    """
     if current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not authorized to perform this action")
     user = db.query(User).filter(User.id == user_id).first()

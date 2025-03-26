@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/stock/movement", tags=["Stock Movement"])
 
+
 @router.get("/get",
             response_model=List[StockMovementModel],
             response_description="A list of all stock movements",
@@ -15,10 +16,11 @@ router = APIRouter(prefix="/stock/movement", tags=["Stock Movement"])
             description="Fetches a list of all stock movements.")
 async def get_stock_movements(db: Session = Depends(get_db)):
     """
-    Endpoint to get all stock movements.
+    Retrieve all stock movements.
     - Returns a list of `StockMovementModel` representing all stock movements.
     """
     return db.query(StockMovement).all()
+
 
 @router.post("/add",
              response_model=StockMovementModel,
@@ -27,7 +29,9 @@ async def get_stock_movements(db: Session = Depends(get_db)):
              description="Adds a new stock movement record.")
 async def add_stock_movement(stock_movement: StockMovementBase, db: Session = Depends(get_db)):
     """
-    Endpoint to add a new stock movement.
+    Add a new stock movement.
+    - Validates the existence of the item and warehouse.
+    - Updates stock levels based on the movement type.
     - Returns the `StockMovementModel` of the added stock movement.
     """
     item = db.query(Item).filter(Item.id == stock_movement.item_id).one_or_none()

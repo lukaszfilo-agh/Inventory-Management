@@ -16,7 +16,7 @@ router = APIRouter(prefix="/stock", tags=["Stock"])
             description="Fetches a list of all stock items across all warehouses.")
 async def get_stock(db: Session = Depends(get_db)):
     """
-    Endpoint to get all stock items.
+    Retrieve all stock items.
     - Returns a list of `StockModel` representing all stock items.
     """
     return db.query(Stock).all()
@@ -29,7 +29,7 @@ async def get_stock(db: Session = Depends(get_db)):
             description="Fetches all stock records associated with a specific item.")
 async def get_stock_for_item(item_id: int, db: Session = Depends(get_db)):
     """
-    Endpoint to get all stock records for a specific item.
+    Retrieve all stock records for a specific item.
     - Returns a list of `StockModel` for the specified item.
     """
     item = db.query(Item).filter(Item.id == item_id).one_or_none()
@@ -40,6 +40,7 @@ async def get_stock_for_item(item_id: int, db: Session = Depends(get_db)):
     stock = db.query(Stock).filter(Stock.item_id == item_id).all()
     return stock
 
+
 @router.get("/get/warehouse/{warehouse_id}",
             response_model=List[StockModel],
             response_description="List of stock for the specified warehouse",
@@ -47,7 +48,7 @@ async def get_stock_for_item(item_id: int, db: Session = Depends(get_db)):
             description="Fetches all stock records associated with a specific warehouse.")
 async def get_stock_for_warehouse(warehouse_id: int, db: Session = Depends(get_db)):
     """
-    Endpoint to get all stock records for a specific warehouse.
+    Retrieve all stock records for a specific warehouse.
     - Returns a list of `StockModel` for the specified warehouse.
     """
     warehouse = db.query(Warehouse).filter(Warehouse.id == warehouse_id).one_or_none()

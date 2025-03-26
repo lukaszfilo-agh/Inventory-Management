@@ -1,9 +1,3 @@
-html, body {
-  height: 100%; /* Ensure the parent containers fill the viewport */
-  margin: 0; /* Remove any default margin */
-  overflow: hidden; /* Prevent scrolling when the modal is active */
-}
-
 .modal-overlay {
   position: fixed;
   top: 0;

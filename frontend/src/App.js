@@ -1,31 +1,34 @@
+// React and third-party libraries
 import React, { useState } from "react";
-import { jwtDecode } from "jwt-decode";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { UserProvider } from "./context/UserContext"; // Import UserProvider
+import { jwtDecode } from "jwt-decode";
 
-// Pages
-import Homepage from "./pages/Homepage";
-import Items from "./pages/Items";
-import ItemDetails from "./pages/ItemDetails";
-import AddItem from "./pages/AddItem";
-import Warehouses from "./pages/Warehouses";
-import AddWarehouse from "./pages/AddWarehouse";
-import WarehouseDetails from "./pages/WarehouseDetails";
-import Categories from "./pages/Categories";
-import CategoryDetails from "./pages/CategoryDetails";
-import AddCategory from "./pages/AddCategory";
-import StockMovement from "./pages/StockMovement";
-import AddStockMovement from "./pages/AddStockMovement";
-import Stock from "./pages/Stock";
-import Login from "./pages/Login";
-import UserList from "./pages/UserList";
-import AddUser from "./pages/AddUser";
-import MyProfile from "./pages/MyProfile";
-import UserDetails from "./pages/UserDetails"; // Import UserDetails page
-import Logout from "./pages/Logout";
+// Contexts
+import { UserProvider } from "./context/UserContext";
 
 // Components
 import Navbar from "./components/Navbar";
+
+// Pages
+import AddCategory from "./pages/AddCategory";
+import AddItem from "./pages/AddItem";
+import AddStockMovement from "./pages/AddStockMovement";
+import AddUser from "./pages/AddUser";
+import Categories from "./pages/Categories";
+import CategoryDetails from "./pages/CategoryDetails";
+import Homepage from "./pages/Homepage";
+import ItemDetails from "./pages/ItemDetails";
+import Items from "./pages/Items";
+import Login from "./pages/Login";
+import Logout from "./pages/Logout";
+import MyProfile from "./pages/MyProfile";
+import Stock from "./pages/Stock";
+import StockMovement from "./pages/StockMovement";
+import UserDetails from "./pages/UserDetails";
+import UserList from "./pages/UserList";
+import Warehouses from "./pages/Warehouses";
+import WarehouseDetails from "./pages/WarehouseDetails";
+import AddWarehouse from "./pages/AddWarehouse";
 
 const PrivateRoute = ({ element, requiredRole }) => {
   const token = localStorage.getItem("token");

@@ -30,7 +30,7 @@ origins = [settings.FRONTEND_URL]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_methods=["GET", "POST", "PUT", "DELETE"],  # Restrict to necessary methods
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],  # Restrict to necessary methods
     allow_headers=["Authorization", "Content-Type"],  # Restrict to necessary headers
 )
 

@@ -2,7 +2,7 @@ from typing import List
 
 import models as models
 from core import (get_admin_emails, get_current_user, get_db, hash_password,
-                  send_email)
+                  send_email, verify_password)
 from fastapi import APIRouter, Depends, HTTPException
 from models import User
 from pydantic import BaseModel, ValidationError
@@ -79,6 +79,29 @@ async def get_user(user_id: int, db: Session = Depends(get_db), current_user: Us
 @router.get("/details", response_model=UserModel)
 async def get_me(current_user: UserModel = Depends(get_current_user)):
     return current_user
+
+# Pydantic model for password change
+class PasswordChangeRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+@router.patch("/change-password")
+async def change_password(
+    password_data: PasswordChangeRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    user_to_update = db.query(User).filter(User.id == current_user.id).first()
+    if not user_to_update:
+        raise HTTPException(status_code=404, detail="User not found")
+    if verify_password(password_data.current_password, user_to_update.hashed_password):
+        new_hashed_password = hash_password(password_data.new_password)
+        user_to_update.hashed_password = new_hashed_password
+        db.commit()
+        db.refresh(user_to_update)
+        return {"status": "ok", "message": "Password updated successfully"}
+    else:
+        raise HTTPException(status_code=400, detail="Incorrect old password")
 
 @router.delete("/delete/{user_id}")
 async def delete_user(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):

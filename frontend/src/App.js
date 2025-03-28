@@ -63,23 +63,23 @@ const App = () => {
           {/* Items */}
           <Route path="/items" element={<Items />} />
           <Route path="/items/:id" element={<ItemDetails />} />
-          <Route path="/items/add" element={<AddItem />} />
+          <Route path="/items/add" element={<PrivateRoute element={<AddItem />} requiredRole={["admin", "user"]} />} />
 
           {/* Warehouses */}
           <Route path="/warehouses" element={<Warehouses />} />
-          <Route path="/warehouses/add" element={<AddWarehouse />} />
+          <Route path="/warehouses/add" element={<PrivateRoute element={<AddWarehouse />} requiredRole={["admin", "user"]} />} />
           <Route path="/warehouse/:id" element={<WarehouseDetails />} />
 
           {/* Categories */}
           <Route path="/categories" element={<Categories />} />
           <Route path="/categories/:id" element={<CategoryDetails />} />
-          <Route path="/categories/add" element={<AddCategory />} />
+          <Route path="/categories/add" element={<PrivateRoute element={<AddCategory />} requiredRole={["admin", "user"]} />} />
 
           {/* Stock */}
           <Route path="/stock" element={<Stock />} />
           <Route path="/stock/movement" element={<StockMovement />} />
-          <Route path="/stock/movement/add" element={<AddStockMovement />} />
-          <Route path="/stock/movement/add/:id" element={<AddStockMovement />} />
+          <Route path="/stock/movement/add" element={<PrivateRoute element={<AddStockMovement />} requiredRole={["admin", "user"]} />} />
+          <Route path="/stock/movement/add/:id" element={<PrivateRoute element={<AddStockMovement />} requiredRole={["admin", "user"]} />} />
 
           {/* Login */}
           <Route path="/login" element={<Login setToken={setToken} />} />

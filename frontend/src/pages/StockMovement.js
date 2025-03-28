@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 import api from "../api";
 
 const StockMovement = () => {
   const [movements, setMovements] = useState([]);
   const navigate = useNavigate();
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     fetchStockMovements();
@@ -24,11 +26,16 @@ const StockMovement = () => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-4">
       <h1 className="text-center mb-4">Stock Movements</h1>
-      <button className="btn btn-success mb-3" onClick={() => navigate("/stock/movement/add")}>
-        Add Stock Movement
-      </button>
+      {user && ["admin", "user"].includes(user.role) && (
+        <button
+          className="btn btn-success mb-3"
+          onClick={() => navigate("/stock/movement/add")}
+        >
+          Add Stock Movement
+        </button>
+      )}
       <table className="table table-bordered">
         <thead>
           <tr>

@@ -75,7 +75,7 @@ const DetailsView = ({
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-4">
       <h1 className="text-center mb-4">{title} Details</h1>
 
       {fields.map((field) => (
@@ -166,7 +166,7 @@ const DetailsView = ({
         </>
       )}
 
-      <button className="btn btn-secondary mt-3" onClick={() => navigate(-1)}>
+      <button className="btn btn-secondary mt-3 mb-4" onClick={() => navigate(-1)}>
         🔙 Back
       </button>
 

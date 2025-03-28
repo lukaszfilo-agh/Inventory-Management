@@ -42,6 +42,7 @@ const StockMovement = () => {
             <th>Item</th>
             <th>Warehouse</th>
             <th>Quantity</th>
+            <th>Remaining Quantity</th> {/* New column */}
             <th>Movement Type</th>
             <th>Date</th>
           </tr>
@@ -52,6 +53,7 @@ const StockMovement = () => {
               <td>{movement.item.name}</td>
               <td>{movement.warehouse.name}</td>
               <td>{movement.quantity}</td>
+              <td>{movement.remaining_quantity}</td> {/* Display remaining quantity */}
               <td>{movement.movement_type}</td>
               <td>{movement.movement_date}</td>
             </tr>
@@ -59,7 +61,7 @@ const StockMovement = () => {
         </tbody>
       </table>
     </div>
-  )
+  );
 };
 
 export default StockMovement;

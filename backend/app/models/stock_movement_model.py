@@ -17,6 +17,7 @@ class StockMovement(Base):
     warehouse_id = Column(Integer, ForeignKey('warehouses.id'))
     movement_type = Column(String, CheckConstraint("movement_type IN ('inflow', 'outflow')"))
     quantity = Column(Integer, nullable=False)
+    remaining_quantity = Column(Integer, nullable=False)  # Track remaining quantity for FIFO
     movement_date = Column(Date, default=date.today)
     price = Column(Integer, nullable=False)
 

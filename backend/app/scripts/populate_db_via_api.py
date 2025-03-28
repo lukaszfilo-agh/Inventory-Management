@@ -178,6 +178,8 @@ def populate_db():
                 "price": 50.0 + k * 5
             })
     for movement in stock_movements:
+        if movement["movement_type"] == "inflow":
+            movement["remaining_quantity"] = movement["quantity"]
         response = requests.post(f"{BASE_URL}/stock/movement/add", json=movement)
         response.raise_for_status()
 

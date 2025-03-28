@@ -76,93 +76,101 @@ const DetailsView = ({
 
   return (
     <div className="container mt-4">
-      <h1 className="text-center mb-4">{title} Details</h1>
+      <div className="d-flex justify-content-center align-items-center mb-4">
+        <h1 className="me-3">
+          {entity.name
+            ? `${entity.name} ${title.toLowerCase()}`
+            : `${title} Details`}
+        </h1>
+      </div>
 
-      {fields.map((field) => (
-        <div key={field.name} className="mb-4">
-          <div className="d-flex justify-content-between w-100">
-            <h2>
-              {field.label}: {entity[field.name]}
-            </h2>
-            {user && ["admin", "user"].includes(user.role) && (
+      <table className="table table-bordered mx-auto" style={{ width: "600px" }}>
+        <tbody>
+          {fields
+            .filter((field) => field.name !== "name") // Exclude the "name" field from the table
+            .map((field) => (
+              <tr key={field.name}>
+                <th className="fw-bold">{field.label}</th>
+                <td>{entity[field.name]}</td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+
+      <div className="text-center mt-3">
+        {user && ["admin", "user"].includes(user.role) && (
+          fields
+            .map((field) => (
               <button
-                className="btn btn-warning"
+                key={field.name}
+                className="btn btn-warning btn-sm me-2"
                 onClick={() => setModalField(field.name)} // Open modal for editing
               >
-                Edit
+                Edit {field.label}
               </button>
-            )}
-          </div>
-        </div>
-      ))}
+            ))
+        )}
+      </div>
 
       {renderExtraDetails && renderExtraDetails(entity)}
 
-      {title === "Category" && (
+      {title === "Category" && items.length > 0 && (
         <>
-          <h3 className="mt-4">Items in {title}</h3>
-          {items.length > 0 ? (
-            <table className="table table-striped mt-3">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Actions</th>
+          <h3 className="mt-4">Items in {entity.name || title}</h3>
+          <table className="table table-striped mt-3">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => (
+                <tr key={item.id}>
+                  <td>{item.name}</td>
+                  <td>
+                    <button
+                      className="btn btn-primary btn-sm me-2"
+                      onClick={() => navigate(`/items/${item.id}`)}
+                    >
+                      View Item Details
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {items.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.name}</td>
-                    <td>
-                      <button
-                        className="btn btn-primary btn-sm me-2"
-                        onClick={() => navigate(`/items/${item.id}`)}
-                      >
-                        View Item Details
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>No items in this {title.toLowerCase()}.</p>
-          )}
+              ))}
+            </tbody>
+          </table>
         </>
       )}
 
-      {title === "Warehouse" && (
+      {title === "Warehouse" && stock.length > 0 && (
         <>
-          <h3 className="mt-4">Stock in {title}</h3>
-          {stock.length > 0 ? (
-            <table className="table table-striped mt-3">
-              <thead>
-                <tr>
-                  <th>Item Name</th>
-                  <th>Quantity</th>
-                  <th>Actions</th>
+          <h3 className="mt-4">Stock in {entity.name || title}</h3>
+          <table className="table table-striped mt-3">
+            <thead>
+              <tr>
+                <th>Item Name</th>
+                <th>Quantity</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {stock.map((stockEntry) => (
+                <tr key={stockEntry.id}>
+                  <td>{stockEntry.item.name}</td>
+                  <td>{stockEntry.stock_level}</td>
+                  <td>
+                    <button
+                      className="btn btn-primary btn-sm me-2"
+                      onClick={() => navigate(`/items/${stockEntry.item_id}`)}
+                    >
+                      View Item Details
+                    </button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {stock.map((stockEntry) => (
-                  <tr key={stockEntry.id}>
-                    <td>{stockEntry.item.name}</td>
-                    <td>{stockEntry.stock_level}</td>
-                    <td>
-                      <button
-                        className="btn btn-primary btn-sm me-2"
-                        onClick={() => navigate(`/items/${stockEntry.item_id}`)}
-                      >
-                        View Item Details
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>No stock found in this {title.toLowerCase()}.</p>
-          )}
+              ))}
+            </tbody>
+          </table>
         </>
       )}
 
@@ -172,7 +180,7 @@ const DetailsView = ({
 
       {modalField && (
         <Modal
-          title={`Edit ${fields.find((f) => f.name === modalField).label}`}
+          title={`Edit ${fields.find((f) => f.name === modalField)?.label || "Name"}`}
           onClose={() => setModalField(null)}
           onSave={() => handleSubmit(modalField)}
         >

@@ -42,8 +42,39 @@ async def add_stock_movement(stock_movement: StockMovementBase, db: Session = De
     if not warehouse:
         raise HTTPException(status_code=404, detail="Warehouse not found.")
 
-    new_stock_movement = StockMovement(**stock_movement.model_dump())
-    db.add(new_stock_movement)
+    if stock_movement.movement_type == "inflow":
+        new_stock_movement = StockMovement(
+            **stock_movement.model_dump(),
+            remaining_quantity=stock_movement.quantity
+        )
+        db.add(new_stock_movement)
+    elif stock_movement.movement_type == "outflow":
+        remaining_quantity = stock_movement.quantity
+        inflow_movements = db.query(StockMovement).filter(
+            StockMovement.item_id == stock_movement.item_id,
+            StockMovement.warehouse_id == stock_movement.warehouse_id,
+            StockMovement.remaining_quantity > 0,
+            StockMovement.movement_type == "inflow"
+        ).order_by(StockMovement.movement_date).all()
+
+        for inflow in inflow_movements:
+            if remaining_quantity <= 0:
+                break
+            if inflow.remaining_quantity >= remaining_quantity:
+                inflow.remaining_quantity -= remaining_quantity
+                remaining_quantity = 0
+            else:
+                remaining_quantity -= inflow.remaining_quantity
+                inflow.remaining_quantity = 0
+
+        if remaining_quantity > 0:
+            raise HTTPException(status_code=400, detail="Not enough stock available for outflow.")
+
+        new_stock_movement = StockMovement(
+            **stock_movement.model_dump(),
+            remaining_quantity=0
+        )
+        db.add(new_stock_movement)
 
     stock = db.query(Stock).filter(Stock.item_id == stock_movement.item_id, Stock.warehouse_id == stock_movement.warehouse_id).one_or_none()
     if stock:

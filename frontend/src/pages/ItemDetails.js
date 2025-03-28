@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api";
 import { UserContext } from "../context/UserContext";
+import Modal from "../components/Modal"; // Import Modal component
 
 const ItemDetails = () => {
   const { id } = useParams();
@@ -13,6 +14,7 @@ const ItemDetails = () => {
     description: false,
   });
   const [editedItem, setEditedItem] = useState({});
+  const [editField, setEditField] = useState(null); // Track field being edited
   const navigate = useNavigate();
   const { user } = useContext(UserContext); // Access user from UserContext
 
@@ -57,11 +59,19 @@ const ItemDetails = () => {
     setEditedItem({ ...editedItem, [name]: value });
   };
 
+  const handleEditModalOpen = (field) => {
+    setEditField(field);
+  };
+
+  const handleEditModalClose = () => {
+    setEditField(null);
+  };
+
   const handleSaveChanges = async (field) => {
     try {
       await api.patch(`/items/${id}`, { [field]: editedItem[field] });
       setItem({ ...item, [field]: editedItem[field] });
-      setIsEditing({ ...isEditing, [field]: false });
+      setEditField(null); // Close modal after saving
     } catch (error) {
       console.error("Error saving item details:", error);
     }
@@ -73,129 +83,72 @@ const ItemDetails = () => {
 
   return (
     <div className="container mt-5">
-      <h1 className="text-center mb-4">Item Details</h1>
-
-      <div className="row">
-        <div className="col-6">
-          <h5>Name:</h5>
-          {isEditing.name ? (
-            <div>
-              <input
-                type="text"
-                name="name"
-                value={editedItem.name}
-                onChange={handleInputChange}
-                className="form-control"
-              />
-              <button className="btn btn-success mt-2" onClick={() => handleSaveChanges("name")}>
-                Save
-              </button>
-              <button className="btn btn-secondary mt-2 ml-2" onClick={() => handleEditToggle("name")}>
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <p style={{ margin: 0 }}>{item.name}</p>
-              {user && ["admin", "user"].includes(user.role) && ( // Role check
-                <button className="btn btn-primary" onClick={() => handleEditToggle("name")}>
-                  Edit
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-        <div className="col-6">
-          <h5>Category:</h5>
-          {isEditing.category ? (
-            <div>
-              <input
-                type="text"
-                name="category"
-                value={editedItem.category ? editedItem.category.name : ""}
-                onChange={handleInputChange}
-                className="form-control"
-              />
-              <button className="btn btn-success mt-2" onClick={() => handleSaveChanges("category")}>
-                Save
-              </button>
-              <button className="btn btn-secondary mt-2 ml-2" onClick={() => handleEditToggle("category")}>
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <p style={{ margin: 0 }}>{item.category ? item.category.name : "No category assigned"}</p>
-              {user && ["admin", "user"].includes(user.role) && ( // Role check
-                <button className="btn btn-primary" onClick={() => handleEditToggle("category")}>
-                  Edit
-                </button>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-      <div className="row mt-3">
-        <div className="col-12">
-          <h5>Description:</h5>
-          {isEditing.description ? (
-            <div>
-              <textarea
-                name="description"
-                value={editedItem.description}
-                onChange={handleInputChange}
-                className="form-control"
-              />
-              <button className="btn btn-success mt-2" onClick={() => handleSaveChanges("description")}>
-                Save
-              </button>
-              <button className="btn btn-secondary mt-2 ml-2" onClick={() => handleEditToggle("description")}>
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <p style={{ margin: 0 }}>{item.description}</p>
-              {user && ["admin", "user"].includes(user.role) && ( // Role check
-                <button className="btn btn-primary" onClick={() => handleEditToggle("description")}>
-                  Edit
-                </button>
-              )}
-            </div>
-          )}
-        </div>
+      <div className="d-flex justify-content-center align-items-center mb-4">
+        <h1 className="me-3">{item.name}</h1>
       </div>
 
-      <h3 className="mt-4">Stock in warehouses</h3>
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            <th>Warehouse</th>
-            <th>Quantity</th>
-          </tr>
-        </thead>
+      <table className="table table-bordered mx-auto" style={{ width: "600px" }}>
         <tbody>
-          {stocks.length > 0 ? (
-            stocks.map((stock) => (
-              <tr key={stock.id}>
-                <td>
-                  {stock.warehouse ? stock.warehouse.name : "No warehouse assigned"}
-                </td>
-                <td>{stock.stock_level}</td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="3" className="text-center">
-                No stock entries found
-              </td>
-            </tr>
-          )}
+          <tr>
+            <th className="fw-bold">Category</th>
+            <td>{item.category ? item.category.name : "No category assigned"}</td>
+          </tr>
+          <tr>
+            <th className="fw-bold">Description</th>
+            <td>{item.description}</td>
+          </tr>
         </tbody>
       </table>
 
+      <div className="text-center mt-3">
+        {user && ["admin", "user"].includes(user.role) && (
+          <>
+            <button
+            className="btn btn-warning btn-sm me-2"
+            onClick={() => handleEditModalOpen("name")}
+            >
+              Edit Name
+            </button>
+            <button
+              className="btn btn-warning btn-sm me-2"
+              onClick={() => handleEditModalOpen("category")}
+            >
+              WIP [Edit Category]
+            </button>
+            <button
+              className="btn btn-warning btn-sm"
+              onClick={() => handleEditModalOpen("description")}
+            >
+              Edit Description
+            </button>
+          </>
+        )}
+      </div>
+
+      <h3 className="mt-4">Stock in Warehouses</h3>
+      {stocks.length > 0 ? (
+        <table className="table table-striped mt-3">
+          <thead>
+            <tr>
+              <th>Warehouse</th>
+              <th>Quantity</th>
+            </tr>
+          </thead>
+          <tbody>
+            {stocks.map((stock) => (
+              <tr key={stock.id}>
+                <td>{stock.warehouse ? stock.warehouse.name : "No warehouse assigned"}</td>
+                <td>{stock.stock_level}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p className="text-center">No stock entries found.</p>
+      )}
+
       <div className="text-center mt-4">
-        {user && ["admin", "user"].includes(user.role) && ( // Role check
+        {user && ["admin", "user"].includes(user.role) && (
           <button className="btn btn-primary" onClick={handleAddStock}>
             Add Stock
           </button>
@@ -205,6 +158,25 @@ const ItemDetails = () => {
       <button className="btn btn-secondary mt-3" onClick={() => navigate(-1)}>
         🔙 Back
       </button>
+
+      {editField && (
+        <Modal
+          title={`Edit ${editField}`}
+          onClose={handleEditModalClose}
+          onSave={() => handleSaveChanges(editField)}
+        >
+          <div className="mb-3">
+            <label className="form-label">{editField.toUpperCase()}</label>
+            <input
+              type="text"
+              className="form-control"
+              name={editField}
+              value={editedItem[editField] || ""}
+              onChange={handleInputChange}
+            />
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };

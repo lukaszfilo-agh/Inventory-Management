@@ -3,7 +3,7 @@ from typing import List
 from models import Warehouse, Item
 from core import get_db
 from fastapi import APIRouter, Depends, HTTPException
-from schemas import WarehouseBase, WarehouseModel
+from schemas import WarehouseBase, WarehouseModel, WarehouseUpdate
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/warehouses", tags=["Warehouses"])
@@ -62,17 +62,20 @@ async def get_warehouse(warehouse_id: int, db: Session = Depends(get_db)):
               response_description="The updated warehouse",
               summary="Update a warehouse",
               description="Updates a warehouse's details and returns the updated warehouse model.")
-async def update_warehouse(warehouse_id: int, warehouse: WarehouseBase, db: Session = Depends(get_db)):
+async def update_warehouse(warehouse_id: int, warehouse: WarehouseUpdate, db: Session = Depends(get_db)):
     """
     Update a warehouse by its ID.
-    - Accepts partial updates in the form of `WarehouseBase`.
+    - Accepts partial updates in the form of `WarehouseUpdate`.
     - Returns the updated `WarehouseModel`.
     """
     warehouse_to_update = db.query(Warehouse).filter(Warehouse.id == warehouse_id).one_or_none()
     if not warehouse_to_update:
         raise HTTPException(status_code=404, detail="Warehouse not found.")
-    for key, value in warehouse.model_dump(exclude_unset=True).items():
+    
+    update_data = warehouse.model_dump(exclude_unset=True)  # Only include provided fields
+    for key, value in update_data.items():
         setattr(warehouse_to_update, key, value)
+    
     db.commit()
     db.refresh(warehouse_to_update)
     return warehouse_to_update

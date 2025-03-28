@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from typing import Optional
 
 from .category_schema import CategoryModel
 
@@ -57,3 +58,9 @@ class ItemModel(ItemBase):
             from_attributes (bool): Enables ORM mode to map ORM objects to Pydantic models.
         """
         from_attributes = True
+
+
+class ItemUpdate(BaseModel):
+    name: Optional[str] = Field(None, description="The name of the item", min_length=1, max_length=100)
+    description: Optional[str] = Field(None, description="The description of the item", min_length=1, max_length=500)
+    category_id: Optional[int] = Field(None, description="The unique identifier of the category", ge=1)

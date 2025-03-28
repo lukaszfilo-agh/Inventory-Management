@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from typing import Optional
 
 
 class WarehouseBase(BaseModel):
@@ -46,3 +47,8 @@ class WarehouseModel(WarehouseBase):
             from_attributes (bool): Enables ORM mode to map ORM objects to Pydantic models.
         """
         from_attributes = True
+
+
+class WarehouseUpdate(BaseModel):
+    name: Optional[str] = Field(None, description="The name of the warehouse", min_length=3, max_length=100)
+    location: Optional[str] = Field(None, description="The location of the warehouse", min_length=3, max_length=200)

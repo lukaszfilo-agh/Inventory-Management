@@ -3,7 +3,7 @@ from typing import List
 from models import Category, Item
 from core import get_db
 from fastapi import APIRouter, Depends, HTTPException
-from schemas import ItemBase, ItemModel
+from schemas import ItemBase, ItemModel, ItemUpdate
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/items", tags=["Items"])
@@ -69,10 +69,10 @@ async def get_item(item_id: int, db: Session = Depends(get_db)):
               response_description="The updated item",
               summary="Update an existing item",
               description="Updates an existing item's details and returns the updated item.")
-async def update_item(item_id: int, item: ItemBase, db: Session = Depends(get_db)):
+async def update_item(item_id: int, item: ItemUpdate, db: Session = Depends(get_db)):
     """
     Update an existing item by its ID.
-    - Accepts partial updates in the form of `ItemBase`.
+    - Accepts partial updates in the form of `ItemUpdate`.
     - Returns the updated `ItemModel`.
     """
     item_to_update = db.query(Item).filter(Item.id == item_id).one_or_none()

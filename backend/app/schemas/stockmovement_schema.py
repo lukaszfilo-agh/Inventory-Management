@@ -70,6 +70,11 @@ class StockMovementModel(StockMovementBase):
         ...,
         description="The warehouse where the stock movement occurred",
     )
+    remaining_quantity: int = Field(
+        ...,
+        description="The remaining quantity of the item after the movement",
+        ge=0,  # Ensure the remaining quantity is non-negative
+    )
 
     class Config:
         """

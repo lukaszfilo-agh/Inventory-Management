@@ -164,7 +164,7 @@ def populate_db():
                 "warehouse_id": warehouse_ids[k % len(warehouse_ids)],
                 "movement_type": "inflow",
                 "quantity": 10 + k,
-                "movement_date": (date.today() - timedelta(days=k + 1)).isoformat(),
+                "movement_date": (date.today() - timedelta(days=k + 11)).isoformat(),
                 "price": 50.0 + k * 5
             })
         # Add 10 outflows
@@ -174,7 +174,7 @@ def populate_db():
                 "warehouse_id": warehouse_ids[k % len(warehouse_ids)],
                 "movement_type": "outflow",
                 "quantity": 5 + k,
-                "movement_date": (date.today() - timedelta(days=k + 11)).isoformat(),
+                "movement_date": (date.today() - timedelta(days=k + 1)).isoformat(),
                 "price": 50.0 + k * 5
             })
     for movement in stock_movements:

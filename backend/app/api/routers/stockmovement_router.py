@@ -54,7 +54,8 @@ async def add_stock_movement(stock_movement: StockMovementBase, db: Session = De
             StockMovement.item_id == stock_movement.item_id,
             StockMovement.warehouse_id == stock_movement.warehouse_id,
             StockMovement.remaining_quantity > 0,
-            StockMovement.movement_type == "inflow"
+            StockMovement.movement_type == "inflow",
+            StockMovement.movement_date < stock_movement.movement_date  # Only consider inflows before the outflow
         ).order_by(StockMovement.movement_date).all()
 
         for inflow in inflow_movements:

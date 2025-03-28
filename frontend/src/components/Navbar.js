@@ -1,22 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user } = useContext(UserContext); // Use logout from UserContext
   const navigate = useNavigate();
-
-  useEffect(() => {
-    // Check if the user is logged in by checking for a token in localStorage
-    const token = localStorage.getItem("token");
-    setIsLoggedIn(!!token); // Set isLoggedIn to true if token exists
-  }, []);
-
-  const handleLogout = () => {
-    // Remove the token from localStorage and update the state
-    localStorage.removeItem("token");
-    setIsLoggedIn(false);
-    navigate("/login"); // Redirect to the login page
-  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -62,22 +50,36 @@ const Navbar = () => {
                 Categories
               </Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/users">
-                Users
-              </Link>
-            </li>
-            <li className="nav-item">
-              {isLoggedIn ? (
-                <button className="btn btn-link nav-link" onClick={handleLogout}>
-                  Logout
-                </button>
-              ) : (
+            {user && user.role === "admin" && (
+              <li className="nav-item">
+                <Link className="nav-link" to="/users">
+                  Users
+                </Link>
+              </li>
+            )}
+            {user ? (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/users/myprofile">
+                    My Profile
+                  </Link>
+                </li>
+                {/* <li className="nav-item">
+                  <span className="nav-link">Welcome, {user.first_name}</span>
+                </li> */}
+                <li className="nav-item">
+                  <Link className="nav-link" to="/logout">
+                    Logout
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <li className="nav-item">
                 <Link className="nav-link" to="/login">
                   Login
                 </Link>
-              )}
-            </li>
+              </li>
+            )}
           </ul>
         </div>
       </div>

@@ -65,7 +65,11 @@ def create_default_user(db: Session):
         # Create a default admin user
         admin_user = User(
             username="admin",
+            first_name="Admin",
+            last_name="User",
+            email="admin@admin.com",
             hashed_password=hash_password("admin"),  # Replace with a secure password
+            date_joined=datetime.now(),
             role="admin"  # Assuming the User model has a 'role' field
         )
         db.add(admin_user)
@@ -76,3 +80,9 @@ def create_default_user(db: Session):
     else:
         print("Default admin user already exists.")
         return None
+
+def get_admin_emails(db: Session):
+    """
+    Fetches all admin emails from the database.
+    """
+    return [user.email for user in db.query(User).filter(User.role == "admin").all()]

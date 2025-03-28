@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field
 from datetime import datetime
+
+from pydantic import BaseModel, Field
 
 from .item_schema import ItemModel
 from .warehouse_schema import WarehouseModel
@@ -13,7 +14,6 @@ class StockBase(BaseModel):
         item_id (int): The unique identifier of the item. Must be a positive integer.
         warehouse_id (int): The unique identifier of the warehouse where the item is stored. Must be a positive integer.
         stock_level (int): The quantity of the item in stock. Must be a non-negative integer.
-        date_added (datetime): The date and time when the stock was added to the warehouse.
     """
     item_id: int = Field(
         ...,
@@ -29,10 +29,6 @@ class StockBase(BaseModel):
         ...,
         description="The quantity of the item in stock",
         ge=0,  # Ensure the stock level is non-negative
-    )
-    date_added: datetime = Field(
-        ...,
-        description="The date and time when the stock was added to the warehouse",
     )
 
 

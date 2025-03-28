@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Optional
 
 from pydantic import BaseModel, Field
@@ -19,16 +20,38 @@ class UserBase(BaseModel):
         min_length=3,
         max_length=50,
     )
-    role: str = Field(
+    first_name: str = Field(
         ...,
-        description="The role of the user (e.g., 'admin', 'user')",
+        description="The first name of the user",
         min_length=3,
-        max_length=20,
+        max_length=50,
+    )
+    last_name: str = Field(
+        ...,
+        description="The last name of the user",
+        min_length=3,
+        max_length=50,
+    )
+    email: str = Field(
+        ...,
+        description="The email address of the user",
+        min_length=3,
+        max_length=50,
     )
     hashed_password: str = Field(
         ...,
         description="The hashed password of the user",
         min_length=8,
+    )
+    date_joined: date = Field(
+        ...,
+        description="The date the user joined the platform",
+    )
+    role: str = Field(
+        ...,
+        description="The role of the user (e.g., 'admin', 'user')",
+        min_length=3,
+        max_length=20,
     )
     is_active: Optional[bool] = Field(
         True,
@@ -57,6 +80,28 @@ class UserModel(BaseModel):
         min_length=3,
         max_length=50,
     )
+    first_name: str = Field(
+        ...,
+        description="The first name of the user",
+        min_length=3,
+        max_length=50,
+    )
+    last_name: str = Field(
+        ...,
+        description="The last name of the user",
+        min_length=3,
+        max_length=50,
+    )
+    email: str = Field(
+        ...,
+        description="The email address of the user",
+        min_length=3,
+        max_length=50,
+    )
+    date_joined: date = Field(
+        ...,
+        description="The date the user joined the platform",
+    )
     role: str = Field(
         ...,
         description="The role of the user (e.g., 'admin', 'user')",
@@ -76,3 +121,74 @@ class UserModel(BaseModel):
             from_attributes (bool): Enables ORM mode to map ORM objects to Pydantic models.
         """
         from_attributes = True
+
+
+class UserCreate(BaseModel):
+    username: str = Field(
+        ...,
+        description="The username of the user",
+        min_length=3,
+        max_length=50,
+    )
+    first_name: str = Field(
+        ...,
+        description="The first name of the user",
+        min_length=3,
+        max_length=50,
+    )
+    last_name: str = Field(
+        ...,
+        description="The last name of the user",
+        min_length=3,
+        max_length=50,
+    )
+    email: str = Field(
+        ...,
+        description="The email address of the user",
+        min_length=3,
+        max_length=50,
+    )
+    password: str = Field(
+        ...,
+        description="The password of the user",
+    )
+    date_joined: date = Field(
+        ...,
+        description="The date the user joined the platform",
+    )
+    role: str = Field(
+        ...,
+        description="The role of the user (e.g., 'admin', 'user')",
+        min_length=3,
+        max_length=20,
+    )
+
+class PasswordChangeRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+class UserUpdate(BaseModel):
+    username: Optional[str] = Field(
+        None,
+        description="The username of the user",
+        min_length=3,
+        max_length=50,
+    )
+    first_name: Optional[str] = Field(
+        None,
+        description="The first name of the user",
+        min_length=3,
+        max_length=50,
+    )
+    last_name: Optional[str] = Field(
+        None,
+        description="The last name of the user",
+        min_length=3,
+        max_length=50,
+    )
+    email: Optional[str] = Field(
+        None,
+        description="The email address of the user",
+        min_length=3,
+        max_length=50,
+    )

@@ -92,7 +92,11 @@ const AddStockMovement = () => {
 
       const response = await api.post(`/stock/movement/add`, stockMovementData);
       if (response.data) {
-        navigate(`/items/${itemId}`);
+        if (movementType === "outflow" && response.data.remaining_quantity < 0) {
+          setErrorMessage("Not enough stock available for the outflow.");
+        } else {
+          navigate(`/items/${itemId}`);
+        }
       }
     } catch (error) {
       console.error("Error adding stock movement:", error);

@@ -1,20 +1,76 @@
 # 📦 Inventory Management System  
 
-This is a full-stack **Inventory Management System** built using **FastAPI**, **SQLAlchemy**, and a **React frontend** with **Bootstrap 5** for styling. It allows users to manage warehouses and track owned equipment stored within them. It also supports **Docker** for containerized deployment and uses **PostgreSQL** as the database.
+This is a full-stack **Inventory Management System** built using **FastAPI**, **SQLAlchemy**, and a **React frontend** with **Bootstrap 5** for styling. It allows users to manage warehouses, items, categories, stock movements, and users. It also supports **Docker** for containerized deployment and uses **PostgreSQL** as the database.
 
 ---
 
 ## 🚀 Features  
 
-- ✅ Create and manage warehouses  
-- ✅ Add, edit, and delete items stored in warehouses  
-- ✅ Track stock levels in warehouses  
-- ✅ View items categorized by warehouse  
-- ✅ RESTful API built with FastAPI  
-- ✅ PostgreSQL database using SQLAlchemy ORM  
-- ✅ React frontend styled with Bootstrap 5  
-- ✅ User-friendly interface with real-time updates  
-- ✅ Docker support for easy deployment  
+### Backend Features  
+- **Warehouse Management**  
+  - Create, update, delete, and view warehouses.  
+  - Retrieve stock levels for specific warehouses.  
+
+- **Item Management**  
+  - Add, edit, delete, and view items.  
+  - Assign items to categories.  
+
+- **Category Management**  
+  - Create, update, delete, and view categories.  
+  - Retrieve items associated with specific categories.  
+
+- **Stock Management**  
+  - Track stock levels across warehouses.  
+  - Add or remove stock through stock movements.  
+
+- **User Management**  
+  - Register new users with roles (admin/user).  
+  - View, edit, and delete user details.  
+
+- **Authentication & Authorization**  
+  - Role-based access control (admin and user roles).  
+  - JWT-based authentication.  
+
+- **Email Notifications**  
+  - Send email notifications using SendGrid for specific events.  
+
+- **API Documentation**  
+  - Interactive API documentation available at `/docs` using Swagger UI.  
+
+### Frontend Features  
+- **Dashboard**  
+  - Overview of warehouses, items, categories, and stock.  
+
+- **Warehouse Management**  
+  - Add, edit, delete, and view warehouse details.  
+
+- **Item Management**  
+  - Add, edit, delete, and view item details.  
+  - Assign items to categories.  
+
+- **Category Management**  
+  - Add, edit, delete, and view categories.  
+
+- **Stock Management**  
+  - View stock levels grouped by warehouses.  
+  - Add stock movements (inflow/outflow).  
+
+- **User Management**  
+  - Admins can manage users (add, edit, delete).  
+  - Users can view and edit their profiles.  
+
+- **Responsive Design**  
+  - Fully responsive UI built with React and Bootstrap 5.  
+
+- **Real-Time Updates**  
+  - Interface updates dynamically as data changes.  
+
+### Deployment Features  
+- **Docker Support**  
+  - Containerized deployment using Docker and Docker Compose.  
+
+- **Environment Configuration**  
+  - Configurable environment variables for API and database.  
 
 ---
 
@@ -126,6 +182,13 @@ docker-compose down
 - `GET /stock/` - Get all stock records  
 - `POST /stock/add/{item_id}` - Add stock for an item in a warehouse  
 - `GET /stock/get/{item_id}` - Get stock for a specific item  
+
+### 👤 User Endpoints  
+- `POST /users/register` - Register a new user  
+- `GET /users/get` - Get all users  
+- `GET /users/get/{user_id}` - Get user details  
+- `PATCH /users/update/{user_id}` - Update user details  
+- `DELETE /users/delete/{user_id}` - Delete a user  
 
 ---
 

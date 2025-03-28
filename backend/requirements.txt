@@ -6,3 +6,4 @@ pydantic_settings
 python-jose
 passlib
 python-multipart
+sendgrid

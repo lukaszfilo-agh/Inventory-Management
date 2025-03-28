@@ -31,7 +31,7 @@ const Stock = () => {
   }, {});
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-4">
       <h1 className="text-center mb-4">Stock</h1>
       <h3 className="mt-4">Stock in warehouses</h3>
       <table className="table table-bordered">

@@ -1,9 +1,9 @@
 from typing import List
 
-import models as models
+from models import Category, Item
 from core import get_db
 from fastapi import APIRouter, Depends, HTTPException
-from schemas import ItemBase, ItemModel
+from schemas import ItemBase, ItemModel, ItemUpdate
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/items", tags=["Items"])
@@ -16,18 +16,16 @@ router = APIRouter(prefix="/items", tags=["Items"])
              description="Creates a new item, ensuring the category exists, and returns the created item.")
 async def create_item(item: ItemBase, db: Session = Depends(get_db)):
     """
-    Endpoint to create a new item.
-    - Accepts item data in the form of `ItemBase`.
+    Create a new item.
     - Ensures that the specified category exists.
     - Returns the created `ItemModel`.
     """
-    category = db.query(models.Category).filter(
-        models.Category.id == item.category_id).one_or_none()
+    category = db.query(Category).filter(Category.id == item.category_id).one_or_none()
 
     if not category:
         raise HTTPException(status_code=404, detail="Category not found.")
 
-    new_item = models.Item(**item.model_dump())
+    new_item = Item(**item.model_dump())
     db.add(new_item)
     db.commit()
     db.refresh(new_item)
@@ -41,10 +39,10 @@ async def create_item(item: ItemBase, db: Session = Depends(get_db)):
             description="Fetches a list of all items in the system.")
 async def get_items(db: Session = Depends(get_db)):
     """
-    Endpoint to get all items.
+    Retrieve all items.
     - Returns a list of all items in the system, represented by `ItemModel`.
     """
-    return db.query(models.Item).all()
+    return db.query(Item).all()
 
 
 @router.get("/{item_id}",
@@ -54,17 +52,14 @@ async def get_items(db: Session = Depends(get_db)):
             description="Fetches a single item by its ID.")
 async def get_item(item_id: int, db: Session = Depends(get_db)):
     """
-    Endpoint to get a specific item by its ID.
+    Retrieve a specific item by its ID.
     - If the item with the specified ID doesn't exist, raises a 404 error.
     - Returns the `ItemModel` for the requested item.
     """
-    item = db.query(models.Item).filter(models.Item.id == item_id).first()
+    item = db.query(Item).filter(Item.id == item_id).first()
 
     if not item:
-        raise HTTPException(status_code=404, detail="Item not found")
-
-    db.query(models.Category).filter(
-        models.Category.id == item.category_id).first()
+        raise HTTPException(status_code=404, detail="Item not found.")
 
     return item
 
@@ -74,14 +69,13 @@ async def get_item(item_id: int, db: Session = Depends(get_db)):
               response_description="The updated item",
               summary="Update an existing item",
               description="Updates an existing item's details and returns the updated item.")
-async def update_item(item_id: int, item: ItemBase, db: Session = Depends(get_db)):
+async def update_item(item_id: int, item: ItemUpdate, db: Session = Depends(get_db)):
     """
-    Endpoint to update an existing item by its ID.
-    - Accepts partial updates in the form of `ItemBase`.
+    Update an existing item by its ID.
+    - Accepts partial updates in the form of `ItemUpdate`.
     - Returns the updated `ItemModel`.
     """
-    item_to_update = db.query(models.Item).filter(
-        models.Item.id == item_id).one_or_none()
+    item_to_update = db.query(Item).filter(Item.id == item_id).one_or_none()
     if not item_to_update:
         raise HTTPException(status_code=404, detail="Item not found.")
 
@@ -98,12 +92,11 @@ async def update_item(item_id: int, item: ItemBase, db: Session = Depends(get_db
                description="Deletes an item by its ID and returns a deletion message.")
 async def delete_item(item_id: int, db: Session = Depends(get_db)):
     """
-    Endpoint to delete an item by its ID.
+    Delete an item by its ID.
     - If the item doesn't exist, raises a 404 error.
     - Returns a success message after deletion.
     """
-    item = db.query(models.Item).filter(
-        models.Item.id == item_id).one_or_none()
+    item = db.query(Item).filter(Item.id == item_id).one_or_none()
     if not item:
         raise HTTPException(status_code=404, detail="Item not found.")
     db.delete(item)

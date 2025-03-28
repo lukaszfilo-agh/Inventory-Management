@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/stock/movement", tags=["Stock Movement"])
 
+
 @router.get("/get",
             response_model=List[StockMovementModel],
             response_description="A list of all stock movements",
@@ -15,10 +16,11 @@ router = APIRouter(prefix="/stock/movement", tags=["Stock Movement"])
             description="Fetches a list of all stock movements.")
 async def get_stock_movements(db: Session = Depends(get_db)):
     """
-    Endpoint to get all stock movements.
+    Retrieve all stock movements.
     - Returns a list of `StockMovementModel` representing all stock movements.
     """
     return db.query(StockMovement).all()
+
 
 @router.post("/add",
              response_model=StockMovementModel,
@@ -27,7 +29,9 @@ async def get_stock_movements(db: Session = Depends(get_db)):
              description="Adds a new stock movement record.")
 async def add_stock_movement(stock_movement: StockMovementBase, db: Session = Depends(get_db)):
     """
-    Endpoint to add a new stock movement.
+    Add a new stock movement.
+    - Validates the existence of the item and warehouse.
+    - Updates stock levels based on the movement type.
     - Returns the `StockMovementModel` of the added stock movement.
     """
     item = db.query(Item).filter(Item.id == stock_movement.item_id).one_or_none()
@@ -38,11 +42,41 @@ async def add_stock_movement(stock_movement: StockMovementBase, db: Session = De
     if not warehouse:
         raise HTTPException(status_code=404, detail="Warehouse not found.")
 
-    new_stock_movement = StockMovement(**stock_movement.model_dump())
-    db.add(new_stock_movement)
+    if stock_movement.movement_type == "inflow":
+        new_stock_movement = StockMovement(
+            **stock_movement.model_dump(),
+            remaining_quantity=stock_movement.quantity
+        )
+        db.add(new_stock_movement)
+    elif stock_movement.movement_type == "outflow":
+        remaining_quantity = stock_movement.quantity
+        inflow_movements = db.query(StockMovement).filter(
+            StockMovement.item_id == stock_movement.item_id,
+            StockMovement.warehouse_id == stock_movement.warehouse_id,
+            StockMovement.remaining_quantity > 0,
+            StockMovement.movement_type == "inflow"
+        ).order_by(StockMovement.movement_date).all()
+
+        for inflow in inflow_movements:
+            if remaining_quantity <= 0:
+                break
+            if inflow.remaining_quantity >= remaining_quantity:
+                inflow.remaining_quantity -= remaining_quantity
+                remaining_quantity = 0
+            else:
+                remaining_quantity -= inflow.remaining_quantity
+                inflow.remaining_quantity = 0
+
+        if remaining_quantity > 0:
+            raise HTTPException(status_code=400, detail="Not enough stock available for outflow.")
+
+        new_stock_movement = StockMovement(
+            **stock_movement.model_dump(),
+            remaining_quantity=0
+        )
+        db.add(new_stock_movement)
 
     stock = db.query(Stock).filter(Stock.item_id == stock_movement.item_id, Stock.warehouse_id == stock_movement.warehouse_id).one_or_none()
-    print(StockMovementBase)
     if stock:
         if stock_movement.movement_type == "inflow":
             stock.stock_level += stock_movement.quantity

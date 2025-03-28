@@ -1,14 +1,14 @@
-name: inventory-manager-development
+name: inv-mng-dev
 
 services:
-  inventory-backend:
+  inv-backend:
     build:
       context: ./backend
       dockerfile: Dockerfile.dev
     depends_on:
       postgres:
         condition: service_started
-    container_name: inventory-manager-backend-development
+    container_name: inv-mng-backend-dev
     ports:
       - "8000:8000"
     volumes:
@@ -24,14 +24,14 @@ services:
       - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
       - SENDGRID_API_KEY=${SENDGRID_API_KEY}
 
-  inventory-frontend:
+  inv-frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
     depends_on:
-      inventory-backend:
+      inv-backend:
         condition: service_started
-    container_name: inventory-manager-frontend-development
+    container_name: inv-mng-frontend-dev
     ports:
       - "3000:3000"
     volumes:

@@ -3,12 +3,22 @@ from datetime import datetime, timedelta, date
 
 BASE_URL = "http://localhost:8000"  # Update this if your API runs on a different host/port
 
+def login():
+    """Authenticate and retrieve a token."""
+    credentials = {"username": "admin", "password": "admin"}  # Replace with actual credentials
+    response = requests.post(f"{BASE_URL}/login/", data=credentials)  # Use form data instead of JSON
+    response.raise_for_status()
+    return response.json()["access_token"]
+
 def populate_db():
+    token = login()
+    headers = {"Authorization": f"Bearer {token}"}
+
     # Create categories
     categories = ["Electronics", "Furniture", "Clothing", "Books", "Toys", "Appliances", "Sports", "Beauty", "Automotive", "Garden"]
     category_ids = []
     for name in categories:
-        response = requests.post(f"{BASE_URL}/categories/", json={"name": name})
+        response = requests.post(f"{BASE_URL}/categories/add", json={"name": name}, headers=headers)
         response.raise_for_status()
         category_ids.append(response.json()["id"])
 
@@ -136,7 +146,7 @@ def populate_db():
     ]
     item_ids = []
     for item in items:
-        response = requests.post(f"{BASE_URL}/items/", json=item)
+        response = requests.post(f"{BASE_URL}/items/add", json=item, headers=headers)
         response.raise_for_status()
         item_ids.append(response.json()["id"])
 
@@ -150,7 +160,7 @@ def populate_db():
     ]
     warehouse_ids = []
     for warehouse in warehouses:
-        response = requests.post(f"{BASE_URL}/warehouses/", json=warehouse)
+        response = requests.post(f"{BASE_URL}/warehouses/add", json=warehouse, headers=headers)
         response.raise_for_status()
         warehouse_ids.append(response.json()["id"])
 
@@ -180,7 +190,7 @@ def populate_db():
     for movement in stock_movements:
         if movement["movement_type"] == "inflow":
             movement["remaining_quantity"] = movement["quantity"]
-        response = requests.post(f"{BASE_URL}/stock/movement/add", json=movement)
+        response = requests.post(f"{BASE_URL}/stock/movement/add", json=movement, headers=headers)
         response.raise_for_status()
 
     print("Database populated successfully via API!")

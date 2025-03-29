@@ -17,7 +17,12 @@ const AddItem = () => {
 
   const handleAddItem = async () => {
     try {
-      const response = await api.post("/items/", newItem);
+      const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+      const response = await api.post("/items/add", newItem, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+        },
+      });
       setAddedItem(response.data);
       setNewItem({ name: "", description: "", category_id: 0 });
       setErrorMessage("");

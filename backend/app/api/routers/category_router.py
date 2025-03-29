@@ -1,7 +1,7 @@
 from typing import List
 
-from models import Category, Item
-from core import get_db
+from models import Category, Item, User
+from core import get_db, get_current_user
 from fastapi import APIRouter, Depends, HTTPException
 from schemas import CategoryBase, CategoryModel, ItemModel
 from sqlalchemy.orm import Session
@@ -9,17 +9,19 @@ from sqlalchemy.orm import Session
 router = APIRouter(prefix="/categories", tags=["Categories"])
 
 
-@router.post("/",
+@router.post("/add",
              response_model=CategoryModel,
              response_description="The created category",
              summary="Create a new category",
              description="Creates a new category and returns the created category.")
-async def create_category(category: CategoryBase, db: Session = Depends(get_db)):
+async def create_category(category: CategoryBase, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """
     Create a new category.
     - Accepts category data in the form of `CategoryBase`.
     - Returns the created category model.
     """
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to perform this action")
     new_category = Category(**category.model_dump())
     db.add(new_category)
     db.commit()
@@ -27,7 +29,7 @@ async def create_category(category: CategoryBase, db: Session = Depends(get_db))
     return new_category
 
 
-@router.get("/",
+@router.get("/get",
             response_model=List[CategoryModel],
             response_description="A list of all categories",
             summary="Get all categories",
@@ -40,7 +42,7 @@ async def get_categories(db: Session = Depends(get_db)):
     return db.query(Category).all()
 
 
-@router.get("/{category_id}",
+@router.get("/get/{category_id}",
             response_model=CategoryModel,
             response_description="The requested category",
             summary="Get a specific category",
@@ -62,12 +64,14 @@ async def get_category(category_id: int, db: Session = Depends(get_db)):
               response_description="The updated category",
               summary="Update an existing category",
               description="Updates a category's details and returns the updated category.")
-async def update_category(category_id: int, category: CategoryBase, db: Session = Depends(get_db)):
+async def update_category(category_id: int, category: CategoryBase, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """
     Update an existing category by its ID.
     - Accepts a partial update in the form of `CategoryBase`.
     - Returns the updated category model.
     """
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to perform this action")
     category_to_update = db.query(Category).filter(Category.id == category_id).one_or_none()
     if not category_to_update:
         raise HTTPException(status_code=404, detail="Category not found.")
@@ -78,7 +82,7 @@ async def update_category(category_id: int, category: CategoryBase, db: Session 
     return category_to_update
 
 
-@router.get("/{category_id}/items",
+@router.get("/get/{category_id}/items",
             response_model=List[ItemModel],
             response_description="List of items in the category",
             summary="Get items in a category",

@@ -1,8 +1,8 @@
 from typing import List
 
-from core import get_db
+from core import get_db, get_current_user
 from fastapi import APIRouter, Depends, HTTPException
-from models import Item, Stock, StockMovement, Warehouse
+from models import Item, Stock, StockMovement, Warehouse, User
 from schemas import StockMovementBase, StockMovementModel
 from sqlalchemy.orm import Session
 
@@ -21,19 +21,39 @@ async def get_stock_movements(db: Session = Depends(get_db)):
     """
     return db.query(StockMovement).all()
 
+@router.get("/get/{stock_movement_id}",
+            response_model=StockMovementModel,
+            response_description="The stock movement with the given ID",
+            summary="Get a stock movement by ID",
+            description="Fetches a stock movement by its ID.")
+async def get_stock_movement(stock_movement_id: int, db: Session = Depends(get_db)):
+    """
+    Retrieve a stock movement by its ID.
+    - Validates the existence of the stock movement.
+    - Returns the `StockMovementModel` of the specified stock movement.
+    """
+    stock_movement = db.query(StockMovement).filter(StockMovement.id == stock_movement_id).one_or_none()
+    if not stock_movement:
+        raise HTTPException(status_code=404, detail="Stock movement not found.")
+    return stock_movement
+
 
 @router.post("/add",
              response_model=StockMovementModel,
              response_description="The stock movement that was added",
              summary="Add a stock movement",
              description="Adds a new stock movement record.")
-async def add_stock_movement(stock_movement: StockMovementBase, db: Session = Depends(get_db)):
+async def add_stock_movement(stock_movement: StockMovementBase, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """
     Add a new stock movement.
     - Validates the existence of the item and warehouse.
     - Updates stock levels based on the movement type.
     - Returns the `StockMovementModel` of the added stock movement.
     """
+
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to perform this action")
+    
     item = db.query(Item).filter(Item.id == stock_movement.item_id).one_or_none()
     warehouse = db.query(Warehouse).filter(Warehouse.id == stock_movement.warehouse_id).one_or_none()
 

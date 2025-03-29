@@ -29,7 +29,7 @@ const ItemDetails = () => {
 
   const fetchItemDetails = async () => {
     try {
-      const response = await api.get(`/items/${id}`);
+      const response = await api.get(`/items/get/${id}`);
       setItem(response.data);
       setEditedItem(response.data);
     } catch (error) {
@@ -69,7 +69,7 @@ const ItemDetails = () => {
 
   const handleSaveChanges = async (field) => {
     try {
-      await api.patch(`/items/${id}`, { [field]: editedItem[field] });
+      await api.patch(`/items/update/${id}`, { [field]: editedItem[field] });
       setItem({ ...item, [field]: editedItem[field] });
       setEditField(null); // Close modal after saving
     } catch (error) {

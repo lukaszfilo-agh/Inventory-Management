@@ -46,7 +46,7 @@ const AddStockMovement = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await api.get("/categories");
+      const response = await api.get("/categories/get");
       setCategories(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -55,7 +55,7 @@ const AddStockMovement = () => {
 
   const fetchItems = async () => {
     try {
-      const response = await api.get("/items");
+      const response = await api.get("/items/get");
       setAllItems(response.data); // Store all items in state
       setFilteredItems(response.data); // Show all items initially
       setLoading(false);
@@ -67,7 +67,7 @@ const AddStockMovement = () => {
 
   const fetchWarehouses = async () => {
     try {
-      const response = await api.get("/warehouses");
+      const response = await api.get("/warehouses/get");
       setWarehouses(response.data);
     } catch (error) {
       console.error("Error fetching warehouses:", error);
@@ -90,7 +90,12 @@ const AddStockMovement = () => {
         movement_type: movementType,
       };
 
-      const response = await api.post(`/stock/movement/add`, stockMovementData);
+      const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+      const response = await api.post(`/stock/movement/add`, stockMovementData, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+        },
+      });
       if (response.data) {
         if (movementType === "outflow" && response.data.remaining_quantity < 0) {
           setErrorMessage("Not enough stock available for the outflow.");

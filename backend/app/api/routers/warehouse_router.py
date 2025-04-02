@@ -1,7 +1,7 @@
 from typing import List
 
-from models import Warehouse, Item
-from core import get_db
+from models import Warehouse, Item, User
+from core import get_db, get_current_user
 from fastapi import APIRouter, Depends, HTTPException
 from schemas import WarehouseBase, WarehouseModel, WarehouseUpdate
 from sqlalchemy.orm import Session
@@ -9,17 +9,21 @@ from sqlalchemy.orm import Session
 router = APIRouter(prefix="/warehouses", tags=["Warehouses"])
 
 
-@router.post("/",
+@router.post("/add",
              response_model=WarehouseModel,
              response_description="The created warehouse",
              summary="Create a new warehouse",
              description="Creates a new warehouse and returns the created warehouse model.")
-async def create_warehouse(warehouse: WarehouseBase, db: Session = Depends(get_db)):
+async def create_warehouse(warehouse: WarehouseBase, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """
     Create a new warehouse.
     - Accepts warehouse data in the form of `WarehouseBase`.
     - Returns the created `WarehouseModel`.
     """
+
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to perform this action")
+    
     new_warehouse = Warehouse(**warehouse.model_dump())
     db.add(new_warehouse)
     db.commit()
@@ -27,7 +31,7 @@ async def create_warehouse(warehouse: WarehouseBase, db: Session = Depends(get_d
     return new_warehouse
 
 
-@router.get("/",
+@router.get("/get",
             response_model=List[WarehouseModel],
             response_description="A list of all warehouses",
             summary="Get all warehouses",
@@ -40,7 +44,7 @@ async def get_warehouses(db: Session = Depends(get_db)):
     return db.query(Warehouse).all()
 
 
-@router.get("/{warehouse_id}",
+@router.get("/get/{warehouse_id}",
             response_model=WarehouseModel,
             response_description="The requested warehouse",
             summary="Get a specific warehouse",

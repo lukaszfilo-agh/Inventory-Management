@@ -16,7 +16,12 @@ const AddWarehouse = () => {
 
   const handleAddWarehouse = async () => {
     try {
-      const response = await api.post("/warehouses/", newWarehouse);
+      const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+      const response = await api.post("/warehouses/add", newWarehouse, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+        },
+      });
       setAddedWarehouse(response.data);
       setNewWarehouse({
         name: "",

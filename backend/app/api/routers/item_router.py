@@ -1,7 +1,7 @@
 from typing import List
 
-from models import Category, Item
-from core import get_db
+from models import Category, Item, User
+from core import get_db, get_current_user
 from fastapi import APIRouter, Depends, HTTPException
 from schemas import ItemBase, ItemModel, ItemUpdate
 from sqlalchemy.orm import Session
@@ -9,17 +9,20 @@ from sqlalchemy.orm import Session
 router = APIRouter(prefix="/items", tags=["Items"])
 
 
-@router.post("/",
+@router.post("/add",
              response_model=ItemModel,
              response_description="The created item",
              summary="Create a new item",
              description="Creates a new item, ensuring the category exists, and returns the created item.")
-async def create_item(item: ItemBase, db: Session = Depends(get_db)):
+async def create_item(item: ItemBase, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """
     Create a new item.
     - Ensures that the specified category exists.
     - Returns the created `ItemModel`.
     """
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to perform this action")
+    
     category = db.query(Category).filter(Category.id == item.category_id).one_or_none()
 
     if not category:
@@ -32,7 +35,7 @@ async def create_item(item: ItemBase, db: Session = Depends(get_db)):
     return new_item
 
 
-@router.get("/",
+@router.get("/get",
             response_model=List[ItemModel],
             response_description="A list of all items",
             summary="Get all items",
@@ -45,7 +48,7 @@ async def get_items(db: Session = Depends(get_db)):
     return db.query(Item).all()
 
 
-@router.get("/{item_id}",
+@router.get("/get/{item_id}",
             response_model=ItemModel,
             response_description="The requested item",
             summary="Get a specific item",
@@ -64,17 +67,20 @@ async def get_item(item_id: int, db: Session = Depends(get_db)):
     return item
 
 
-@router.patch("/{item_id}",
+@router.patch("/update/{item_id}",
               response_model=ItemModel,
               response_description="The updated item",
               summary="Update an existing item",
               description="Updates an existing item's details and returns the updated item.")
-async def update_item(item_id: int, item: ItemUpdate, db: Session = Depends(get_db)):
+async def update_item(item_id: int, item: ItemUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """
     Update an existing item by its ID.
     - Accepts partial updates in the form of `ItemUpdate`.
     - Returns the updated `ItemModel`.
     """
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to perform this action")
+    
     item_to_update = db.query(Item).filter(Item.id == item_id).one_or_none()
     if not item_to_update:
         raise HTTPException(status_code=404, detail="Item not found.")
@@ -86,16 +92,20 @@ async def update_item(item_id: int, item: ItemUpdate, db: Session = Depends(get_
     return item_to_update
 
 
-@router.delete("/{item_id}",
+@router.delete("/delete/{item_id}",
                response_description="Item deletion status",
                summary="Delete an item",
                description="Deletes an item by its ID and returns a deletion message.")
-async def delete_item(item_id: int, db: Session = Depends(get_db)):
+async def delete_item(item_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     """
     Delete an item by its ID.
     - If the item doesn't exist, raises a 404 error.
     - Returns a success message after deletion.
     """
+    
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not authorized to perform this action")
+    
     item = db.query(Item).filter(Item.id == item_id).one_or_none()
     if not item:
         raise HTTPException(status_code=404, detail="Item not found.")

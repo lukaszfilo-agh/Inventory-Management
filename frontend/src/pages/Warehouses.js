@@ -4,7 +4,7 @@ const Warehouses = () => {
   return (
     <ListView
       title="Warehouses"
-      apiEndpoint="/warehouses/"
+      apiEndpoint="/warehouses/get"
       addPath="/warehouses/add"
       itemKey={(warehouse) => warehouse.id}
       renderName={(warehouse) => warehouse.name}

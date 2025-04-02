@@ -4,7 +4,7 @@ const Categories = () => {
   return (
     <ListView
       title="Categories"
-      apiEndpoint="/categories/"
+      apiEndpoint="/categories/get"
       addPath="/categories/add"
       itemKey={(category) => category.id}
       renderName={(category) => category.name}

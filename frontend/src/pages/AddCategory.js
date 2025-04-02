@@ -15,7 +15,12 @@ const AddCategory = () => {
 
   const handleAddCategory = async () => {
     try {
-      const response = await api.post("/categories/", newCategory);
+      const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+      const response = await api.post("/categories/add", newCategory, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+        },
+      });
       setAddedCategory(response.data);
       setNewCategory({
         name: "",
